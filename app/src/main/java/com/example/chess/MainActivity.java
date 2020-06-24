@@ -11,15 +11,43 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnLongClickListener, View.OnDragListener {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private ImageView imageView;
+    private static final String IMAGE_VIEW_TAG = "LAUNCHER LOGO";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        findViews();
+        implementEvents();
+    }
+    //Find all views and set Tag to all draggable views
+    private void findViews() {
+        imageView = (ImageView) findViewById(R.id.image_view);
+        imageView.setTag(IMAGE_VIEW_TAG);
+    }
+    //Implement long click and drag listener
+    private void implementEvents() {
+        //add or remove any view that you don't want to be dragged
+        imageView.setOnLongClickListener(this);
+
+        //add or remove any layout view that you don't want to accept dragged view
+        for(int i=0;i<8;i++){
+            for(int j=0;j<8;j++){
+                String box = "box"+i+j;
+                int resID= getResources().getIdentifier(box, "id",getPackageName());
+                findViewById(resID).setOnDragListener(this);
+            }
+        }
+
+
     }
 
     @Override
@@ -49,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         );
 
         //Set view visibility to INVISIBLE as we are going to drag the view
-        view.setVisibility(View.INVISIBLE);
+//        view.setVisibility(View.INVISIBLE);
         return true;
     }
 
