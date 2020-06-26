@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -13,13 +14,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnLongClickListener, View.OnDragListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private ImageView imageView;
     private static final String IMAGE_VIEW_TAG = "LAUNCHER LOGO";
+    private LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +33,13 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         setContentView(R.layout.activity_main);
         findViews();
         implementEvents();
+
     }
     //Find all views and set Tag to all draggable views
     private void findViews() {
         imageView = (ImageView) findViewById(R.id.image_view);
         imageView.setTag(IMAGE_VIEW_TAG);
+
     }
     //Implement long click and drag listener
     private void implementEvents() {
@@ -40,15 +48,17 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
         //add or remove any layout view that you don't want to accept dragged view
         for(int i=0;i<8;i++){
-            for(int j=0;j<8;j++){
-                String box = "box"+i+j;
-                int resID= getResources().getIdentifier(box, "id",getPackageName());
+            for(int j=0;j<8;j++) {
+                String box = "box" + i + j;
+                int resID = getResources().getIdentifier(box, "id", getPackageName());
                 findViewById(resID).setOnDragListener(this);
             }
         }
 
 
     }
+
+
 
     @Override
     public boolean onLongClick(View view) {
@@ -116,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
                 view.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
 
+
                 // Invalidate the view to force a redraw in the new tint
                 view.invalidate();
 
@@ -166,10 +177,13 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 // Invalidates the view to force a redraw
                 view.invalidate();
 
+                linearLayout = (LinearLayout) imageView.getParent();
+                String db = linearLayout.getResources().getResourceName(linearLayout.getId());
+                String newDB = db.substring(db.indexOf('/') + 1);
+
                 // Does a getResult(), and displays what happened.
                 if (event.getResult())
-                    Toast.makeText(this, "The drop was handled.", Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(this, "The drop was handled. " + newDB, Toast.LENGTH_LONG).show();
                 else
                     Toast.makeText(this, "The drop didn't work.", Toast.LENGTH_SHORT).show();
 
@@ -185,4 +199,23 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         return false;
     }
 
+    public String[] chessMove(String chessPieceLocation, String chessPiece){
+        int location = Integer.parseInt(chessPieceLocation.substring(chessPieceLocation.length() - 2));
+        List<String> locations = new ArrayList<>();
+        int locationX = Integer.parseInt(chessPieceLocation.substring(chessPieceLocation.length() - 2, chessPieceLocation.length() - 1));
+        int locationY = Integer.parseInt(chessPieceLocation.substring(chessPieceLocation.length() - 1));
+
+
+        switch (chessPiece.substring(6)){
+            case "Horse":{
+
+                if(locationX + 2 <= 7 && locationY + 1 <= 7)locations.add("box"+Integer.toString( location + 21));
+                if(locationX + 1 <= 7 && locationY + 2 <= 7)locations.add("box"+Integer.toString(location + 12));
+                if(locationX - 1 >= 0 && locationY - 2 >= 0){locations.add("box"+Integer.toString(location - 12));}
+                if(locationX - 2 >= 0 && locationY - 1 >= 0){locations.add("box"+Integer.toString(location - 21));}
+            }
+            break;
+        }
+        return null;
+    }
 }
