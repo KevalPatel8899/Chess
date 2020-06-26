@@ -35,20 +35,22 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         implementEvents();
 
     }
+
     //Find all views and set Tag to all draggable views
     private void findViews() {
         imageView = (ImageView) findViewById(R.id.image_view);
         imageView.setTag(IMAGE_VIEW_TAG);
 
     }
+
     //Implement long click and drag listener
     private void implementEvents() {
         //add or remove any view that you don't want to be dragged
         imageView.setOnLongClickListener(this);
 
         //add or remove any layout view that you don't want to accept dragged view
-        for(int i=0;i<8;i++){
-            for(int j=0;j<8;j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 String box = "box" + i + j;
                 int resID = getResources().getIdentifier(box, "id", getPackageName());
                 findViewById(resID).setOnDragListener(this);
@@ -57,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
 
     }
-
 
 
     @Override
@@ -199,23 +200,5 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         return false;
     }
 
-    public String[] chessMove(String chessPieceLocation, String chessPiece){
-        int location = Integer.parseInt(chessPieceLocation.substring(chessPieceLocation.length() - 2));
-        List<String> locations = new ArrayList<>();
-        int locationX = Integer.parseInt(chessPieceLocation.substring(chessPieceLocation.length() - 2, chessPieceLocation.length() - 1));
-        int locationY = Integer.parseInt(chessPieceLocation.substring(chessPieceLocation.length() - 1));
 
-
-        switch (chessPiece.substring(6)){
-            case "Horse":{
-
-                if(locationX + 2 <= 7 && locationY + 1 <= 7)locations.add("box"+Integer.toString( location + 21));
-                if(locationX + 1 <= 7 && locationY + 2 <= 7)locations.add("box"+Integer.toString(location + 12));
-                if(locationX - 1 >= 0 && locationY - 2 >= 0){locations.add("box"+Integer.toString(location - 12));}
-                if(locationX - 2 >= 0 && locationY - 1 >= 0){locations.add("box"+Integer.toString(location - 21));}
-            }
-            break;
-        }
-        return null;
-    }
 }
