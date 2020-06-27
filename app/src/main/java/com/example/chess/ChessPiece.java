@@ -69,9 +69,82 @@ abstract class ChessPiece{
 
             }
             break;
+            case"King":{
+                if(locationX + 1 <=7)
+                    locations.add("box"+Integer.toString( locationX + 1)+ Integer.toString( locationY));
+
+                if(locationY + 1 <= 7)
+                    locations.add("box"+Integer.toString( locationX)+ Integer.toString( locationY + 1));
+
+                if (locationX - 1 >= 0)
+                    locations.add("box"+Integer.toString( locationX - 1)+ Integer.toString( locationY));
+
+                if(locationY - 1 >= 0)
+                    locations.add("box"+Integer.toString( locationX )+ Integer.toString( locationY - 1));
+
+                if(locationX + 1 <=7 && locationY + 1 <=7)
+                    locations.add("box"+Integer.toString( locationX + 1)+ Integer.toString( locationY + 1));
+
+                if(locationX - 1 >= 0 && locationY - 1 >= 0)
+                    locations.add("box"+Integer.toString( locationX - 1)+ Integer.toString( locationY - 1));
+
+                if(locationX + 1 <= 7 && locationY - 1 >= 0)
+                    locations.add("box"+Integer.toString( locationX + 1)+ Integer.toString( locationY - 1));
+
+                if(locationX - 1 >= 0 && locationY + 1 <= 7)
+                    locations.add("box"+Integer.toString( locationX - 1)+ Integer.toString( locationY + 1));
+            }
+            break;
+
+            case "Queen":{
+                for(int i = 1; i <=7; i++){
+                    if(locationX + i <=7 && locationY + i <=7)
+                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY + i));
+
+                    if(locationX - i >= 0 && locationY - i >= 0)
+                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY - i));
+
+                    if(locationX + i <= 7 && locationY - i >= 0)
+                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY - i));
+
+                    if(locationX - i >= 0 && locationY + i <= 7)
+                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY + i));
+
+                    if(locationX + i <=7)
+                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY));
+
+                    if(locationY + i <= 7)
+                        locations.add("box"+Integer.toString( locationX)+ Integer.toString( locationY + i));
+
+                    if (locationX - i >= 0)
+                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY));
+
+                    if(locationY - i >= 0)
+                        locations.add("box"+Integer.toString( locationX )+ Integer.toString( locationY - i));
+                }
+            }
+            break;
+
+            default:{
+                if(chessPiece.contains("black") && chessPiece.contains("pawn")){
+                    if(locationX + 1 <=7)
+                        locations.add("box"+ String.valueOf(locationX + 1) + Integer.toString( locationY));
+
+                    if(locationX == 1){
+                        locations.add("box"+Integer.toString( locationX + 2)+ Integer.toString( locationY));
+                    }
+                }
+                if(chessPiece.contains("white") && chessPiece.contains("pawn")){
+                    if(locationX - 1 >=0)
+                        locations.add("box"+ String.valueOf(locationX - 1) + Integer.toString( locationY));
+
+                    if(locationX == 6){
+                        locations.add("box"+Integer.toString( locationX - 2)+ Integer.toString( locationY));
+                    }
+                }
+            }
+            break;
         }
-
-
 
         return locations;
     }
