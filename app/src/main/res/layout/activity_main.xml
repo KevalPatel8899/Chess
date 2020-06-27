@@ -71,7 +71,9 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/box02"
