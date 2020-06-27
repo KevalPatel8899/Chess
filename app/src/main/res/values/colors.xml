@@ -3,10 +3,6 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
-<<<<<<< HEAD
-     <color name="colorBoardDark">#663300 </color>
-=======
     <color name="colorBoardDark">#663300 </color>
->>>>>>> master
     <color name="colorBoardLight">#fffdd0</color>
 </resources>
