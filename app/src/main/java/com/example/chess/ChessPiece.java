@@ -36,6 +36,36 @@ abstract class ChessPiece{
             break;
 
             case "Bishop" : {
+                for(int i= 1 ; i <= 7 ; i++){
+                    if(locationX + i <=7 && locationY + i <=7)
+                    locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY + i));
+
+                    if(locationX - i >= 0 && locationY - i >= 0)
+                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY - i));
+
+                    if(locationX + i <= 7 && locationY - i >= 0)
+                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY - i));
+
+                    if(locationX - i >= 0 && locationY + i <= 7)
+                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY + i));
+                }
+            }
+            break;
+
+            case"Rook":{
+                for(int i = 1; i <=7; i++){
+                    if(locationX + i <=7)
+                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY));
+
+                    if(locationY + i <= 7)
+                        locations.add("box"+Integer.toString( locationX)+ Integer.toString( locationY + i));
+
+                    if (locationX - i >= 0)
+                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY));
+
+                    if(locationY - i >= 0)
+                    locations.add("box"+Integer.toString( locationX )+ Integer.toString( locationY - i));
+                }
 
             }
             break;
