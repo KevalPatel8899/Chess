@@ -6,7 +6,6 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -14,16 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnLongClickListener, View.OnDragListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private ImageView imageView;
+    private ImageView black_1_knight, black_2_knight, black_1_rook, black_2_rook, black_1_bishop, black_2_bishop, black_0_king, black_0_queen, black_1_pawn, black_2_pawn, black_3_pawn, black_4_pawn, black_5_pawn, black_6_pawn, black_7_pawn, black_0_pawn;
+
     private static final String IMAGE_VIEW_TAG = "LAUNCHER LOGO";
     private LinearLayout linearLayout;
 
@@ -38,15 +34,44 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
     //Find all views and set Tag to all draggable views
     private void findViews() {
-        imageView = (ImageView) findViewById(R.id.image_view);
-        imageView.setTag(IMAGE_VIEW_TAG);
-
+        black_1_knight = (ImageView) findViewById(R.id.Black_1_Knight);
+        black_2_knight = (ImageView) findViewById(R.id.Black_2_Knight);
+        black_1_rook = (ImageView) findViewById(R.id.Black_1_Rook);
+        black_2_rook = (ImageView) findViewById(R.id.Black_2_Rook);
+        black_1_bishop = (ImageView) findViewById(R.id.Black_1_Bishop);
+        black_2_bishop = (ImageView) findViewById(R.id.Black_2_Bishop);
+        black_0_king = (ImageView) findViewById(R.id.Black_0_King);
+        black_0_queen = (ImageView) findViewById(R.id.Black_0_Queen);
+        black_1_pawn = (ImageView) findViewById(R.id.black_1_pawn);
+        black_2_pawn = (ImageView) findViewById(R.id.black_2_pawn);
+        black_3_pawn = (ImageView) findViewById(R.id.black_3_pawn);
+        black_4_pawn = (ImageView) findViewById(R.id.black_4_pawn);
+        black_5_pawn = (ImageView) findViewById(R.id.black_5_pawn);
+        black_6_pawn = (ImageView) findViewById(R.id.black_6_pawn);
+        black_7_pawn = (ImageView) findViewById(R.id.black_7_pawn);
+        black_0_pawn = (ImageView) findViewById(R.id.black_0_pawn);
     }
 
     //Implement long click and drag listener
     private void implementEvents() {
         //add or remove any view that you don't want to be dragged
-        imageView.setOnLongClickListener(this);
+          black_0_king.setOnLongClickListener(this);
+          black_0_queen.setOnLongClickListener(this);
+          black_1_knight.setOnLongClickListener(this);
+          black_1_bishop.setOnLongClickListener(this);
+          black_1_rook.setOnLongClickListener(this);
+          black_2_knight.setOnLongClickListener(this);
+          black_2_bishop.setOnLongClickListener(this);
+          black_2_rook.setOnLongClickListener(this);
+          black_0_pawn.setOnLongClickListener(this);
+          black_1_pawn.setOnLongClickListener(this);
+          black_2_pawn.setOnLongClickListener(this);
+          black_3_pawn.setOnLongClickListener(this);
+          black_4_pawn.setOnLongClickListener(this);
+          black_5_pawn.setOnLongClickListener(this);
+          black_6_pawn.setOnLongClickListener(this);
+          black_7_pawn.setOnLongClickListener(this);
+
 
         //add or remove any layout view that you don't want to accept dragged view
         for (int i = 0; i < 8; i++) {
@@ -178,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 // Invalidates the view to force a redraw
                 view.invalidate();
 
-                linearLayout = (LinearLayout) imageView.getParent();
+                linearLayout = (LinearLayout) black_1_knight.getParent();
                 String db = linearLayout.getResources().getResourceName(linearLayout.getId());
                 String newDB = db.substring(db.indexOf('/') + 1);
 
@@ -187,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                     Toast.makeText(this, "The drop was handled. " + newDB, Toast.LENGTH_LONG).show();
                 else
                     Toast.makeText(this, "The drop didn't work.", Toast.LENGTH_SHORT).show();
-
 
                 // returns true; the value is ignored.
                 return true;

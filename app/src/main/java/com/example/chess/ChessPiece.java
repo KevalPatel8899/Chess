@@ -5,22 +5,26 @@ import java.util.List;
 
 abstract class ChessPiece{
 
-    String chessPieceLocation, chessPiece;
+    String
+            chessPieceLocation, chessPiece;
 
-    private ChessPiece(String chessPieceLocation, String chessPiece){
-        chessPiece = this.chessPiece;
-        chessPieceLocation = this.chessPieceLocation;
+    protected ChessPiece(String chessPieceLocation, String chessPiece){
+        this.chessPiece =         chessPiece ;
+        this.chessPieceLocation = chessPieceLocation;
     }
 
     public List<String>  chessMove(){
-        int location = Integer.parseInt(chessPieceLocation.substring(chessPieceLocation.length() - 2));
+        String locationS = chessPieceLocation.substring(chessPieceLocation.length() - 2);
+        String locationXS = chessPieceLocation.substring(chessPieceLocation.length() - 2, chessPieceLocation.length() - 1);
+        String locationYS = chessPieceLocation.substring(chessPieceLocation.length() - 1);
+        int location = Integer.parseInt(locationS);
         List<String> locations = new ArrayList<>();
-        int locationX = Integer.parseInt(chessPieceLocation.substring(chessPieceLocation.length() - 2, chessPieceLocation.length() - 1));
-        int locationY = Integer.parseInt(chessPieceLocation.substring(chessPieceLocation.length() - 1));
+        int locationX = Integer.parseInt(locationXS);
+        int locationY = Integer.parseInt(locationYS);
         locations.clear();
 
         switch (chessPiece.substring(8)){
-            case "Horse":{
+            case "Knight":{
 
                 if(locationX + 2 <= 7 && locationY + 1 <= 7)locations.add("box"+Integer.toString( location + 21));
                 if(locationX + 1 <= 7 && locationY + 2 <= 7)locations.add("box"+Integer.toString(location + 12));
