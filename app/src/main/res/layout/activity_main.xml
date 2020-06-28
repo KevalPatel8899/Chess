@@ -74,14 +74,11 @@
             android:gravity="center"
             android:orientation="vertical" >
 
-<<<<<<< HEAD
-=======
             <ImageView
                 android:id="@+id/Black_1_Knight"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_black_knight" />
->>>>>>> ChessPiece
         </LinearLayout>
 
         <LinearLayout
