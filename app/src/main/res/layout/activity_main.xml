@@ -57,7 +57,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/Black_1_Rook"
+                android:id="@+id/black_0_rook"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_black_rook" />
@@ -75,7 +75,7 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:id="@+id/Black_1_Knight"
+                android:id="@+id/black_0_knight"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_black_knight" />
@@ -91,7 +91,7 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:id="@+id/Black_1_Bishop"
+                android:id="@+id/black_0_bishop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_black_bishop" />
@@ -107,7 +107,7 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:id="@+id/Black_0_King"
+                android:id="@+id/black_0_king"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_black_king" />
@@ -122,7 +122,7 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:id="@+id/Black_0_Queen"
+                android:id="@+id/black_0_queen"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_black_queen" />
@@ -138,7 +138,7 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:id="@+id/Black_2_Bishop"
+                android:id="@+id/black_1_bishop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_black_bishop" />
@@ -153,7 +153,7 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:id="@+id/Black_2_Knight"
+                android:id="@+id/black_1_knight"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_black_knight" />
@@ -169,7 +169,7 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:id="@+id/Black_2_Rook"
+                android:id="@+id/black_1_rook"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_black_rook" />

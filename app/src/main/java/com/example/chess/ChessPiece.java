@@ -3,7 +3,7 @@ package com.example.chess;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class ChessPiece{
+public class ChessPiece{
 
     String
             chessPieceLocation, chessPiece;
