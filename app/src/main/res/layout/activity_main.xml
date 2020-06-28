@@ -183,8 +183,6 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-
-
         <LinearLayout
             android:id="@+id/box10"
             android:layout_width="match_parent"
@@ -643,7 +641,14 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/white_0_pawn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_pawn" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/box61"
@@ -652,7 +657,14 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/white_1_pawn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_pawn" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/box62"
@@ -661,8 +673,14 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
 
+            <ImageView
+                android:id="@+id/white_2_pawn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_pawn" />
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/box63"
             android:layout_width="match_parent"
@@ -670,7 +688,15 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/white_3_pawn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_pawn" />
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/box64"
             android:layout_width="match_parent"
@@ -678,8 +704,14 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
 
+            <ImageView
+                android:id="@+id/white_4_pawn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_pawn" />
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/box65"
             android:layout_width="match_parent"
@@ -687,7 +719,15 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/white_5_pawn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_pawn" />
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/box66"
             android:layout_width="match_parent"
@@ -695,7 +735,14 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/white_6_pawn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_pawn" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/box67"
@@ -704,7 +751,14 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/white_7_pawn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_pawn" />
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/r7"
@@ -723,7 +777,16 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/white_0_rook"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_rook" />
+        </LinearLayout>
+
+        />
 
         <LinearLayout
             android:id="@+id/box71"
@@ -732,7 +795,14 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/white_0_knight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_knight" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/box72"
@@ -741,7 +811,15 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/white_0_bishop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_bishop" />
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/box73"
             android:layout_width="match_parent"
@@ -749,8 +827,14 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
 
+            <ImageView
+                android:id="@+id/white_0_king"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_king" />
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/box74"
             android:layout_width="match_parent"
@@ -758,7 +842,15 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/white_0_queen"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_queen" />
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/box75"
             android:layout_width="match_parent"
@@ -766,8 +858,14 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
 
+            <ImageView
+                android:id="@+id/white_1_bishop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_bishop" />
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/box76"
             android:layout_width="match_parent"
@@ -775,7 +873,14 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/white_1_knight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_knight" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/box77"
@@ -784,7 +889,14 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/white_1_rook"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_white_rook" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

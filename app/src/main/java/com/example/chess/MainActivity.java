@@ -35,7 +35,12 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 "black_1_rook", "black_0_rook",
                 "black_1_bishop", "black_0_bishop",
                 "black_0_king", "black_0_queen",
-                "black_0_pawn", "black_1_pawn", "black_2_pawn", "black_3_pawn", "black_4_pawn", "black_5_pawn", "black_6_pawn", "black_7_pawn"
+                "black_0_pawn", "black_1_pawn", "black_2_pawn", "black_3_pawn", "black_4_pawn", "black_5_pawn", "black_6_pawn", "black_7_pawn",
+                "white_1_knight", "white_0_knight",
+                "white_1_rook", "white_0_rook",
+                "white_1_bishop", "white_0_bishop",
+                "white_0_king", "white_0_queen",
+                "white_0_pawn", "white_1_pawn", "white_2_pawn", "white_3_pawn", "white_4_pawn", "white_5_pawn", "white_6_pawn", "white_7_pawn"
         };
         for (int i = 0; i < chessPieceList.length; i++) {
             int resID = getResources().getIdentifier(chessPieceList[i], "id", getPackageName());
