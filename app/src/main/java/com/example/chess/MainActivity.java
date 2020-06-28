@@ -28,7 +28,24 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViews();
-        implementEvents();
+        implementEvents(black_0_king);
+        implementEvents(black_0_queen);
+        implementEvents(black_1_bishop);
+        implementEvents(black_2_bishop);
+        implementEvents(black_1_knight);
+        implementEvents(black_2_knight);
+        implementEvents(black_1_rook);
+        implementEvents(black_2_rook);
+
+        implementEvents(black_0_pawn);
+        implementEvents(black_1_pawn);
+        implementEvents(black_2_pawn);
+        implementEvents(black_3_pawn);
+        implementEvents(black_4_pawn);
+        implementEvents(black_5_pawn);
+        implementEvents(black_6_pawn);
+        implementEvents(black_7_pawn);
+
 
     }
 
@@ -50,10 +67,30 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         black_6_pawn = (ImageView) findViewById(R.id.black_6_pawn);
         black_7_pawn = (ImageView) findViewById(R.id.black_7_pawn);
         black_0_pawn = (ImageView) findViewById(R.id.black_0_pawn);
+
+        black_2_rook.setTag(IMAGE_VIEW_TAG);
+        black_2_bishop.setTag(IMAGE_VIEW_TAG);
+        black_2_knight.setTag(IMAGE_VIEW_TAG);
+        black_0_queen.setTag(IMAGE_VIEW_TAG);
+        black_0_king.setTag(IMAGE_VIEW_TAG);
+        black_1_bishop.setTag(IMAGE_VIEW_TAG);
+        black_1_rook.setTag(IMAGE_VIEW_TAG);
+        black_1_knight.setTag(IMAGE_VIEW_TAG);
+
+        black_0_pawn.setTag(IMAGE_VIEW_TAG);
+        black_1_pawn.setTag(IMAGE_VIEW_TAG);
+        black_2_pawn.setTag(IMAGE_VIEW_TAG);
+        black_3_pawn.setTag(IMAGE_VIEW_TAG);
+        black_3_pawn.setTag(IMAGE_VIEW_TAG);
+        black_4_pawn.setTag(IMAGE_VIEW_TAG);
+        black_5_pawn.setTag(IMAGE_VIEW_TAG);
+        black_6_pawn.setTag(IMAGE_VIEW_TAG);
+        black_7_pawn.setTag(IMAGE_VIEW_TAG);
+
     }
 
     //Implement long click and drag listener
-    private void implementEvents() {
+    private void implementEvents(ImageView imageView ) {
         //add or remove any view that you don't want to be dragged
           black_0_king.setOnLongClickListener(this);
           black_0_queen.setOnLongClickListener(this);
