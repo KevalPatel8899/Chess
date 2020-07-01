@@ -1,16 +1,20 @@
 package com.example.chess;
 
+import android.content.res.Resources;
+import android.view.View;
+import android.widget.LinearLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChessPiece{
 
-    String
-            chessPieceLocation, chessPiece;
+    String chessPieceLocation, chessPiece;
 
     protected ChessPiece(String chessPieceLocation, String chessPiece){
         this.chessPiece =         chessPiece ;
         this.chessPieceLocation = chessPieceLocation;
+
     }
 
     public List<String>  chessMove(){
@@ -24,7 +28,7 @@ public class ChessPiece{
         locations.clear();
 
         switch (chessPiece.substring(8)){
-            case "Knight":{
+            case "knight":{
 
                 if(locationX + 2 <= 7 && locationY + 1 <= 7)locations.add("box"+Integer.toString( location + 21));
                 if(locationX + 1 <= 7 && locationY + 2 <= 7)locations.add("box"+Integer.toString(location + 12));
@@ -39,7 +43,7 @@ public class ChessPiece{
             }
             break;
 
-            case "Bishop" : {
+            case "bishop" : {
                 for(int i= 1 ; i <= 7 ; i++){
                     if(locationX + i <=7 && locationY + i <=7)
                     locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY + i));
@@ -56,7 +60,7 @@ public class ChessPiece{
             }
             break;
 
-            case"Rook":{
+            case"rook":{
                 for(int i = 1; i <=7; i++){
                     if(locationX + i <=7)
                         locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY));
@@ -73,7 +77,7 @@ public class ChessPiece{
 
             }
             break;
-            case"King":{
+            case"king":{
                 if(locationX + 1 <=7)
                     locations.add("box"+Integer.toString( locationX + 1)+ Integer.toString( locationY));
 
@@ -100,7 +104,7 @@ public class ChessPiece{
             }
             break;
 
-            case "Queen":{
+            case "queen":{
                 for(int i = 1; i <=7; i++){
                     if(locationX + i <=7 && locationY + i <=7)
                         locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY + i));
@@ -130,26 +134,41 @@ public class ChessPiece{
             break;
 
             default:{
-                if(chessPiece.contains("black") && chessPiece.contains("pawn")){
-                    if(locationX + 1 <=7)
-                        locations.add("box"+ String.valueOf(locationX + 1) + Integer.toString( locationY));
-
-                    if(locationX == 1){
-                        locations.add("box"+Integer.toString( locationX + 2)+ Integer.toString( locationY));
-                    }
-                }
-                if(chessPiece.contains("white") && chessPiece.contains("pawn")){
-                    if(locationX - 1 >=0)
-                        locations.add("box"+ String.valueOf(locationX - 1) + Integer.toString( locationY));
-
-                    if(locationX == 6){
-                        locations.add("box"+Integer.toString( locationX - 2)+ Integer.toString( locationY));
-                    }
-                }
+                String move = "";
+//                if(chessPiece.contains("black") && chessPiece.contains("pawn")){
+//                    MainActivity mainActivity = new MainActivity();
+//                    if(locationX + 1 <=7){
+//                        locations.add("box"+ String.valueOf(locationX + 1) + Integer.toString( locationY));
+//                        move = "box"+ String.valueOf(locationX + 1) + Integer.toString( locationY+1);
+//                        if(locationY+1 <=7) {
+//                            if(mainActivity.moveChecker(move)){
+//                                locations.add(move);
+//                            }
+//                        }
+//                        move = "box"+ (locationX + 1) + Integer.toString( locationY-1);
+//                        if(locationY - 1 >=0){
+//                                if(mainActivity.moveChecker(move)){
+//                                    locations.add(move);
+//                                }
+//                        }
+//                    }
+//                    if(locationX == 1){
+//                        locations.add("box"+Integer.toString( locationX + 2)+ Integer.toString( locationY));
+//                    }
+//
+//                }
+//                if(chessPiece.contains("white") && chessPiece.contains("pawn")){
+//                    MainActivity mainActivity = new MainActivity();
+//                    if(locationX - 1 >=0)
+//                        locations.add("box"+ String.valueOf(locationX - 1) + Integer.toString( locationY));
+//
+//                    if(locationX == 6){
+//                        locations.add("box"+Integer.toString( locationX - 2)+ Integer.toString( locationY));
+//                    }
+//                }
             }
             break;
         }
-
         return locations;
     }
 }

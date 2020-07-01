@@ -300,8 +300,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" >
-
+            android:orientation="vertical">
             <ImageView
                 android:id="@+id/black_7_pawn"
                 android:layout_width="match_parent"

@@ -2,10 +2,12 @@ package com.example.chess;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -18,13 +20,16 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnLongClickListener, View.OnDragListener {
+public class MainActivity extends AppCompatActivity implements View.OnLongClickListener, View.OnClickListener,View.OnDragListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     List<ImageView> imageViewList = new ArrayList<>();
+    List<String> chessMovesList, chessPiecePossibleMoves = new ArrayList<>();
 
     private static final String IMAGE_VIEW_TAG = "LAUNCHER LOGO";
     private LinearLayout linearLayout;
+    private String imageViewID, imageViewLocation;
+    private boolean whiteTurn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +50,15 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         for (int i = 0; i < chessPieceList.length; i++) {
             int resID = getResources().getIdentifier(chessPieceList[i], "id", getPackageName());
             imageViewList.add((ImageView) findViewById(resID));
+            findViewById(resID).setOnClickListener(this);
         }
 
         for (ImageView imageview : imageViewList) {
             imageview.setTag(IMAGE_VIEW_TAG);
             implementEvents(imageview);
         }
-
     }
+
 
 
     //Implement long click and drag listener
@@ -77,6 +83,17 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         // Create a new ClipData.
         // This is done in two steps to provide clarity. The convenience method
         // ClipData.newPlainText() can create a plain text ClipData in one step.
+
+        imageViewID = view.getResources().getResourceName(view.getId()).substring(view.getResources().getResourceName(view.getId()).indexOf('/') + 1);
+        linearLayout = (LinearLayout) view.getParent();
+        imageViewLocation = linearLayout.getResources().getResourceName(linearLayout.getId()).substring(view.getResources().getResourceName(linearLayout.getId()).indexOf('/') + 1);
+        //Get Possible Moves for chess piece
+
+        chessMovesList = chessMove(imageViewLocation, imageViewID);
+
+        //Get Child Count
+        int childQuantity = linearLayout.getChildCount();
+        System.out.println(chessMovesList);
 
         // Create a new ClipData.Item from the ImageView object's tag
         ClipData.Item item = new ClipData.Item((CharSequence) view.getTag());
@@ -110,8 +127,9 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         // Defines a variable to store the action type for the incoming event
         int action = event.getAction();
         // Handles each of the expected events
-        switch (action) {
-            case DragEvent.ACTION_DRAG_STARTED:
+        int someting = 0;
+        switch (action ) {
+            case DragEvent.ACTION_DRAG_STARTED :
                 // Determines if this View can accept the dragged data
                 if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
                     // if you want to apply color when drag started to your view you can uncomment below lines
@@ -125,7 +143,6 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
                     // returns true to indicate that the View can accept the dragged data.
                     return true;
-
                 }
 
                 // Returns false. During the current drag and drop operation, this View will
@@ -136,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 // Applies a YELLOW or any color tint to the View, when the dragged view entered into drag acceptable view
                 // Return true; the return value is ignored.
                 view.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
-
 
                 // Invalidate the view to force a redraw in the new tint
                 view.invalidate();
@@ -190,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
                 // Does a getResult(), and displays what happened.
                 if (event.getResult())
-                    Toast.makeText(this, "The drop was handled. ", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, imageViewID+ " "+ imageViewLocation, Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(this, "The drop didn't work.", Toast.LENGTH_SHORT).show();
 
@@ -205,5 +221,265 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         return false;
     }
 
+    public boolean moveChecker(String move){
+        LinearLayout linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
+        if(linearLayout.getChildCount()>0){
+            return true;
+        }
+        return false;
+    }
 
-}
+    public List<String>  chessMove(String chessPieceLocation, String chessPiece){
+        String locationS = chessPieceLocation.substring(chessPieceLocation.length() - 2);
+        String locationXS = chessPieceLocation.substring(chessPieceLocation.length() - 2, chessPieceLocation.length() - 1);
+        String locationYS = chessPieceLocation.substring(chessPieceLocation.length() - 1);
+        int location = Integer.parseInt(locationS);
+        List<String> locations = new ArrayList<>();
+        int locationX = Integer.parseInt(locationXS);
+        int locationY = Integer.parseInt(locationYS);
+        locations.clear();
+
+        switch (chessPiece.substring(8)){
+            case "knight":{
+
+                if(locationX + 2 <= 7 && locationY + 1 <= 7)locations.add("box"+Integer.toString( location + 21));
+                if(locationX + 1 <= 7 && locationY + 2 <= 7)locations.add("box"+Integer.toString(location + 12));
+                if(locationX - 1 >= 0 && locationY - 2 >= 0){locations.add("box"+Integer.toString(location - 12));}
+                if(locationX - 2 >= 0 && locationY - 1 >= 0){locations.add("box"+Integer.toString(location - 21));}
+
+
+                if(locationX + 2 <= 7 && locationY - 1 >= 0)locations.add("box"+Integer.toString( locationX + 2) +Integer.toString(locationY - 1));
+                if(locationX + 1 <= 7 && locationY - 2 >= 0)locations.add("box"+Integer.toString( locationX + 1) +Integer.toString(locationY - 2));
+                if(locationX - 1 >= 0 && locationY + 2 <= 7){locations.add("box"+Integer.toString( locationX - 1) +Integer.toString(locationY + 2));}
+                if(locationX - 2 >= 0 && locationY + 1 <= 7){locations.add("box"+Integer.toString( locationX - 2) +Integer.toString(locationY + 1));}
+            }
+            break;
+
+            case "bishop" : {
+                for(int i= 1 ; i <= 7 ; i++){
+                    if(locationX + i <=7 && locationY + i <=7)
+                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY + i));
+
+                    if(locationX - i >= 0 && locationY - i >= 0)
+                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY - i));
+
+                    if(locationX + i <= 7 && locationY - i >= 0)
+                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY - i));
+
+                    if(locationX - i >= 0 && locationY + i <= 7)
+                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY + i));
+                }
+            }
+            break;
+
+            case"rook":{
+                for(int i = 1; i <=7; i++){
+                    if(locationX + i <=7)
+                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY));
+
+                    if(locationY + i <= 7)
+                        locations.add("box"+Integer.toString( locationX)+ Integer.toString( locationY + i));
+
+                    if (locationX - i >= 0)
+                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY));
+
+                    if(locationY - i >= 0)
+                        locations.add("box"+Integer.toString( locationX )+ Integer.toString( locationY - i));
+                }
+            }
+            break;
+            case"king":{
+                if(locationX + 1 <=7)
+                    locations.add("box"+Integer.toString( locationX + 1)+ Integer.toString( locationY));
+
+                if(locationY + 1 <= 7)
+                    locations.add("box"+Integer.toString( locationX)+ Integer.toString( locationY + 1));
+
+                if (locationX - 1 >= 0)
+                    locations.add("box"+Integer.toString( locationX - 1)+ Integer.toString( locationY));
+
+                if(locationY - 1 >= 0)
+                    locations.add("box"+Integer.toString( locationX )+ Integer.toString( locationY - 1));
+
+                if(locationX + 1 <=7 && locationY + 1 <=7)
+                    locations.add("box"+Integer.toString( locationX + 1)+ Integer.toString( locationY + 1));
+
+                if(locationX - 1 >= 0 && locationY - 1 >= 0)
+                    locations.add("box"+Integer.toString( locationX - 1)+ Integer.toString( locationY - 1));
+
+                if(locationX + 1 <= 7 && locationY - 1 >= 0)
+                    locations.add("box"+Integer.toString( locationX + 1)+ Integer.toString( locationY - 1));
+
+                if(locationX - 1 >= 0 && locationY + 1 <= 7)
+                    locations.add("box"+Integer.toString( locationX - 1)+ Integer.toString( locationY + 1));
+            }
+            break;
+
+            case "queen":{
+                for(int i = 1; i <=7; i++){
+                    if(locationX + i <=7 && locationY + i <=7)
+                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY + i));
+
+                    if(locationX - i >= 0 && locationY - i >= 0)
+                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY - i));
+
+                    if(locationX + i <= 7 && locationY - i >= 0)
+                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY - i));
+
+                    if(locationX - i >= 0 && locationY + i <= 7)
+                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY + i));
+
+                    if(locationX + i <=7)
+                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY));
+
+                    if(locationY + i <= 7)
+                        locations.add("box"+Integer.toString( locationX)+ Integer.toString( locationY + i));
+
+                    if (locationX - i >= 0)
+                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY));
+
+                    if(locationY - i >= 0)
+                        locations.add("box"+Integer.toString( locationX )+ Integer.toString( locationY - i));
+                }
+            }
+            break;
+
+            default:{
+                String move = "";
+                if(chessPiece.contains("black") && chessPiece.contains("pawn")){
+                    if(locationX + 1 <=7){
+                        move ="box"+ String.valueOf(locationX + 1) + Integer.toString( locationY);
+                        if(!moveChecker(move)){
+                            locations.add(move);
+                            if(locationX == 1){
+                                locations.add("box"+Integer.toString( locationX + 2)+ Integer.toString( locationY));
+                            }
+                        }
+
+                        move = "box"+ String.valueOf(locationX + 1) + Integer.toString( locationY+1);
+                        if(locationY+1 <=7) {
+                            if(moveChecker(move)){
+                                locations.add(move);
+                            }
+                        }
+                        move = "box"+ (locationX + 1) + Integer.toString( locationY-1);
+                        if(locationY - 1 >=0){
+                                if(moveChecker(move)){
+                                    locations.add(move);
+                                }
+                        }
+                    }
+                }
+
+                if(chessPiece.contains("white") && chessPiece.contains("pawn")){
+                    if(locationX - 1 >=0) {
+                        move = "box" + String.valueOf(locationX - 1) + Integer.toString(locationY);
+                        if(!moveChecker(move)){
+                            locations.add(move);
+                            if(locationX == 6){
+                                locations.add("box"+Integer.toString( locationX - 2)+ Integer.toString( locationY));
+                            }
+                        }
+
+                        move = "box" + String.valueOf(locationX - 1) + Integer.toString(locationY+1);
+                        if(locationY + 1<=7){
+                            if(moveChecker(move)){
+                                locations.add(move);
+                            }
+                        }
+
+                        move = "box" + String.valueOf(locationX - 1) + Integer.toString(locationY-1);
+                        if(locationY-1>=0){
+                            if(moveChecker(move))
+                                locations.add(move);
+                        }
+                    }
+                }
+            }
+            break;
+        }
+        return locations;
+    }
+
+    //On click event for chess piece
+    @SuppressLint("ResourceAsColor")
+    @Override
+    public void onClick(View v) {
+
+        String imageViewID = v.getResources().getResourceName(v.getId()).substring(v.getResources().getResourceName(v.getId()).indexOf('/') + 1);
+        LinearLayout linearLayout = (LinearLayout) v.getParent();
+        String imageViewLocation = linearLayout.getResources().getResourceName(linearLayout.getId()).substring(v.getResources().getResourceName(linearLayout.getId()).indexOf('/') + 1);
+
+        if (chessPiecePossibleMoves.size() != 0) {
+            for (int i = 0; i < chessPiecePossibleMoves.size(); i++) {
+                String x = chessPiecePossibleMoves.get(i).substring(3,4);
+                String y = chessPiecePossibleMoves.get(i).substring(4);
+                if ((Integer.parseInt(x) % 2 == 0 && Integer.parseInt(y) % 2 == 0) || (Integer.parseInt(x) % 2 != 0 && Integer.parseInt(y) % 2 != 0)) {
+                    linearLayout = findViewById(getResources().getIdentifier(chessPiecePossibleMoves.get(i), "id", getPackageName()));
+                    linearLayout.setBackgroundResource(R.color.colorBoardDark);
+                } else {
+                    linearLayout = findViewById(getResources().getIdentifier(chessPiecePossibleMoves.get(i), "id", getPackageName()));
+                    linearLayout.setBackgroundResource(R.color.colorBoardLight);
+                }
+            }
+
+        chessPiecePossibleMoves.clear();
+        }
+
+        ImageView imageView;
+        if(imageViewID.contains("pawn"))
+            if(imageViewID.contains("white") && whiteTurn) {
+                whiteTurn = false;
+                for (String move : chessMove(imageViewLocation, imageViewID)) {
+                    linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
+                    if(!moveChecker(move)) {
+                            chessPiecePossibleMoves.add(move);
+
+                            //                linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
+                            customView(linearLayout);
+
+                            //              How to remove view from the layout
+                            //              linearLayout.setVisibility(linearLayout.GONE);
+                            System.out.println(move);
+                        }else{
+                             imageView = (ImageView) linearLayout.getChildAt(0);
+                             String childName = imageView.getResources().getResourceName(imageView.getId());
+
+                             if(childName.contains("black")){
+                                  chessPiecePossibleMoves.add(move);
+                                    //                linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
+                                    customView(linearLayout);
+                                }
+                        }
+                }
+            }else if(imageViewID.contains("black")&& !whiteTurn){
+                whiteTurn = true;
+                for (String move : chessMove(imageViewLocation, imageViewID)) {
+                    linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
+                    if(!moveChecker(move)) {
+                        chessPiecePossibleMoves.add(move);
+
+                        //                linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
+                        customView(linearLayout);
+                    }else {
+                        imageView = (ImageView) linearLayout.getChildAt(0);
+                        String childName = imageView.getResources().getResourceName(imageView.getId());
+                        if( childName.contains("white")){
+                            chessPiecePossibleMoves.add(move);
+                            // linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
+                            customView(linearLayout);
+                        }
+                    }
+                }
+            }
+        }
+
+    public static void customView(View v) {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadii(new float[] { 12, 12, 12, 12, 12, 12, 12, 12 });
+        shape.setColor(Color.parseColor("Green"));
+        shape.setStroke(6, Color.parseColor("Black"));
+        v.setBackground(shape);
+    }
+ }

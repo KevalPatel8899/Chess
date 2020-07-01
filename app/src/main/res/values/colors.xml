@@ -5,4 +5,6 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="colorBoardDark">#663300 </color>
     <color name="colorBoardLight">#fffdd0</color>
+    <color name="colorChessPieceMoves">#02F10B</color>
+    <color name="borderColor">#000000</color>
 </resources>
