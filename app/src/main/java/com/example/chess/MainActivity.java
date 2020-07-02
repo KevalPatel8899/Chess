@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                         whiteTurn = !whiteTurn;
                 }
 
-
+                removeKilledPiece(container);
                 // Returns true. DragEvent.getResult() will return true.
                 return true;
             case DragEvent.ACTION_DRAG_ENDED:
@@ -569,5 +569,11 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             }
         }
         return ret;
+    }
+
+    public void removeKilledPiece(LinearLayout linearLayout){
+        if(linearLayout.getChildCount()>1){
+            linearLayout.removeView(linearLayout.getChildAt(0));
+        }
     }
 }
