@@ -8,6 +8,7 @@ import android.content.ClipDescription;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
+import android.net.LinkAddress;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -20,7 +21,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnLongClickListener, View.OnClickListener,View.OnDragListener {
+public class MainActivity extends AppCompatActivity implements View.OnLongClickListener, View.OnClickListener, View.OnDragListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     List<ImageView> imageViewList = new ArrayList<>();
@@ -29,7 +30,8 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     private static final String IMAGE_VIEW_TAG = "LAUNCHER LOGO";
     private LinearLayout linearLayout;
     private String imageViewID, imageViewLocation;
-    private boolean whiteTurn = false;
+    private boolean whiteTurn = true;
+    private List<LinearLayout> previousPossibleMoves = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     }
 
 
-
     //Implement long click and drag listener
     private void implementEvents(ImageView imageView) {
         //add or remove any view that you don't want to be dragged
@@ -84,16 +85,12 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         // This is done in two steps to provide clarity. The convenience method
         // ClipData.newPlainText() can create a plain text ClipData in one step.
 
+        previousPossibleMoves = possibleMoves(view);
+
         imageViewID = view.getResources().getResourceName(view.getId()).substring(view.getResources().getResourceName(view.getId()).indexOf('/') + 1);
-        linearLayout = (LinearLayout) view.getParent();
-        imageViewLocation = linearLayout.getResources().getResourceName(linearLayout.getId()).substring(view.getResources().getResourceName(linearLayout.getId()).indexOf('/') + 1);
-        //Get Possible Moves for chess piece
 
-        chessMovesList = chessMove(imageViewLocation, imageViewID);
-
-        //Get Child Count
-        int childQuantity = linearLayout.getChildCount();
-        System.out.println(chessMovesList);
+        if ((whiteTurn && imageViewID.contains("black")) || (!whiteTurn && imageViewID.contains("white")))
+            return false;
 
         // Create a new ClipData.Item from the ImageView object's tag
         ClipData.Item item = new ClipData.Item((CharSequence) view.getTag());
@@ -127,9 +124,8 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         // Defines a variable to store the action type for the incoming event
         int action = event.getAction();
         // Handles each of the expected events
-        int someting = 0;
-        switch (action ) {
-            case DragEvent.ACTION_DRAG_STARTED :
+        switch (action) {
+            case DragEvent.ACTION_DRAG_STARTED:
                 // Determines if this View can accept the dragged data
                 if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
                     // if you want to apply color when drag started to your view you can uncomment below lines
@@ -195,6 +191,18 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 container.addView(v);//Add the dragged view
                 v.setVisibility(View.VISIBLE);//finally set Visibility to VISIBLE
 
+                // if dropped at illegal position then replace the piece to its original position
+                if(!previousPossibleMoves.contains(container)){
+                    container.removeView(v);
+                    owner.addView(v);
+                    v.setVisibility(View.VISIBLE);
+                }else{
+                    // if dropped at different location then change turn
+                    if (!owner.equals(container))
+                        whiteTurn = !whiteTurn;
+                }
+
+
                 // Returns true. DragEvent.getResult() will return true.
                 return true;
             case DragEvent.ACTION_DRAG_ENDED:
@@ -205,10 +213,10 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 view.invalidate();
 
                 // Does a getResult(), and displays what happened.
-                if (event.getResult())
-                    Toast.makeText(this, imageViewID+ " "+ imageViewLocation, Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(this, "The drop didn't work.", Toast.LENGTH_SHORT).show();
+//                if (event.getResult())
+//                    Toast.makeText(this, imageViewID + " " + imageViewLocation, Toast.LENGTH_SHORT).show();
+//                else
+//                    Toast.makeText(this, "The drop didn't work.", Toast.LENGTH_SHORT).show();
 
                 // returns true; the value is ignored.
                 return true;
@@ -221,15 +229,15 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         return false;
     }
 
-    public boolean moveChecker(String move){
+    public boolean isPiecePresent(String move) {
         LinearLayout linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
-        if(linearLayout.getChildCount()>0){
+        if (linearLayout.getChildCount() > 0) {
             return true;
         }
         return false;
     }
 
-    public List<String>  chessMove(String chessPieceLocation, String chessPiece){
+    public List<String> chessMove(String chessPieceLocation, String chessPiece) {
         String locationS = chessPieceLocation.substring(chessPieceLocation.length() - 2);
         String locationXS = chessPieceLocation.substring(chessPieceLocation.length() - 2, chessPieceLocation.length() - 1);
         String locationYS = chessPieceLocation.substring(chessPieceLocation.length() - 1);
@@ -238,159 +246,236 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         int locationX = Integer.parseInt(locationXS);
         int locationY = Integer.parseInt(locationYS);
         locations.clear();
+        String checkLocation = "";
+        boolean flag1, flag2, flag3, flag4, flag5, flag6, flag7, flag8;
+        flag1 = flag2 = flag3 = flag4 = flag5 = flag6 = flag7 = flag8 = false;
 
-        switch (chessPiece.substring(8)){
-            case "knight":{
+        switch (chessPiece.substring(8)) {
+            case "knight": {
 
-                if(locationX + 2 <= 7 && locationY + 1 <= 7)locations.add("box"+Integer.toString( location + 21));
-                if(locationX + 1 <= 7 && locationY + 2 <= 7)locations.add("box"+Integer.toString(location + 12));
-                if(locationX - 1 >= 0 && locationY - 2 >= 0){locations.add("box"+Integer.toString(location - 12));}
-                if(locationX - 2 >= 0 && locationY - 1 >= 0){locations.add("box"+Integer.toString(location - 21));}
+                if (locationX + 2 <= 7 && locationY + 1 <= 7)
+                    locations.add("box" + Integer.toString(location + 21));
+                if (locationX + 1 <= 7 && locationY + 2 <= 7)
+                    locations.add("box" + Integer.toString(location + 12));
+                if (locationX - 1 >= 0 && locationY - 2 >= 0) {
+                    locations.add("box" + Integer.toString(location - 12));
+                }
+                if (locationX - 2 >= 0 && locationY - 1 >= 0) {
+                    locations.add("box" + Integer.toString(location - 21));
+                }
 
 
-                if(locationX + 2 <= 7 && locationY - 1 >= 0)locations.add("box"+Integer.toString( locationX + 2) +Integer.toString(locationY - 1));
-                if(locationX + 1 <= 7 && locationY - 2 >= 0)locations.add("box"+Integer.toString( locationX + 1) +Integer.toString(locationY - 2));
-                if(locationX - 1 >= 0 && locationY + 2 <= 7){locations.add("box"+Integer.toString( locationX - 1) +Integer.toString(locationY + 2));}
-                if(locationX - 2 >= 0 && locationY + 1 <= 7){locations.add("box"+Integer.toString( locationX - 2) +Integer.toString(locationY + 1));}
-            }
-            break;
-
-            case "bishop" : {
-                for(int i= 1 ; i <= 7 ; i++){
-                    if(locationX + i <=7 && locationY + i <=7)
-                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY + i));
-
-                    if(locationX - i >= 0 && locationY - i >= 0)
-                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY - i));
-
-                    if(locationX + i <= 7 && locationY - i >= 0)
-                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY - i));
-
-                    if(locationX - i >= 0 && locationY + i <= 7)
-                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY + i));
+                if (locationX + 2 <= 7 && locationY - 1 >= 0)
+                    locations.add("box" + Integer.toString(locationX + 2) + Integer.toString(locationY - 1));
+                if (locationX + 1 <= 7 && locationY - 2 >= 0)
+                    locations.add("box" + Integer.toString(locationX + 1) + Integer.toString(locationY - 2));
+                if (locationX - 1 >= 0 && locationY + 2 <= 7) {
+                    locations.add("box" + Integer.toString(locationX - 1) + Integer.toString(locationY + 2));
+                }
+                if (locationX - 2 >= 0 && locationY + 1 <= 7) {
+                    locations.add("box" + Integer.toString(locationX - 2) + Integer.toString(locationY + 1));
                 }
             }
             break;
 
-            case"rook":{
-                for(int i = 1; i <=7; i++){
-                    if(locationX + i <=7)
-                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY));
-
-                    if(locationY + i <= 7)
-                        locations.add("box"+Integer.toString( locationX)+ Integer.toString( locationY + i));
-
-                    if (locationX - i >= 0)
-                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY));
-
-                    if(locationY - i >= 0)
-                        locations.add("box"+Integer.toString( locationX )+ Integer.toString( locationY - i));
+            case "bishop": {
+                for (int i = 1; i <= 7; i++) {
+                    if (locationX + i <= 7 && locationY + i <= 7)
+                        if (!flag1) {
+                            checkLocation = "box" + Integer.toString(locationX + i) + Integer.toString(locationY + i);
+                            if (isPiecePresent(checkLocation)) flag1 = true;
+                            locations.add(checkLocation);
+                        }
+                    if (locationX - i >= 0 && locationY - i >= 0)
+                        if (!flag2) {
+                            checkLocation = "box" + Integer.toString(locationX - i) + Integer.toString(locationY - i);
+                            if (isPiecePresent(checkLocation)) flag2 = true;
+                            locations.add(checkLocation);
+                        }
+                    if (locationX + i <= 7 && locationY - i >= 0)
+                        if (!flag3) {
+                            checkLocation = "box" + Integer.toString(locationX + i) + Integer.toString(locationY - i);
+                            if (isPiecePresent(checkLocation)) flag3 = true;
+                            locations.add(checkLocation);
+                        }
+                    if (locationX - i >= 0 && locationY + i <= 7)
+                        if (!flag4) {
+                            checkLocation = "box" + Integer.toString(locationX - i) + Integer.toString(locationY + i);
+                            if (isPiecePresent(checkLocation)) flag4 = true;
+                            locations.add(checkLocation);
+                        }
                 }
             }
             break;
-            case"king":{
-                if(locationX + 1 <=7)
-                    locations.add("box"+Integer.toString( locationX + 1)+ Integer.toString( locationY));
 
-                if(locationY + 1 <= 7)
-                    locations.add("box"+Integer.toString( locationX)+ Integer.toString( locationY + 1));
+            case "rook": {
+
+                for (int i = 1; i <= 7; i++) {
+                    if (locationX + i <= 7) {
+                        if (!flag1) {
+                            checkLocation = "box" + Integer.toString(locationX + i) + locationY;
+                            if (isPiecePresent(checkLocation)) flag1 = true;
+                            locations.add(checkLocation);
+                        }
+                    }
+                    if (locationY + i <= 7) {
+                        if (!flag2) {
+                            checkLocation = "box" + Integer.toString(locationX) + Integer.toString(locationY + i);
+                            if (isPiecePresent(checkLocation)) flag2 = true;
+                            locations.add(checkLocation);
+                        }
+                    }
+                    if (locationX - i >= 0) {
+                        if (!flag3) {
+                            checkLocation = "box" + Integer.toString(locationX - i) + Integer.toString(locationY);
+                            if (isPiecePresent(checkLocation)) flag3 = true;
+                            locations.add(checkLocation);
+                        }
+                    }
+                    if (locationY - i >= 0) {
+                        if (!flag4) {
+                            checkLocation = "box" + Integer.toString(locationX) + Integer.toString(locationY - i);
+                            if (isPiecePresent(checkLocation)) flag4 = true;
+                            locations.add(checkLocation);
+                        }
+                    }
+                }
+            }
+            break;
+            case "king": {
+                if (locationX + 1 <= 7)
+                    locations.add("box" + Integer.toString(locationX + 1) + Integer.toString(locationY));
+
+                if (locationY + 1 <= 7)
+                    locations.add("box" + Integer.toString(locationX) + Integer.toString(locationY + 1));
 
                 if (locationX - 1 >= 0)
-                    locations.add("box"+Integer.toString( locationX - 1)+ Integer.toString( locationY));
+                    locations.add("box" + Integer.toString(locationX - 1) + Integer.toString(locationY));
 
-                if(locationY - 1 >= 0)
-                    locations.add("box"+Integer.toString( locationX )+ Integer.toString( locationY - 1));
+                if (locationY - 1 >= 0)
+                    locations.add("box" + Integer.toString(locationX) + Integer.toString(locationY - 1));
 
-                if(locationX + 1 <=7 && locationY + 1 <=7)
-                    locations.add("box"+Integer.toString( locationX + 1)+ Integer.toString( locationY + 1));
+                if (locationX + 1 <= 7 && locationY + 1 <= 7)
+                    locations.add("box" + Integer.toString(locationX + 1) + Integer.toString(locationY + 1));
 
-                if(locationX - 1 >= 0 && locationY - 1 >= 0)
-                    locations.add("box"+Integer.toString( locationX - 1)+ Integer.toString( locationY - 1));
+                if (locationX - 1 >= 0 && locationY - 1 >= 0)
+                    locations.add("box" + Integer.toString(locationX - 1) + Integer.toString(locationY - 1));
 
-                if(locationX + 1 <= 7 && locationY - 1 >= 0)
-                    locations.add("box"+Integer.toString( locationX + 1)+ Integer.toString( locationY - 1));
+                if (locationX + 1 <= 7 && locationY - 1 >= 0)
+                    locations.add("box" + Integer.toString(locationX + 1) + Integer.toString(locationY - 1));
 
-                if(locationX - 1 >= 0 && locationY + 1 <= 7)
-                    locations.add("box"+Integer.toString( locationX - 1)+ Integer.toString( locationY + 1));
+                if (locationX - 1 >= 0 && locationY + 1 <= 7)
+                    locations.add("box" + Integer.toString(locationX - 1) + Integer.toString(locationY + 1));
             }
             break;
 
-            case "queen":{
-                for(int i = 1; i <=7; i++){
-                    if(locationX + i <=7 && locationY + i <=7)
-                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY + i));
+            case "queen": {
+                for (int i = 1; i <= 7; i++) {
+                    if (locationX + i <= 7 && locationY + i <= 7)
+                        if (!flag1) {
+                            checkLocation = "box" + Integer.toString(locationX + i) + Integer.toString(locationY + i);
+                            if (isPiecePresent(checkLocation)) flag1 = true;
+                            locations.add(checkLocation);
+                        }
 
-                    if(locationX - i >= 0 && locationY - i >= 0)
-                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY - i));
+                    if (locationX - i >= 0 && locationY - i >= 0)
+                        if (!flag2) {
+                            checkLocation = "box" + Integer.toString(locationX - i) + Integer.toString(locationY - i);
+                            if (isPiecePresent(checkLocation)) flag2 = true;
+                            locations.add(checkLocation);
+                        }
+                    if (locationX + i <= 7 && locationY - i >= 0)
+                        if (!flag3) {
+                            checkLocation = "box" + Integer.toString(locationX + i) + Integer.toString(locationY - i);
+                            if (isPiecePresent(checkLocation)) flag3 = true;
+                            locations.add(checkLocation);
+                        }
 
-                    if(locationX + i <= 7 && locationY - i >= 0)
-                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY - i));
+                    if (locationX - i >= 0 && locationY + i <= 7)
+                        if (!flag4) {
+                            checkLocation = "box" + Integer.toString(locationX - i) + Integer.toString(locationY + i);
+                            if (isPiecePresent(checkLocation)) flag4 = true;
+                            locations.add(checkLocation);
+                        }
 
-                    if(locationX - i >= 0 && locationY + i <= 7)
-                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY + i));
+                    if (locationX + i <= 7)
+                        if (!flag5) {
+                            checkLocation = "box" + Integer.toString(locationX + i) + Integer.toString(locationY);
+                            if (isPiecePresent(checkLocation)) flag5 = true;
+                            locations.add(checkLocation);
+                        }
 
-                    if(locationX + i <=7)
-                        locations.add("box"+Integer.toString( locationX + i)+ Integer.toString( locationY));
-
-                    if(locationY + i <= 7)
-                        locations.add("box"+Integer.toString( locationX)+ Integer.toString( locationY + i));
+                    if (locationY + i <= 7)
+                        if (!flag6) {
+                            checkLocation = "box" + Integer.toString(locationX) + Integer.toString(locationY + i);
+                            if (isPiecePresent(checkLocation)) flag6 = true;
+                            locations.add(checkLocation);
+                        }
 
                     if (locationX - i >= 0)
-                        locations.add("box"+Integer.toString( locationX - i)+ Integer.toString( locationY));
+                        if (!flag7) {
+                            checkLocation = "box" + Integer.toString(locationX - i) + Integer.toString(locationY);
+                            if (isPiecePresent(checkLocation)) flag7 = true;
+                            locations.add(checkLocation);
+                        }
 
-                    if(locationY - i >= 0)
-                        locations.add("box"+Integer.toString( locationX )+ Integer.toString( locationY - i));
+                    if (locationY - i >= 0)
+                        if (!flag8) {
+                            checkLocation = "box" + Integer.toString(locationX) + Integer.toString(locationY - i);
+                            if (isPiecePresent(checkLocation)) flag8 = true;
+                            locations.add(checkLocation);
+                        }
                 }
             }
             break;
 
-            default:{
+            case "pawn": {
                 String move = "";
-                if(chessPiece.contains("black") && chessPiece.contains("pawn")){
-                    if(locationX + 1 <=7){
-                        move ="box"+ String.valueOf(locationX + 1) + Integer.toString( locationY);
-                        if(!moveChecker(move)){
+                if (chessPiece.contains("black")) {
+                    if (locationX + 1 <= 7) {
+                        move = "box" + String.valueOf(locationX + 1) + Integer.toString(locationY);
+                        if (!isPiecePresent(move)) {
                             locations.add(move);
-                            if(locationX == 1){
-                                locations.add("box"+Integer.toString( locationX + 2)+ Integer.toString( locationY));
+                            if (locationX == 1) {
+                                locations.add("box" + Integer.toString(locationX + 2) + Integer.toString(locationY));
                             }
                         }
 
-                        move = "box"+ String.valueOf(locationX + 1) + Integer.toString( locationY+1);
-                        if(locationY+1 <=7) {
-                            if(moveChecker(move)){
+                        move = "box" + String.valueOf(locationX + 1) + Integer.toString(locationY + 1);
+                        if (locationY + 1 <= 7) {
+                            if (isPiecePresent(move)) {
                                 locations.add(move);
                             }
                         }
-                        move = "box"+ (locationX + 1) + Integer.toString( locationY-1);
-                        if(locationY - 1 >=0){
-                                if(moveChecker(move)){
-                                    locations.add(move);
-                                }
+                        move = "box" + (locationX + 1) + Integer.toString(locationY - 1);
+                        if (locationY - 1 >= 0) {
+                            if (isPiecePresent(move)) {
+                                locations.add(move);
+                            }
                         }
                     }
                 }
 
-                if(chessPiece.contains("white") && chessPiece.contains("pawn")){
-                    if(locationX - 1 >=0) {
+                if (chessPiece.contains("white")) {
+                    if (locationX - 1 >= 0) {
                         move = "box" + String.valueOf(locationX - 1) + Integer.toString(locationY);
-                        if(!moveChecker(move)){
+                        if (!isPiecePresent(move)) {
                             locations.add(move);
-                            if(locationX == 6){
-                                locations.add("box"+Integer.toString( locationX - 2)+ Integer.toString( locationY));
+                            if (locationX == 6) {
+                                locations.add("box" + Integer.toString(locationX - 2) + Integer.toString(locationY));
                             }
                         }
 
-                        move = "box" + String.valueOf(locationX - 1) + Integer.toString(locationY+1);
-                        if(locationY + 1<=7){
-                            if(moveChecker(move)){
+                        move = "box" + String.valueOf(locationX - 1) + Integer.toString(locationY + 1);
+                        if (locationY + 1 <= 7) {
+                            if (isPiecePresent(move)) {
                                 locations.add(move);
                             }
                         }
 
-                        move = "box" + String.valueOf(locationX - 1) + Integer.toString(locationY-1);
-                        if(locationY-1>=0){
-                            if(moveChecker(move))
+                        move = "box" + String.valueOf(locationX - 1) + Integer.toString(locationY - 1);
+                        if (locationY - 1 >= 0) {
+                            if (isPiecePresent(move))
                                 locations.add(move);
                         }
                     }
@@ -405,14 +490,30 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     @SuppressLint("ResourceAsColor")
     @Override
     public void onClick(View v) {
+        for (LinearLayout linearLayout : possibleMoves(v)){
+            customView(linearLayout);
+        }
 
+    }
+
+    public static void customView(View v) {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadii(new float[]{12, 12, 12, 12, 12, 12, 12, 12});
+        shape.setColor(Color.parseColor("Green"));
+        shape.setStroke(6, Color.parseColor("Black"));
+        v.setBackground(shape);
+    }
+
+    public List<LinearLayout> possibleMoves(View v){
+        List<LinearLayout> ret = new ArrayList<>();
         String imageViewID = v.getResources().getResourceName(v.getId()).substring(v.getResources().getResourceName(v.getId()).indexOf('/') + 1);
         LinearLayout linearLayout = (LinearLayout) v.getParent();
         String imageViewLocation = linearLayout.getResources().getResourceName(linearLayout.getId()).substring(v.getResources().getResourceName(linearLayout.getId()).indexOf('/') + 1);
 
         if (chessPiecePossibleMoves.size() != 0) {
             for (int i = 0; i < chessPiecePossibleMoves.size(); i++) {
-                String x = chessPiecePossibleMoves.get(i).substring(3,4);
+                String x = chessPiecePossibleMoves.get(i).substring(3, 4);
                 String y = chessPiecePossibleMoves.get(i).substring(4);
                 if ((Integer.parseInt(x) % 2 == 0 && Integer.parseInt(y) % 2 == 0) || (Integer.parseInt(x) % 2 != 0 && Integer.parseInt(y) % 2 != 0)) {
                     linearLayout = findViewById(getResources().getIdentifier(chessPiecePossibleMoves.get(i), "id", getPackageName()));
@@ -423,63 +524,50 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 }
             }
 
-        chessPiecePossibleMoves.clear();
+            chessPiecePossibleMoves.clear();
         }
 
         ImageView imageView;
-        if(imageViewID.contains("pawn"))
-            if(imageViewID.contains("white") && whiteTurn) {
-                whiteTurn = false;
-                for (String move : chessMove(imageViewLocation, imageViewID)) {
-                    linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
-                    if(!moveChecker(move)) {
-                            chessPiecePossibleMoves.add(move);
+        if (imageViewID.contains("white") && whiteTurn) {
+            for (String move : chessMove(imageViewLocation, imageViewID)) {
+                linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
+                if (!isPiecePresent(move)) {
+                    chessPiecePossibleMoves.add(move);
 
-                            //                linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
-                            customView(linearLayout);
+                    //                linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
+                    ret.add(linearLayout);
+                    //              How to remove view from the layout
+                    //              linearLayout.setVisibility(linearLayout.GONE);
+                } else {
+                    imageView = (ImageView) linearLayout.getChildAt(0);
+                    String childName = imageView.getResources().getResourceName(imageView.getId());
 
-                            //              How to remove view from the layout
-                            //              linearLayout.setVisibility(linearLayout.GONE);
-                            System.out.println(move);
-                        }else{
-                             imageView = (ImageView) linearLayout.getChildAt(0);
-                             String childName = imageView.getResources().getResourceName(imageView.getId());
-
-                             if(childName.contains("black")){
-                                  chessPiecePossibleMoves.add(move);
-                                    //                linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
-                                    customView(linearLayout);
-                                }
-                        }
-                }
-            }else if(imageViewID.contains("black")&& !whiteTurn){
-                whiteTurn = true;
-                for (String move : chessMove(imageViewLocation, imageViewID)) {
-                    linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
-                    if(!moveChecker(move)) {
+                    if (childName.contains("black")) {
                         chessPiecePossibleMoves.add(move);
-
                         //                linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
-                        customView(linearLayout);
-                    }else {
-                        imageView = (ImageView) linearLayout.getChildAt(0);
-                        String childName = imageView.getResources().getResourceName(imageView.getId());
-                        if( childName.contains("white")){
-                            chessPiecePossibleMoves.add(move);
-                            // linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
-                            customView(linearLayout);
-                        }
+                        ret.add(linearLayout);
+                    }
+                }
+            }
+        } else if (imageViewID.contains("black") && !whiteTurn) {
+            for (String move : chessMove(imageViewLocation, imageViewID)) {
+                linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
+                if (!isPiecePresent(move)) {
+                    chessPiecePossibleMoves.add(move);
+
+                    //                linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
+                    ret.add(linearLayout);
+                } else {
+                    imageView = (ImageView) linearLayout.getChildAt(0);
+                    String childName = imageView.getResources().getResourceName(imageView.getId());
+                    if (childName.contains("white")) {
+                        chessPiecePossibleMoves.add(move);
+                        // linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
+                        ret.add(linearLayout);
                     }
                 }
             }
         }
-
-    public static void customView(View v) {
-        GradientDrawable shape = new GradientDrawable();
-        shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadii(new float[] { 12, 12, 12, 12, 12, 12, 12, 12 });
-        shape.setColor(Color.parseColor("Green"));
-        shape.setStroke(6, Color.parseColor("Black"));
-        v.setBackground(shape);
+        return ret;
     }
- }
+}
