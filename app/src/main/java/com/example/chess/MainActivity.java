@@ -8,7 +8,6 @@ import android.content.ClipDescription;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
-import android.net.LinkAddress;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -23,13 +22,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnLongClickListener, View.OnClickListener, View.OnDragListener {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    //    private static final String TAG = MainActivity.class.getSimpleName();
     List<ImageView> imageViewList = new ArrayList<>();
-    List<String> chessMovesList, chessPiecePossibleMoves = new ArrayList<>();
+    List<String> chessPiecePossibleMoves = new ArrayList<>();
 
     private static final String IMAGE_VIEW_TAG = "LAUNCHER LOGO";
-    private LinearLayout linearLayout;
-    private String imageViewID, imageViewLocation;
     private boolean whiteTurn = true;
     private List<LinearLayout> previousPossibleMoves = new ArrayList<>();
 
@@ -49,21 +46,21 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 "white_0_king", "white_0_queen",
                 "white_0_pawn", "white_1_pawn", "white_2_pawn", "white_3_pawn", "white_4_pawn", "white_5_pawn", "white_6_pawn", "white_7_pawn"
         };
-        for (int i = 0; i < chessPieceList.length; i++) {
-            int resID = getResources().getIdentifier(chessPieceList[i], "id", getPackageName());
+        for (String chessPiece : chessPieceList) {
+            int resID = getResources().getIdentifier(chessPiece, "id", getPackageName());
             imageViewList.add((ImageView) findViewById(resID));
             findViewById(resID).setOnClickListener(this);
         }
 
         for (ImageView imageview : imageViewList) {
             imageview.setTag(IMAGE_VIEW_TAG);
-            implementEvents(imageview);
+            implementEvents();
         }
     }
 
 
     //Implement long click and drag listener
-    private void implementEvents(ImageView imageView) {
+    private void implementEvents() {
         //add or remove any view that you don't want to be dragged
         for (ImageView imageview : imageViewList) {
             imageview.setOnLongClickListener(this);
@@ -87,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
         previousPossibleMoves = possibleMoves(view);
 
-        imageViewID = view.getResources().getResourceName(view.getId()).substring(view.getResources().getResourceName(view.getId()).indexOf('/') + 1);
+        String imageViewID = view.getResources().getResourceName(view.getId()).substring(view.getResources().getResourceName(view.getId()).indexOf('/') + 1);
 
         if ((whiteTurn && imageViewID.contains("black")) || (!whiteTurn && imageViewID.contains("white")))
             return false;
@@ -127,23 +124,17 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         switch (action) {
             case DragEvent.ACTION_DRAG_STARTED:
                 // Determines if this View can accept the dragged data
-                if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                    // if you want to apply color when drag started to your view you can uncomment below lines
-                    // to give any color tint to the View to indicate that it can accept
-                    // data.
+                // if you want to apply color when drag started to your view you can uncomment below lines
+                // to give any color tint to the View to indicate that it can accept
+                // data.
+                //  view.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);//set background color to your view
+                // Invalidate the view to force a redraw in the new tint
+                //  view.invalidate();
+                // returns true to indicate that the View can accept the dragged data.
+                return event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN);
 
-                    //  view.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);//set background color to your view
-
-                    // Invalidate the view to force a redraw in the new tint
-                    //  view.invalidate();
-
-                    // returns true to indicate that the View can accept the dragged data.
-                    return true;
-                }
-
-                // Returns false. During the current drag and drop operation, this View will
-                // not receive events again until ACTION_DRAG_ENDED is sent.
-                return false;
+            // Returns false. During the current drag and drop operation, this View will
+            // not receive events again until ACTION_DRAG_ENDED is sent.
 
             case DragEvent.ACTION_DRAG_ENTERED:
                 // Applies a YELLOW or any color tint to the View, when the dragged view entered into drag acceptable view
@@ -192,11 +183,11 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 v.setVisibility(View.VISIBLE);//finally set Visibility to VISIBLE
 
                 // if dropped at illegal position then replace the piece to its original position
-                if(!previousPossibleMoves.contains(container)){
+                if (!previousPossibleMoves.contains(container)) {
                     container.removeView(v);
                     owner.addView(v);
                     v.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     // if dropped at different location then change turn
                     if (!owner.equals(container))
                         whiteTurn = !whiteTurn;
@@ -231,11 +222,9 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
     public boolean isPiecePresent(String move) {
         LinearLayout linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
-        if (linearLayout.getChildCount() > 0) {
-            return true;
-        }
-        return false;
+        return linearLayout.getChildCount() > 0;
     }
+
 
     public List<String> chessMove(String chessPieceLocation, String chessPiece) {
         String locationS = chessPieceLocation.substring(chessPieceLocation.length() - 2);
@@ -246,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         int locationX = Integer.parseInt(locationXS);
         int locationY = Integer.parseInt(locationYS);
         locations.clear();
-        String checkLocation = "";
+        String checkLocation;
         boolean flag1, flag2, flag3, flag4, flag5, flag6, flag7, flag8;
         flag1 = flag2 = flag3 = flag4 = flag5 = flag6 = flag7 = flag8 = false;
 
@@ -254,26 +243,26 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             case "knight": {
 
                 if (locationX + 2 <= 7 && locationY + 1 <= 7)
-                    locations.add("box" + Integer.toString(location + 21));
+                    locations.add("box" + (location + 21));
                 if (locationX + 1 <= 7 && locationY + 2 <= 7)
-                    locations.add("box" + Integer.toString(location + 12));
+                    locations.add("box" + (location + 12));
                 if (locationX - 1 >= 0 && locationY - 2 >= 0) {
-                    locations.add("box" + Integer.toString(location - 12));
+                    locations.add("box" + (location - 12));
                 }
                 if (locationX - 2 >= 0 && locationY - 1 >= 0) {
-                    locations.add("box" + Integer.toString(location - 21));
+                    locations.add("box" + (location - 21));
                 }
 
 
                 if (locationX + 2 <= 7 && locationY - 1 >= 0)
-                    locations.add("box" + Integer.toString(locationX + 2) + Integer.toString(locationY - 1));
+                    locations.add("box" + (locationX + 2) + (locationY - 1));
                 if (locationX + 1 <= 7 && locationY - 2 >= 0)
-                    locations.add("box" + Integer.toString(locationX + 1) + Integer.toString(locationY - 2));
+                    locations.add("box" + (locationX + 1) + (locationY - 2));
                 if (locationX - 1 >= 0 && locationY + 2 <= 7) {
-                    locations.add("box" + Integer.toString(locationX - 1) + Integer.toString(locationY + 2));
+                    locations.add("box" + (locationX - 1) + (locationY + 2));
                 }
                 if (locationX - 2 >= 0 && locationY + 1 <= 7) {
-                    locations.add("box" + Integer.toString(locationX - 2) + Integer.toString(locationY + 1));
+                    locations.add("box" + (locationX - 2) + (locationY + 1));
                 }
             }
             break;
@@ -282,25 +271,25 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 for (int i = 1; i <= 7; i++) {
                     if (locationX + i <= 7 && locationY + i <= 7)
                         if (!flag1) {
-                            checkLocation = "box" + Integer.toString(locationX + i) + Integer.toString(locationY + i);
+                            checkLocation = "box" + (locationX + i) + (locationY + i);
                             if (isPiecePresent(checkLocation)) flag1 = true;
                             locations.add(checkLocation);
                         }
                     if (locationX - i >= 0 && locationY - i >= 0)
                         if (!flag2) {
-                            checkLocation = "box" + Integer.toString(locationX - i) + Integer.toString(locationY - i);
+                            checkLocation = "box" + (locationX - i) + (locationY - i);
                             if (isPiecePresent(checkLocation)) flag2 = true;
                             locations.add(checkLocation);
                         }
                     if (locationX + i <= 7 && locationY - i >= 0)
                         if (!flag3) {
-                            checkLocation = "box" + Integer.toString(locationX + i) + Integer.toString(locationY - i);
+                            checkLocation = "box" + (locationX + i) + (locationY - i);
                             if (isPiecePresent(checkLocation)) flag3 = true;
                             locations.add(checkLocation);
                         }
                     if (locationX - i >= 0 && locationY + i <= 7)
                         if (!flag4) {
-                            checkLocation = "box" + Integer.toString(locationX - i) + Integer.toString(locationY + i);
+                            checkLocation = "box" + (locationX - i) + (locationY + i);
                             if (isPiecePresent(checkLocation)) flag4 = true;
                             locations.add(checkLocation);
                         }
@@ -313,28 +302,28 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 for (int i = 1; i <= 7; i++) {
                     if (locationX + i <= 7) {
                         if (!flag1) {
-                            checkLocation = "box" + Integer.toString(locationX + i) + locationY;
+                            checkLocation = "box" + (locationX + i) + locationY;
                             if (isPiecePresent(checkLocation)) flag1 = true;
                             locations.add(checkLocation);
                         }
                     }
                     if (locationY + i <= 7) {
                         if (!flag2) {
-                            checkLocation = "box" + Integer.toString(locationX) + Integer.toString(locationY + i);
+                            checkLocation = "box" + locationX + (locationY + i);
                             if (isPiecePresent(checkLocation)) flag2 = true;
                             locations.add(checkLocation);
                         }
                     }
                     if (locationX - i >= 0) {
                         if (!flag3) {
-                            checkLocation = "box" + Integer.toString(locationX - i) + Integer.toString(locationY);
+                            checkLocation = "box" + (locationX - i) + locationY;
                             if (isPiecePresent(checkLocation)) flag3 = true;
                             locations.add(checkLocation);
                         }
                     }
                     if (locationY - i >= 0) {
                         if (!flag4) {
-                            checkLocation = "box" + Integer.toString(locationX) + Integer.toString(locationY - i);
+                            checkLocation = "box" + locationX + (locationY - i);
                             if (isPiecePresent(checkLocation)) flag4 = true;
                             locations.add(checkLocation);
                         }
@@ -344,28 +333,28 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             break;
             case "king": {
                 if (locationX + 1 <= 7)
-                    locations.add("box" + Integer.toString(locationX + 1) + Integer.toString(locationY));
+                    locations.add("box" + (locationX + 1) + locationY);
 
                 if (locationY + 1 <= 7)
-                    locations.add("box" + Integer.toString(locationX) + Integer.toString(locationY + 1));
+                    locations.add("box" + locationX + (locationY + 1));
 
                 if (locationX - 1 >= 0)
-                    locations.add("box" + Integer.toString(locationX - 1) + Integer.toString(locationY));
+                    locations.add("box" + (locationX - 1) + locationY);
 
                 if (locationY - 1 >= 0)
-                    locations.add("box" + Integer.toString(locationX) + Integer.toString(locationY - 1));
+                    locations.add("box" + locationX + (locationY - 1));
 
                 if (locationX + 1 <= 7 && locationY + 1 <= 7)
-                    locations.add("box" + Integer.toString(locationX + 1) + Integer.toString(locationY + 1));
+                    locations.add("box" + (locationX + 1) + (locationY + 1));
 
                 if (locationX - 1 >= 0 && locationY - 1 >= 0)
-                    locations.add("box" + Integer.toString(locationX - 1) + Integer.toString(locationY - 1));
+                    locations.add("box" + (locationX - 1) + (locationY - 1));
 
                 if (locationX + 1 <= 7 && locationY - 1 >= 0)
-                    locations.add("box" + Integer.toString(locationX + 1) + Integer.toString(locationY - 1));
+                    locations.add("box" + (locationX + 1) + (locationY - 1));
 
                 if (locationX - 1 >= 0 && locationY + 1 <= 7)
-                    locations.add("box" + Integer.toString(locationX - 1) + Integer.toString(locationY + 1));
+                    locations.add("box" + (locationX - 1) + (locationY + 1));
             }
             break;
 
@@ -373,55 +362,55 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 for (int i = 1; i <= 7; i++) {
                     if (locationX + i <= 7 && locationY + i <= 7)
                         if (!flag1) {
-                            checkLocation = "box" + Integer.toString(locationX + i) + Integer.toString(locationY + i);
+                            checkLocation = "box" + (locationX + i) + (locationY + i);
                             if (isPiecePresent(checkLocation)) flag1 = true;
                             locations.add(checkLocation);
                         }
 
                     if (locationX - i >= 0 && locationY - i >= 0)
                         if (!flag2) {
-                            checkLocation = "box" + Integer.toString(locationX - i) + Integer.toString(locationY - i);
+                            checkLocation = "box" + (locationX - i) + (locationY - i);
                             if (isPiecePresent(checkLocation)) flag2 = true;
                             locations.add(checkLocation);
                         }
                     if (locationX + i <= 7 && locationY - i >= 0)
                         if (!flag3) {
-                            checkLocation = "box" + Integer.toString(locationX + i) + Integer.toString(locationY - i);
+                            checkLocation = "box" + (locationX + i) + (locationY - i);
                             if (isPiecePresent(checkLocation)) flag3 = true;
                             locations.add(checkLocation);
                         }
 
                     if (locationX - i >= 0 && locationY + i <= 7)
                         if (!flag4) {
-                            checkLocation = "box" + Integer.toString(locationX - i) + Integer.toString(locationY + i);
+                            checkLocation = "box" + (locationX - i) + (locationY + i);
                             if (isPiecePresent(checkLocation)) flag4 = true;
                             locations.add(checkLocation);
                         }
 
                     if (locationX + i <= 7)
                         if (!flag5) {
-                            checkLocation = "box" + Integer.toString(locationX + i) + Integer.toString(locationY);
+                            checkLocation = "box" + (locationX + i) + locationY;
                             if (isPiecePresent(checkLocation)) flag5 = true;
                             locations.add(checkLocation);
                         }
 
                     if (locationY + i <= 7)
                         if (!flag6) {
-                            checkLocation = "box" + Integer.toString(locationX) + Integer.toString(locationY + i);
+                            checkLocation = "box" + locationX + (locationY + i);
                             if (isPiecePresent(checkLocation)) flag6 = true;
                             locations.add(checkLocation);
                         }
 
                     if (locationX - i >= 0)
                         if (!flag7) {
-                            checkLocation = "box" + Integer.toString(locationX - i) + Integer.toString(locationY);
+                            checkLocation = "box" + (locationX - i) + locationY;
                             if (isPiecePresent(checkLocation)) flag7 = true;
                             locations.add(checkLocation);
                         }
 
                     if (locationY - i >= 0)
                         if (!flag8) {
-                            checkLocation = "box" + Integer.toString(locationX) + Integer.toString(locationY - i);
+                            checkLocation = "box" + locationX + (locationY - i);
                             if (isPiecePresent(checkLocation)) flag8 = true;
                             locations.add(checkLocation);
                         }
@@ -430,24 +419,24 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             break;
 
             case "pawn": {
-                String move = "";
+                String move;
                 if (chessPiece.contains("black")) {
                     if (locationX + 1 <= 7) {
-                        move = "box" + String.valueOf(locationX + 1) + Integer.toString(locationY);
+                        move = "box" + (locationX + 1) + locationY;
                         if (!isPiecePresent(move)) {
                             locations.add(move);
                             if (locationX == 1) {
-                                locations.add("box" + Integer.toString(locationX + 2) + Integer.toString(locationY));
+                                locations.add("box" + (locationX + 2) + locationY);
                             }
                         }
 
-                        move = "box" + String.valueOf(locationX + 1) + Integer.toString(locationY + 1);
+                        move = "box" + (locationX + 1) + (locationY + 1);
                         if (locationY + 1 <= 7) {
                             if (isPiecePresent(move)) {
                                 locations.add(move);
                             }
                         }
-                        move = "box" + (locationX + 1) + Integer.toString(locationY - 1);
+                        move = "box" + (locationX + 1) + (locationY - 1);
                         if (locationY - 1 >= 0) {
                             if (isPiecePresent(move)) {
                                 locations.add(move);
@@ -458,22 +447,22 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
                 if (chessPiece.contains("white")) {
                     if (locationX - 1 >= 0) {
-                        move = "box" + String.valueOf(locationX - 1) + Integer.toString(locationY);
+                        move = "box" + (locationX - 1) + locationY;
                         if (!isPiecePresent(move)) {
                             locations.add(move);
                             if (locationX == 6) {
-                                locations.add("box" + Integer.toString(locationX - 2) + Integer.toString(locationY));
+                                locations.add("box" + (locationX - 2) + locationY);
                             }
                         }
 
-                        move = "box" + String.valueOf(locationX - 1) + Integer.toString(locationY + 1);
+                        move = "box" + (locationX - 1) + (locationY + 1);
                         if (locationY + 1 <= 7) {
                             if (isPiecePresent(move)) {
                                 locations.add(move);
                             }
                         }
 
-                        move = "box" + String.valueOf(locationX - 1) + Integer.toString(locationY - 1);
+                        move = "box" + (locationX - 1) + (locationY - 1);
                         if (locationY - 1 >= 0) {
                             if (isPiecePresent(move))
                                 locations.add(move);
@@ -482,6 +471,8 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 }
             }
             break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + chessPiece.substring(8));
         }
         return locations;
     }
@@ -490,7 +481,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     @SuppressLint("ResourceAsColor")
     @Override
     public void onClick(View v) {
-        for (LinearLayout linearLayout : possibleMoves(v)){
+        for (LinearLayout linearLayout : possibleMoves(v)) {
             customView(linearLayout);
         }
 
@@ -505,7 +496,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         v.setBackground(shape);
     }
 
-    public List<LinearLayout> possibleMoves(View v){
+    public List<LinearLayout> possibleMoves(View v) {
         List<LinearLayout> ret = new ArrayList<>();
         String imageViewID = v.getResources().getResourceName(v.getId()).substring(v.getResources().getResourceName(v.getId()).indexOf('/') + 1);
         LinearLayout linearLayout = (LinearLayout) v.getParent();
@@ -571,9 +562,11 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         return ret;
     }
 
-    public void removeKilledPiece(LinearLayout linearLayout){
-        if(linearLayout.getChildCount()>1){
+    public void removeKilledPiece(LinearLayout linearLayout) {
+        if (linearLayout.getChildCount() > 1) {
             linearLayout.removeView(linearLayout.getChildAt(0));
         }
     }
+
+
 }
