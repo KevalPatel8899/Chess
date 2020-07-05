@@ -143,8 +143,9 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             case DragEvent.ACTION_DRAG_ENTERED:
                 // Applies a YELLOW or any color tint to the View, when the dragged view entered into drag acceptable view
                 // Return true; the return value is ignored.
-                view.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
-
+                if(possibleMoves((View) event.getLocalState()).contains(view)) {
+                    view.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+                }
                 // Invalidate the view to force a redraw in the new tint
                 view.invalidate();
 
