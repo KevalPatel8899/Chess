@@ -29,23 +29,26 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     private static final String IMAGE_VIEW_TAG = "LAUNCHER LOGO";
     private boolean whiteTurn = true;
     private List<LinearLayout> previousPossibleMoves = new ArrayList<>();
+    ImageView chessPiece;
+    String [] whitePieceCheck, blackPieceCheck;
+    String[] chessPieceList = {"black_1_knight", "black_0_knight",
+            "black_1_rook", "black_0_rook",
+            "black_1_bishop", "black_0_bishop",
+            "black_0_king", "black_0_queen",
+            "black_0_pawn", "black_1_pawn", "black_2_pawn", "black_3_pawn", "black_4_pawn", "black_5_pawn", "black_6_pawn", "black_7_pawn",
+            "white_1_knight", "white_0_knight",
+            "white_1_rook", "white_0_rook",
+            "white_1_bishop", "white_0_bishop",
+            "white_0_king", "white_0_queen",
+            "white_0_pawn", "white_1_pawn", "white_2_pawn", "white_3_pawn", "white_4_pawn", "white_5_pawn", "white_6_pawn", "white_7_pawn"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String[] chessPieceList = {"black_1_knight", "black_0_knight",
-                "black_1_rook", "black_0_rook",
-                "black_1_bishop", "black_0_bishop",
-                "black_0_king", "black_0_queen",
-                "black_0_pawn", "black_1_pawn", "black_2_pawn", "black_3_pawn", "black_4_pawn", "black_5_pawn", "black_6_pawn", "black_7_pawn",
-                "white_1_knight", "white_0_knight",
-                "white_1_rook", "white_0_rook",
-                "white_1_bishop", "white_0_bishop",
-                "white_0_king", "white_0_queen",
-                "white_0_pawn", "white_1_pawn", "white_2_pawn", "white_3_pawn", "white_4_pawn", "white_5_pawn", "white_6_pawn", "white_7_pawn"
-        };
+
         for (String chessPiece : chessPieceList) {
             int resID = getResources().getIdentifier(chessPiece, "id", getPackageName());
             imageViewList.add((ImageView) findViewById(resID));
@@ -71,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 String box = "box" + i + j;
                 int resID = getResources().getIdentifier(box, "id", getPackageName());
                 findViewById(resID).setOnDragListener(this);
+                findViewById(resID).setOnClickListener(onClickListenerForTiles);
             }
         }
     }
@@ -481,8 +485,14 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     @SuppressLint("ResourceAsColor")
     @Override
     public void onClick(View v) {
+        previousPossibleMoves = possibleMoves(v);
+        chessPiece = (ImageView) v;
         for (LinearLayout linearLayout : possibleMoves(v)) {
             customView(linearLayout);
+            if(linearLayout.getChildCount()>0){
+                ImageView imageView = (ImageView) linearLayout.getChildAt(0);
+                imageView.setOnClickListener(onClickListenerToKillChessPiece);
+            }
         }
 
     }
@@ -496,27 +506,67 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         v.setBackground(shape);
     }
 
+    public void resetBackground(){
+        if (chessPiecePossibleMoves.size() != 0) {
+        for (int i = 0; i < chessPiecePossibleMoves.size(); i++) {
+            String x = chessPiecePossibleMoves.get(i).substring(3, 4);
+            String y = chessPiecePossibleMoves.get(i).substring(4);
+            View linearLayout;
+            if ((Integer.parseInt(x) % 2 == 0 && Integer.parseInt(y) % 2 == 0) || (Integer.parseInt(x) % 2 != 0 && Integer.parseInt(y) % 2 != 0)) {
+                linearLayout = findViewById(getResources().getIdentifier(chessPiecePossibleMoves.get(i), "id", getPackageName()));
+                linearLayout.setBackgroundResource(R.color.colorBoardDark);
+            } else {
+                linearLayout = findViewById(getResources().getIdentifier(chessPiecePossibleMoves.get(i), "id", getPackageName()));
+                linearLayout.setBackgroundResource(R.color.colorBoardLight);
+            }
+        }
+        chessPiecePossibleMoves.clear();
+    }}
+
+    View.OnClickListener onClickListenerForTiles = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(previousPossibleMoves.size()>0){
+                if(previousPossibleMoves.contains(v)){
+                    resetBackground();
+                    if(chessPiece!= null){
+                        LinearLayout parentLayout = (LinearLayout) chessPiece.getParent();
+                        parentLayout.removeView(chessPiece);
+                        LinearLayout linearLayout = (LinearLayout) v;
+                        linearLayout.addView(chessPiece);
+                        previousPossibleMoves.clear();
+                        chessPiece = null;
+                        whiteTurn = !whiteTurn;
+                    }
+                }
+            }
+        }
+    };
+
+    View.OnClickListener onClickListenerToKillChessPiece = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            LinearLayout parentLayout = (LinearLayout) v.getParent();
+            if(chessPiece!=null) {
+                LinearLayout chessPieceParentLayout = (LinearLayout) chessPiece.getParent();
+                parentLayout.removeView(v);
+                resetBackground();
+                chessPieceParentLayout.removeView(chessPiece);
+                parentLayout.addView(chessPiece);
+                chessPiece = null;
+                previousPossibleMoves.clear();
+                whiteTurn = !whiteTurn;
+            }
+        }
+    };
+
     public List<LinearLayout> possibleMoves(View v) {
         List<LinearLayout> ret = new ArrayList<>();
         String imageViewID = v.getResources().getResourceName(v.getId()).substring(v.getResources().getResourceName(v.getId()).indexOf('/') + 1);
         LinearLayout linearLayout = (LinearLayout) v.getParent();
         String imageViewLocation = linearLayout.getResources().getResourceName(linearLayout.getId()).substring(v.getResources().getResourceName(linearLayout.getId()).indexOf('/') + 1);
 
-        if (chessPiecePossibleMoves.size() != 0) {
-            for (int i = 0; i < chessPiecePossibleMoves.size(); i++) {
-                String x = chessPiecePossibleMoves.get(i).substring(3, 4);
-                String y = chessPiecePossibleMoves.get(i).substring(4);
-                if ((Integer.parseInt(x) % 2 == 0 && Integer.parseInt(y) % 2 == 0) || (Integer.parseInt(x) % 2 != 0 && Integer.parseInt(y) % 2 != 0)) {
-                    linearLayout = findViewById(getResources().getIdentifier(chessPiecePossibleMoves.get(i), "id", getPackageName()));
-                    linearLayout.setBackgroundResource(R.color.colorBoardDark);
-                } else {
-                    linearLayout = findViewById(getResources().getIdentifier(chessPiecePossibleMoves.get(i), "id", getPackageName()));
-                    linearLayout.setBackgroundResource(R.color.colorBoardLight);
-                }
-            }
-
-            chessPiecePossibleMoves.clear();
-        }
+        resetBackground();
 
         ImageView imageView;
         if (imageViewID.contains("white") && whiteTurn) {
@@ -568,5 +618,34 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         }
     }
 
+    public int checkForKing() {
+        int numberOfCheck = 0;
+        String kingLocation;
+        ImageView king;
+        LinearLayout linearLayout;
+        if (whiteTurn) {
+            for (String blackPiece : chessPieceList) {
+                if (blackPiece.contains("black")) {
+                    if (blackPiece.contains("king")) {
 
+
+                        king = findViewById(getResources().getIdentifier(blackPiece, "id", getPackageName()));
+                        linearLayout = (LinearLayout) king.getParent();
+                        kingLocation = getResources().getResourceName(linearLayout.getId());
+                        kingLocation = kingLocation.substring(kingLocation.length() - 5);
+                    }
+                }
+            }
+
+        } else {
+            for (String whitePiece : chessPieceList) {
+                if (whitePiece.contains("white")) {
+
+                }
+            }
+        }
+            return numberOfCheck;
+        }
+
+    public void checkMate(){}
 }
