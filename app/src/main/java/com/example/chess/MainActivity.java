@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        int index =0;
+        int index = 0;
         for (String chessPiece : CHESS_PIECE_LIST) {
             int resID = getResources().getIdentifier(chessPiece, "id", getPackageName());
             ImageView pieceIv = (ImageView) findViewById(resID);
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             findViewById(resID).setOnClickListener(this);
             LinearLayout l = (LinearLayout) pieceIv.getParent();
             String temp = l.getResources().getResourceName(l.getId());
-            ORIGINAL_LOCATION[index]= (temp.substring(temp.indexOf('/') + 1));
+            ORIGINAL_LOCATION[index] = (temp.substring(temp.indexOf('/') + 1));
             index++;
         }
 
@@ -77,9 +77,10 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     }
 
     private void resetGame() {
-        for(int i=0;i<32;i++){
-            movePieceFromSrcToDest((ImageView) getViewByName(CHESS_PIECE_LIST[i]), "",ORIGINAL_LOCATION[i]);
+        for (int i = 0; i < 32; i++) {
+            movePieceFromSrcToDest((ImageView) getViewByName(CHESS_PIECE_LIST[i]), "", ORIGINAL_LOCATION[i]);
         }
+        resetBackground();
     }
 
 
@@ -554,19 +555,19 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     }
 
     public void resetBackground() {
-        if (PIECE_POSSIBLE_MOVES.size() != 0) {
-            for (int i = 0; i < PIECE_POSSIBLE_MOVES.size(); i++) {
-                String x = PIECE_POSSIBLE_MOVES.get(i).substring(3, 4);
-                String y = PIECE_POSSIBLE_MOVES.get(i).substring(4);
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
                 View linearLayout;
-                if ((Integer.parseInt(x) % 2 == 0 && Integer.parseInt(y) % 2 == 0) || (Integer.parseInt(x) % 2 != 0 && Integer.parseInt(y) % 2 != 0)) {
-                    linearLayout = findViewById(getResources().getIdentifier(PIECE_POSSIBLE_MOVES.get(i), "id", getPackageName()));
+                if ((x % 2 == 0 && y % 2 == 0) || (x % 2 != 0 && y % 2 != 0)) {
+                    linearLayout = findViewById(getResources().getIdentifier("box" + x + y, "id", getPackageName()));
                     linearLayout.setBackgroundResource(R.color.colorBoardDark);
                 } else {
-                    linearLayout = findViewById(getResources().getIdentifier(PIECE_POSSIBLE_MOVES.get(i), "id", getPackageName()));
+                    linearLayout = findViewById(getResources().getIdentifier("box" + x + y, "id", getPackageName()));
                     linearLayout.setBackgroundResource(R.color.colorBoardLight);
                 }
             }
+
+
             PIECE_POSSIBLE_MOVES.clear();
         }
     }
@@ -749,14 +750,14 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         return false;
     }
 
-    public void check(){
-        if(IsCurrentKingInPositionOfOpponentAnyPiecePossibleMove()){
-            if(!isCheckmate())
+    public void check() {
+        if (IsCurrentKingInPositionOfOpponentAnyPiecePossibleMove()) {
+            if (!isCheckmate())
                 Toast.makeText(this, "Check !!!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public boolean isCheckmate(){
+    public boolean isCheckmate() {
 
         String piecesColor = WHITE_TURN ? "white" : "black";
         for (String piece : CHESS_PIECE_LIST) {
@@ -768,7 +769,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         }
         String winner = (WHITE_TURN) ? "Black" : "White";
 
-        Toast.makeText(this, "CHECKMATE !!! "+winner +"  Wins !!!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "CHECKMATE !!! " + winner + "  Wins !!!", Toast.LENGTH_SHORT).show();
         return true;
     }
 
