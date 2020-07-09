@@ -20,19 +20,19 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements View.OnLongClickListener, View.OnClickListener, View.OnDragListener {
 
     //    private static final String TAG = MainActivity.class.getSimpleName();
     List<ImageView> IMAGE_VIEW_LIST = new ArrayList<>();
-    List<String> PIECE_POSSIBLE_MOVES = new ArrayList<>();
+    List<ImageView> IMAGE_VIEW_WITH_KILL_EVENTS = new ArrayList<>();
 
-    private static final String IMAGE_VIEW_TAG = "LAUNCHER LOGO";
-    private boolean WHITE_TURN = true;
-    private List<LinearLayout> PREV_POSSIBLE_MOVES = new ArrayList<>();
+    public static final String IMAGE_VIEW_TAG = "LAUNCHER LOGO";
+    public boolean WHITE_TURN = true;
+    public List<LinearLayout> PIECE_POSSIBLE_MOVES = new ArrayList<>();
     ImageView PIECE;
-    String[] whitePieceCheck, blackPieceCheck;
-    final String[] CHESS_PIECE_LIST = {"black_1_knight", "black_0_knight",
+    public final String[] CHESS_PIECE_LIST = {"black_1_knight", "black_0_knight",
             "black_1_rook", "black_0_rook",
             "black_1_bishop", "black_0_bishop",
             "black_0_king", "black_0_queen",
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     String[] ORIGINAL_LOCATION = new String[32];
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             int resID = getResources().getIdentifier(chessPiece, "id", getPackageName());
             ImageView pieceIv = (ImageView) findViewById(resID);
             IMAGE_VIEW_LIST.add(pieceIv);
+
             findViewById(resID).setOnClickListener(this);
             LinearLayout l = (LinearLayout) pieceIv.getParent();
             String temp = l.getResources().getResourceName(l.getId());
@@ -76,16 +77,17 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         });
     }
 
-    private void resetGame() {
+    public void resetGame() {
+        WHITE_TURN = true;
         for (int i = 0; i < 32; i++) {
-            movePieceFromSrcToDest((ImageView) getViewByName(CHESS_PIECE_LIST[i]), "", ORIGINAL_LOCATION[i]);
+            movePieceFromSrcToDest((ImageView) getViewByName(CHESS_PIECE_LIST[i]), ORIGINAL_LOCATION[i]);
         }
         resetBackground();
     }
 
 
     //Implement long click and drag listener
-    private void implementEvents() {
+    public void implementEvents() {
         //add or remove any view that you don't want to be dragged
         for (ImageView imageview : IMAGE_VIEW_LIST) {
             imageview.setOnLongClickListener(this);
@@ -108,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         // This is done in two steps to provide clarity. The convenience method
         // ClipData.newPlainText() can create a plain text ClipData in one step.
 
-        PREV_POSSIBLE_MOVES = possibleMoves(view, false);
+        PIECE_POSSIBLE_MOVES = possibleMoves(view, false);
 
         String imageViewID = view.getResources().getResourceName(view.getId()).substring(view.getResources().getResourceName(view.getId()).indexOf('/') + 1);
 
@@ -165,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             case DragEvent.ACTION_DRAG_ENTERED:
                 // Applies a YELLOW or any color tint to the View, when the dragged view entered into drag acceptable view
                 // Return true; the return value is ignored.
-                if (possibleMoves((View) event.getLocalState(), false).contains(view)) {
+                if (PIECE_POSSIBLE_MOVES.contains((LinearLayout) view)) {
                     view.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
                 }
 
@@ -189,10 +191,10 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 return true;
             case DragEvent.ACTION_DROP:
                 // Gets the item containing the dragged data
-                ClipData.Item item = event.getClipData().getItemAt(0);
+//                ClipData.Item item = event.getClipData().getItemAt(0);
 
                 // Gets the text data from the item.
-                String dragData = item.getText().toString();
+//                String dragData = item.getText().toString();
 
                 // Displays a message containing the dragged data.
 //                Toast.makeText(this, "Dragged data is " + dragData, Toast.LENGTH_SHORT).show();
@@ -211,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 v.setVisibility(View.VISIBLE);//finally set Visibility to VISIBLE
 
                 // if dropped at illegal position then replace the piece to its original position
-                if (!PREV_POSSIBLE_MOVES.contains(container)) {
+                if (!PIECE_POSSIBLE_MOVES.contains(container)) {
                     container.removeView(v);
                     owner.addView(v);
                     v.setVisibility(View.VISIBLE);
@@ -220,10 +222,11 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                     if (!owner.equals(container))
                         WHITE_TURN = !WHITE_TURN;
                 }
-
+                PIECE_POSSIBLE_MOVES.clear();
                 removeKilledPiece(container);
 
                 check();
+
                 // Returns true. DragEvent.getResult() will return true.
                 return true;
             case DragEvent.ACTION_DRAG_ENDED:
@@ -241,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
 
                 // returns true; the value is ignored.
+                playerAI();
                 return true;
 
             // An unknown action type was received.
@@ -249,6 +253,28 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 break;
         }
         return false;
+    }
+
+    public void playerAI() {
+        if (!WHITE_TURN) {
+            Random rand = new Random();
+            String randomPiece;
+            while (true) {
+                randomPiece = CHESS_PIECE_LIST[rand.nextInt(32)];
+                if (!randomPiece.contains("black")) continue;
+                ImageView iv = (ImageView) getViewByName(randomPiece);
+                PIECE_POSSIBLE_MOVES = possibleMoves(iv, false);
+                int lengthOfPossibleMoves = PIECE_POSSIBLE_MOVES.size();
+                if (lengthOfPossibleMoves == 0) continue;
+                LinearLayout l = PIECE_POSSIBLE_MOVES.get(rand.nextInt(lengthOfPossibleMoves));
+                String temp = l.getResources().getResourceName(l.getId());
+                String dest = (temp.substring(temp.indexOf('/') + 1));
+                movePieceFromSrcToDest(iv, dest);
+                break;
+            }
+            WHITE_TURN = true;
+            check();
+        }
     }
 
     public boolean isPiecePresent(String boxXX) {
@@ -268,18 +294,10 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         return temp.substring(temp.indexOf('/') + 1);
     }
 
-    /**
-     * Returns a list of possible moves of a given piece type at location
-     *
-     * @param chessPieceLocation
-     * @param chessPiece
-     * @return
-     */
+    //Returns a list of possible moves of a given piece type at location
     public List<String> chessMove(String chessPieceLocation, String chessPiece) {
-        String locationS = chessPieceLocation.substring(chessPieceLocation.length() - 2);
         String locationXS = chessPieceLocation.substring(chessPieceLocation.length() - 2, chessPieceLocation.length() - 1);
         String locationYS = chessPieceLocation.substring(chessPieceLocation.length() - 1);
-        int location = Integer.parseInt(locationS);
         List<String> locations = new ArrayList<>();
         int locationX = Integer.parseInt(locationXS);
         int locationY = Integer.parseInt(locationYS);
@@ -292,14 +310,14 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             case "knight": {
 
                 if (locationX + 2 <= 7 && locationY + 1 <= 7)
-                    locations.add("box" + (location + 21));
+                    locations.add("box" + (locationX + 2) + (locationY + 1));
                 if (locationX + 1 <= 7 && locationY + 2 <= 7)
-                    locations.add("box" + (location + 12));
+                    locations.add("box" + (locationX + 1) + (locationY + 2));
                 if (locationX - 1 >= 0 && locationY - 2 >= 0) {
-                    locations.add("box" + (location - 12));
+                    locations.add("box" + (locationX - 1) + (locationY - 2));
                 }
                 if (locationX - 2 >= 0 && locationY - 1 >= 0) {
-                    locations.add("box" + (location - 21));
+                    locations.add("box" + (locationX - 2) + (locationY - 1));
                 }
 
 
@@ -372,7 +390,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                     }
                     if (locationY - i >= 0) {
                         if (!flag4) {
-                            checkLocation = "box" + locationX + (locationY - i);
+                            checkLocation = "box" + (locationX) + (locationY - i);
                             if (isPiecePresent(checkLocation)) flag4 = true;
                             locations.add(checkLocation);
                         }
@@ -438,28 +456,28 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
                     if (locationX + i <= 7)
                         if (!flag5) {
-                            checkLocation = "box" + (locationX + i) + locationY;
+                            checkLocation = "box" + (locationX + i) + (locationY);
                             if (isPiecePresent(checkLocation)) flag5 = true;
                             locations.add(checkLocation);
                         }
 
                     if (locationY + i <= 7)
                         if (!flag6) {
-                            checkLocation = "box" + locationX + (locationY + i);
+                            checkLocation = "box" + (locationX) + (locationY + i);
                             if (isPiecePresent(checkLocation)) flag6 = true;
                             locations.add(checkLocation);
                         }
 
                     if (locationX - i >= 0)
                         if (!flag7) {
-                            checkLocation = "box" + (locationX - i) + locationY;
+                            checkLocation = "box" + (locationX - i) + (locationY);
                             if (isPiecePresent(checkLocation)) flag7 = true;
                             locations.add(checkLocation);
                         }
 
                     if (locationY - i >= 0)
                         if (!flag8) {
-                            checkLocation = "box" + locationX + (locationY - i);
+                            checkLocation = "box" + (locationX) + (locationY - i);
                             if (isPiecePresent(checkLocation)) flag8 = true;
                             locations.add(checkLocation);
                         }
@@ -528,18 +546,27 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         return locations;
     }
 
+    public void removeOnClickEvent() {
+        for (ImageView iv : IMAGE_VIEW_WITH_KILL_EVENTS) {
+            iv.setOnClickListener(this);
+        }
+        IMAGE_VIEW_WITH_KILL_EVENTS.clear();
+    }
+
     //On click event for chess piece
     @SuppressLint("ResourceAsColor")
     @Override
     public void onClick(View v) {
         resetBackground();
-        PREV_POSSIBLE_MOVES = possibleMoves(v, false);
+        removeOnClickEvent();
+        PIECE_POSSIBLE_MOVES = possibleMoves(v, false);
         PIECE = (ImageView) v;
-        for (LinearLayout linearLayout : possibleMoves(v, false)) {
+        for (LinearLayout linearLayout : PIECE_POSSIBLE_MOVES) {
             customView(linearLayout);
             if (linearLayout.getChildCount() > 0) {
                 ImageView imageView = (ImageView) linearLayout.getChildAt(0);
                 imageView.setOnClickListener(onClickListenerToKillChessPiece);
+                IMAGE_VIEW_WITH_KILL_EVENTS.add(imageView);
             }
         }
 
@@ -566,26 +593,26 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                     linearLayout.setBackgroundResource(R.color.colorBoardLight);
                 }
             }
-
-
-            PIECE_POSSIBLE_MOVES.clear();
         }
     }
 
     View.OnClickListener onClickListenerForTiles = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (PREV_POSSIBLE_MOVES.size() > 0) {
-                if (PREV_POSSIBLE_MOVES.contains(v)) {
-                    resetBackground();
+            resetBackground();
+            if (PIECE_POSSIBLE_MOVES.size() > 0) {
+                if (PIECE_POSSIBLE_MOVES.contains((LinearLayout) v)) {
                     if (PIECE != null) {
                         LinearLayout parentLayout = (LinearLayout) PIECE.getParent();
                         parentLayout.removeView(PIECE);
                         LinearLayout linearLayout = (LinearLayout) v;
                         linearLayout.addView(PIECE);
-                        PREV_POSSIBLE_MOVES.clear();
+                        PIECE_POSSIBLE_MOVES.clear();
                         PIECE = null;
                         WHITE_TURN = !WHITE_TURN;
+                        removeOnClickEvent();
+                        check();
+                        playerAI();
                     }
                 }
             }
@@ -595,28 +622,25 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     View.OnClickListener onClickListenerToKillChessPiece = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            resetBackground();
             LinearLayout parentLayout = (LinearLayout) v.getParent();
             if (PIECE != null) {
                 LinearLayout chessPieceParentLayout = (LinearLayout) PIECE.getParent();
                 parentLayout.removeView(v);
-                resetBackground();
                 chessPieceParentLayout.removeView(PIECE);
                 parentLayout.addView(PIECE);
                 PIECE = null;
-                PREV_POSSIBLE_MOVES.clear();
+                PIECE_POSSIBLE_MOVES.clear();
                 WHITE_TURN = !WHITE_TURN;
+                removeOnClickEvent();
+                check();
+                playerAI();
             }
         }
     };
 
-    /**
-     * Returns List of linearLayouts that are valid for the given view.
-     *
-     * @param v
-     * @return
-     */
+    ///Returns List of linearLayouts that are valid for the given view.
     public List<LinearLayout> possibleMoves(View v, boolean virtualCall) {
-
         List<LinearLayout> ret = new ArrayList<>();
         List<LinearLayout> finalRet = new ArrayList<>();
         if (v == null) return ret;
@@ -631,19 +655,12 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             for (String move : chessMove(imageViewLocation, imageViewID)) {
                 linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
                 if (!isPiecePresent(move)) {
-                    PIECE_POSSIBLE_MOVES.add(move);
-
-                    //                linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
                     ret.add(linearLayout);
-                    //              How to remove view from the layout
-                    //              linearLayout.setVisibility(linearLayout.GONE);
                 } else {
                     imageView = (ImageView) linearLayout.getChildAt(0);
                     String childName = imageView.getResources().getResourceName(imageView.getId());
 
                     if (childName.contains("black")) {
-                        PIECE_POSSIBLE_MOVES.add(move);
-                        //                linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
                         ret.add(linearLayout);
                     }
                 }
@@ -652,16 +669,11 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             for (String move : chessMove(imageViewLocation, imageViewID)) {
                 linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
                 if (!isPiecePresent(move)) {
-                    PIECE_POSSIBLE_MOVES.add(move);
-
-                    //                linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
                     ret.add(linearLayout);
                 } else {
                     imageView = (ImageView) linearLayout.getChildAt(0);
                     String childName = imageView.getResources().getResourceName(imageView.getId());
                     if (childName.contains("white")) {
-                        PIECE_POSSIBLE_MOVES.add(move);
-                        // linearLayout.setBackgroundResource(R.color.colorChessPieceMoves);
                         ret.add(linearLayout);
                     }
                 }
@@ -670,8 +682,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         if (virtualCall) return ret;
         for (LinearLayout destLl : ret) {
             String dest = destLl.getResources().getResourceName(destLl.getId()).substring(v.getResources().getResourceName(destLl.getId()).indexOf('/') + 1);
-            String src = imageViewLocation;
-            if (!isMoveCreatingCheckForSelf(imageViewID, src, dest))
+            if (!isMoveCreatingCheckForSelf(imageViewID, imageViewLocation, dest))
                 finalRet.add(destLl);
         }
         return finalRet;
@@ -687,7 +698,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     }
 
 
-    public ImageView movePieceFromSrcToDest(ImageView pieceIv, String src, String dest) {
+    public ImageView movePieceFromSrcToDest(ImageView pieceIv, String dest) {
 
         int destResId = getResources().getIdentifier(dest, "id", getPackageName());
         LinearLayout destLinearLayout = findViewById(destResId);
@@ -702,26 +713,23 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     }
 
     public boolean isMoveCreatingCheckForSelf(String piece, String src, String dest) {
-        boolean ret = false;
-
         ImageView pieceIv = (ImageView) getViewByName(piece);
         // temporarily move the piece from src to dest
-        ImageView killedPieceIfAny = movePieceFromSrcToDest(pieceIv, src, dest);
+        ImageView killedPieceIfAny = movePieceFromSrcToDest(pieceIv, dest);
 
         // check if current piece turn king can be killed by opponent
-        ret = IsCurrentKingInPositionOfOpponentAnyPiecePossibleMove();
+        boolean ret = IsCurrentKingInPositionOfOpponentAnyPiecePossibleMove();
 
         // move back piece from dest to src
-        movePieceFromSrcToDest(pieceIv, dest, src);
+        movePieceFromSrcToDest(pieceIv, src);
         if (killedPieceIfAny != null) {
-            movePieceFromSrcToDest(killedPieceIfAny, src, dest);
+            movePieceFromSrcToDest(killedPieceIfAny, dest);
         }
 
         return ret;
     }
 
     public boolean IsCurrentKingInPositionOfOpponentAnyPiecePossibleMove() {
-        String positionOfKing = "";
         ImageView x;
 
         if (WHITE_TURN)
@@ -729,9 +737,8 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         else
             x = findViewById(R.id.black_0_king);
 
+        // Linear Layout of the king
         LinearLayout l = (LinearLayout) x.getParent();
-        String temp = l.getResources().getResourceName(l.getId());
-        positionOfKing = temp.substring(temp.indexOf('/') + 1);
 
         //loop through all opponent pieces and return true if they can kill current turn's king
         String piecesColor = WHITE_TURN ? "black" : "white";
@@ -740,7 +747,6 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             if (piece.contains(piecesColor)) {
                 WHITE_TURN = !WHITE_TURN;
                 if (possibleMoves(getViewByName(piece), true).contains(l)) {
-//                    System.out.println("Check is given by: " + piece);
                     WHITE_TURN = !WHITE_TURN;
                     return true;
                 }
@@ -770,6 +776,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         String winner = (WHITE_TURN) ? "Black" : "White";
 
         Toast.makeText(this, "CHECKMATE !!! " + winner + "  Wins !!!", Toast.LENGTH_SHORT).show();
+        WHITE_TURN = true;
         return true;
     }
 
