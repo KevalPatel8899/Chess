@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     };
     String[] ORIGINAL_LOCATION = new String[32];
 
+    LinearLayout[] LAST_MOVE = new LinearLayout[2];
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,8 +111,9 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         // Create a new ClipData.
         // This is done in two steps to provide clarity. The convenience method
         // ClipData.newPlainText() can create a plain text ClipData in one step.
-
+        resetBackground();
         PIECE_POSSIBLE_MOVES = possibleMoves(view, false);
+
 
         String imageViewID = view.getResources().getResourceName(view.getId()).substring(view.getResources().getResourceName(view.getId()).indexOf('/') + 1);
 
@@ -267,14 +270,29 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 int lengthOfPossibleMoves = PIECE_POSSIBLE_MOVES.size();
                 if (lengthOfPossibleMoves == 0) continue;
                 LinearLayout l = PIECE_POSSIBLE_MOVES.get(rand.nextInt(lengthOfPossibleMoves));
-                String temp = l.getResources().getResourceName(l.getId());
-                String dest = (temp.substring(temp.indexOf('/') + 1));
+                LAST_MOVE[0] = (LinearLayout) iv.getParent();
+                LAST_MOVE[1] = l;
+                String dest = l.getResources().getResourceName(l.getId());
+                dest = (dest.substring(dest.indexOf('/') + 1));
                 movePieceFromSrcToDest(iv, dest);
+
+
+                setBackgroundOfLastMove(LAST_MOVE[0],"#FFFF99");
+                setBackgroundOfLastMove(LAST_MOVE[1],"Yellow");
                 break;
             }
             WHITE_TURN = true;
             check();
         }
+    }
+
+    public void setBackgroundOfLastMove(LinearLayout l,String color){
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadii(new float[]{12, 12, 12, 12, 12, 12, 12, 12});
+        shape.setColor(Color.parseColor(color));
+        shape.setStroke(6, Color.parseColor("Black"));
+        l.setBackground(shape);
     }
 
     public boolean isPiecePresent(String boxXX) {
@@ -648,7 +666,6 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         LinearLayout linearLayout = (LinearLayout) v.getParent();
         String imageViewLocation = linearLayout.getResources().getResourceName(linearLayout.getId()).substring(v.getResources().getResourceName(linearLayout.getId()).indexOf('/') + 1);
 
-        resetBackground();
 
         ImageView imageView;
         if (imageViewID.contains("white") && WHITE_TURN) {
