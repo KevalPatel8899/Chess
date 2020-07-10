@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     String[] ORIGINAL_LOCATION = new String[32];
 
     LinearLayout[] LAST_MOVE = new LinearLayout[2];
+    public Hashtable<String, String> locationTable = new Hashtable<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,9 +62,10 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
             findViewById(resID).setOnClickListener(this);
             LinearLayout l = (LinearLayout) pieceIv.getParent();
-            String temp = l.getResources().getResourceName(l.getId());
-            ORIGINAL_LOCATION[index] = (temp.substring(temp.indexOf('/') + 1));
+            ORIGINAL_LOCATION[index] = getBoxNameOFLayout(l);
+            locationTable.put(chessPiece,ORIGINAL_LOCATION[index]);
             index++;
+
         }
 
         for (ImageView imageview : IMAGE_VIEW_LIST) {
@@ -79,6 +82,10 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         });
     }
 
+    public String getBoxNameOFLayout(LinearLayout l){
+        String temp = l.getResources().getResourceName(l.getId());
+        return temp.substring(temp.indexOf('/') + 1);
+    }
     public void resetGame() {
         WHITE_TURN = true;
         for (int i = 0; i < 32; i++) {
@@ -272,8 +279,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 LinearLayout l = PIECE_POSSIBLE_MOVES.get(rand.nextInt(lengthOfPossibleMoves));
                 LAST_MOVE[0] = (LinearLayout) iv.getParent();
                 LAST_MOVE[1] = l;
-                String dest = l.getResources().getResourceName(l.getId());
-                dest = (dest.substring(dest.indexOf('/') + 1));
+                String dest = getBoxNameOFLayout(l);
                 movePieceFromSrcToDest(iv, dest);
 
 
@@ -308,8 +314,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     public String getChessPieceLocation(String chessPiece) {
         View pieceView = getViewByName(chessPiece);
         LinearLayout l = (LinearLayout) pieceView.getParent();
-        String temp = l.getResources().getResourceName(l.getId());
-        return temp.substring(temp.indexOf('/') + 1);
+        return getBoxNameOFLayout(l);
     }
 
     //Returns a list of possible moves of a given piece type at location
@@ -664,8 +669,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         if (v == null) return ret;
         String imageViewID = v.getResources().getResourceName(v.getId()).substring(v.getResources().getResourceName(v.getId()).indexOf('/') + 1);
         LinearLayout linearLayout = (LinearLayout) v.getParent();
-        String imageViewLocation = linearLayout.getResources().getResourceName(linearLayout.getId()).substring(v.getResources().getResourceName(linearLayout.getId()).indexOf('/') + 1);
-
+        String imageViewLocation = getBoxNameOFLayout(linearLayout);
 
         ImageView imageView;
         if (imageViewID.contains("white") && WHITE_TURN) {
@@ -698,7 +702,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         }
         if (virtualCall) return ret;
         for (LinearLayout destLl : ret) {
-            String dest = destLl.getResources().getResourceName(destLl.getId()).substring(v.getResources().getResourceName(destLl.getId()).indexOf('/') + 1);
+            String dest = getBoxNameOFLayout(destLl);
             if (!isMoveCreatingCheckForSelf(imageViewID, imageViewLocation, dest))
                 finalRet.add(destLl);
         }
