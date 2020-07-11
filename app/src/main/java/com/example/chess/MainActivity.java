@@ -8,7 +8,6 @@ import android.content.ClipDescription;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -33,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     public static final String IMAGE_VIEW_TAG = "LAUNCHER LOGO";
     public boolean WHITE_TURN = true;
     public List<LinearLayout> PIECE_POSSIBLE_MOVES = new ArrayList<>();
+    public List<String> PIECE_POSSIBLE_MOVES_S = new ArrayList<>();
     ImageView PIECE;
     public final String[] CHESS_PIECE_LIST = {"black_1_knight", "black_0_knight",
             "black_1_rook", "black_0_rook",
@@ -49,8 +49,9 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     String[] ORIGINAL_LOCATION = new String[32];
 
     LinearLayout[] LAST_MOVE = new LinearLayout[2];
-    public Hashtable<String, String> locationTable = new Hashtable<>();
-    boolean IS_CHECK = false;
+    public Hashtable<String, String> LOCATION_TABLE = new Hashtable<>();
+
+    ChessLogic Game1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             pieceIv.setOnClickListener(this);
             LinearLayout l = (LinearLayout) pieceIv.getParent();
             ORIGINAL_LOCATION[index] = getBoxNameOFLayout(l);
-            locationTable.put(chessPiece, ORIGINAL_LOCATION[index]);
+            LOCATION_TABLE.put(chessPiece, ORIGINAL_LOCATION[index]);
             index++;
 
         }
@@ -81,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 resetGame();
             }
         });
+
+        Game1 = new ChessLogic(LOCATION_TABLE);
     }
 
     //Implement long click and drag listener
@@ -106,14 +109,17 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         // This is done in two steps to provide clarity. The convenience method
         // ClipData.newPlainText() can create a plain text ClipData in one step.
         resetBackground();
-        PIECE_POSSIBLE_MOVES = possibleMoves(view, false);
 
+        String chessPiece = view.getResources().getResourceName(view.getId()).substring(view.getResources().getResourceName(view.getId()).indexOf('/') + 1);
 
-        String imageViewID = view.getResources().getResourceName(view.getId()).substring(view.getResources().getResourceName(view.getId()).indexOf('/') + 1);
-
-        if ((WHITE_TURN && imageViewID.contains("black")) || (!WHITE_TURN && imageViewID.contains("white")))
+        if ((WHITE_TURN && chessPiece.contains("black")) || (!WHITE_TURN && chessPiece.contains("white")))
             return false;
 
+        PIECE_POSSIBLE_MOVES_S = Game1.possibleMoves(chessPiece, false);
+        PIECE_POSSIBLE_MOVES.clear();
+        for (String move : PIECE_POSSIBLE_MOVES_S) {
+            PIECE_POSSIBLE_MOVES.add((LinearLayout) findViewById(getResources().getIdentifier(move, "id", getPackageName())));
+        }
         // Create a new ClipData.Item from the ImageView object's tag
         ClipData.Item item = new ClipData.Item((CharSequence) view.getTag());
 
@@ -216,14 +222,14 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                     v.setVisibility(View.VISIBLE);
                 } else {
                     // if dropped at different location then change turn
-                    if (!owner.equals(container))
+                    if (!owner.equals(container)) {
                         WHITE_TURN = !WHITE_TURN;
+                        Game1.WHITE_TURN = !Game1.WHITE_TURN;
+                        Game1.movePieceFromSrcToDest(getChessPieceName(v), getBoxNameOFLayout(container));
+                    }
                 }
 
-                PIECE_POSSIBLE_MOVES.clear();
-                removeKilledPiece(container);
-
-                check();
+                showCheckmateOrCheckOrDraw();
 
                 // Returns true. DragEvent.getResult() will return true.
                 return true;
@@ -242,7 +248,11 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
 
                 // returns true; the value is ignored.
+
+
                 playerAI();
+
+
                 return true;
 
             // An unknown action type was received.
@@ -253,13 +263,26 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         return false;
     }
 
+    private String getChessPieceName(View v) {
+        String temp = v.getResources().getResourceName(v.getId());
+        return temp.substring(temp.indexOf('/') + 1);
+    }
+
     //On click event for chess piece
     @SuppressLint("ResourceAsColor")
     @Override
     public void onClick(View v) {
         resetBackground();
         removeOnClickEvent();
-        PIECE_POSSIBLE_MOVES = possibleMoves(v, false);
+
+        String chessPiece = getChessPieceName(v);
+
+        PIECE_POSSIBLE_MOVES_S = Game1.possibleMoves(chessPiece, false);
+        PIECE_POSSIBLE_MOVES.clear();
+        for (String move : PIECE_POSSIBLE_MOVES_S) {
+            PIECE_POSSIBLE_MOVES.add((LinearLayout) findViewById(getResources().getIdentifier(move, "id", getPackageName())));
+        }
+
         PIECE = (ImageView) v;
         for (LinearLayout linearLayout : PIECE_POSSIBLE_MOVES) {
             customView(linearLayout);
@@ -283,11 +306,15 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                         parentLayout.removeView(PIECE);
                         LinearLayout linearLayout = (LinearLayout) v;
                         linearLayout.addView(PIECE);
+
+                        Game1.movePieceFromSrcToDest(getChessPieceName(PIECE), getBoxNameOFLayout(linearLayout));
+
                         PIECE_POSSIBLE_MOVES.clear();
                         PIECE = null;
                         WHITE_TURN = !WHITE_TURN;
+                        Game1.WHITE_TURN = !Game1.WHITE_TURN;
                         removeOnClickEvent();
-                        check();
+                        showCheckmateOrCheckOrDraw();
                         playerAI();
                     }
                 }
@@ -305,313 +332,40 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 parentLayout.removeView(v);
                 chessPieceParentLayout.removeView(PIECE);
                 parentLayout.addView(PIECE);
+
+                Game1.movePieceFromSrcToDest(getChessPieceName(PIECE), getBoxNameOFLayout(parentLayout));
+
                 PIECE = null;
                 PIECE_POSSIBLE_MOVES.clear();
                 WHITE_TURN = !WHITE_TURN;
+                Game1.WHITE_TURN = !Game1.WHITE_TURN;
                 removeOnClickEvent();
-                check();
+                showCheckmateOrCheckOrDraw();
                 playerAI();
             }
         }
     };
 
-    //Returns a list of possible moves of a given piece type at location
-    public List<String> chessMove(String chessPieceLocation, String chessPiece) {
-        String locationXS = chessPieceLocation.substring(chessPieceLocation.length() - 2, chessPieceLocation.length() - 1);
-        String locationYS = chessPieceLocation.substring(chessPieceLocation.length() - 1);
-        List<String> locations = new ArrayList<>();
-        int locationX = Integer.parseInt(locationXS);
-        int locationY = Integer.parseInt(locationYS);
-        locations.clear();
-        String checkLocation;
-        boolean flag1, flag2, flag3, flag4, flag5, flag6, flag7, flag8;
-        flag1 = flag2 = flag3 = flag4 = flag5 = flag6 = flag7 = flag8 = false;
+    private boolean showCheckmateOrCheckOrDraw() {
 
-        switch (chessPiece.substring(8)) {
-            case "knight": {
-
-                if (locationX + 2 <= 7 && locationY + 1 <= 7)
-                    locations.add("box" + (locationX + 2) + (locationY + 1));
-                if (locationX + 1 <= 7 && locationY + 2 <= 7)
-                    locations.add("box" + (locationX + 1) + (locationY + 2));
-                if (locationX - 1 >= 0 && locationY - 2 >= 0) {
-                    locations.add("box" + (locationX - 1) + (locationY - 2));
-                }
-                if (locationX - 2 >= 0 && locationY - 1 >= 0) {
-                    locations.add("box" + (locationX - 2) + (locationY - 1));
-                }
-
-
-                if (locationX + 2 <= 7 && locationY - 1 >= 0)
-                    locations.add("box" + (locationX + 2) + (locationY - 1));
-                if (locationX + 1 <= 7 && locationY - 2 >= 0)
-                    locations.add("box" + (locationX + 1) + (locationY - 2));
-                if (locationX - 1 >= 0 && locationY + 2 <= 7) {
-                    locations.add("box" + (locationX - 1) + (locationY + 2));
-                }
-                if (locationX - 2 >= 0 && locationY + 1 <= 7) {
-                    locations.add("box" + (locationX - 2) + (locationY + 1));
-                }
-            }
-            break;
-
-            case "bishop": {
-                for (int i = 1; i <= 7; i++) {
-                    if (locationX + i <= 7 && locationY + i <= 7)
-                        if (!flag1) {
-                            checkLocation = "box" + (locationX + i) + (locationY + i);
-                            if (isPiecePresent(checkLocation)) flag1 = true;
-                            locations.add(checkLocation);
-                        }
-                    if (locationX - i >= 0 && locationY - i >= 0)
-                        if (!flag2) {
-                            checkLocation = "box" + (locationX - i) + (locationY - i);
-                            if (isPiecePresent(checkLocation)) flag2 = true;
-                            locations.add(checkLocation);
-                        }
-                    if (locationX + i <= 7 && locationY - i >= 0)
-                        if (!flag3) {
-                            checkLocation = "box" + (locationX + i) + (locationY - i);
-                            if (isPiecePresent(checkLocation)) flag3 = true;
-                            locations.add(checkLocation);
-                        }
-                    if (locationX - i >= 0 && locationY + i <= 7)
-                        if (!flag4) {
-                            checkLocation = "box" + (locationX - i) + (locationY + i);
-                            if (isPiecePresent(checkLocation)) flag4 = true;
-                            locations.add(checkLocation);
-                        }
-                }
-            }
-            break;
-
-            case "rook": {
-
-                for (int i = 1; i <= 7; i++) {
-                    if (locationX + i <= 7) {
-                        if (!flag1) {
-                            checkLocation = "box" + (locationX + i) + locationY;
-                            if (isPiecePresent(checkLocation)) flag1 = true;
-                            locations.add(checkLocation);
-                        }
-                    }
-                    if (locationY + i <= 7) {
-                        if (!flag2) {
-                            checkLocation = "box" + locationX + (locationY + i);
-                            if (isPiecePresent(checkLocation)) flag2 = true;
-                            locations.add(checkLocation);
-                        }
-                    }
-                    if (locationX - i >= 0) {
-                        if (!flag3) {
-                            checkLocation = "box" + (locationX - i) + locationY;
-                            if (isPiecePresent(checkLocation)) flag3 = true;
-                            locations.add(checkLocation);
-                        }
-                    }
-                    if (locationY - i >= 0) {
-                        if (!flag4) {
-                            checkLocation = "box" + (locationX) + (locationY - i);
-                            if (isPiecePresent(checkLocation)) flag4 = true;
-                            locations.add(checkLocation);
-                        }
-                    }
-                }
-            }
-            break;
-            case "king": {
-                if (locationX + 1 <= 7)
-                    locations.add("box" + (locationX + 1) + locationY);
-
-                if (locationY + 1 <= 7)
-                    locations.add("box" + locationX + (locationY + 1));
-
-                if (locationX - 1 >= 0)
-                    locations.add("box" + (locationX - 1) + locationY);
-
-                if (locationY - 1 >= 0)
-                    locations.add("box" + locationX + (locationY - 1));
-
-                if (locationX + 1 <= 7 && locationY + 1 <= 7)
-                    locations.add("box" + (locationX + 1) + (locationY + 1));
-
-                if (locationX - 1 >= 0 && locationY - 1 >= 0)
-                    locations.add("box" + (locationX - 1) + (locationY - 1));
-
-                if (locationX + 1 <= 7 && locationY - 1 >= 0)
-                    locations.add("box" + (locationX + 1) + (locationY - 1));
-
-                if (locationX - 1 >= 0 && locationY + 1 <= 7)
-                    locations.add("box" + (locationX - 1) + (locationY + 1));
-            }
-            break;
-
-            case "queen": {
-                for (int i = 1; i <= 7; i++) {
-                    if (locationX + i <= 7 && locationY + i <= 7)
-                        if (!flag1) {
-                            checkLocation = "box" + (locationX + i) + (locationY + i);
-                            if (isPiecePresent(checkLocation)) flag1 = true;
-                            locations.add(checkLocation);
-                        }
-
-                    if (locationX - i >= 0 && locationY - i >= 0)
-                        if (!flag2) {
-                            checkLocation = "box" + (locationX - i) + (locationY - i);
-                            if (isPiecePresent(checkLocation)) flag2 = true;
-                            locations.add(checkLocation);
-                        }
-                    if (locationX + i <= 7 && locationY - i >= 0)
-                        if (!flag3) {
-                            checkLocation = "box" + (locationX + i) + (locationY - i);
-                            if (isPiecePresent(checkLocation)) flag3 = true;
-                            locations.add(checkLocation);
-                        }
-
-                    if (locationX - i >= 0 && locationY + i <= 7)
-                        if (!flag4) {
-                            checkLocation = "box" + (locationX - i) + (locationY + i);
-                            if (isPiecePresent(checkLocation)) flag4 = true;
-                            locations.add(checkLocation);
-                        }
-
-                    if (locationX + i <= 7)
-                        if (!flag5) {
-                            checkLocation = "box" + (locationX + i) + (locationY);
-                            if (isPiecePresent(checkLocation)) flag5 = true;
-                            locations.add(checkLocation);
-                        }
-
-                    if (locationY + i <= 7)
-                        if (!flag6) {
-                            checkLocation = "box" + (locationX) + (locationY + i);
-                            if (isPiecePresent(checkLocation)) flag6 = true;
-                            locations.add(checkLocation);
-                        }
-
-                    if (locationX - i >= 0)
-                        if (!flag7) {
-                            checkLocation = "box" + (locationX - i) + (locationY);
-                            if (isPiecePresent(checkLocation)) flag7 = true;
-                            locations.add(checkLocation);
-                        }
-
-                    if (locationY - i >= 0)
-                        if (!flag8) {
-                            checkLocation = "box" + (locationX) + (locationY - i);
-                            if (isPiecePresent(checkLocation)) flag8 = true;
-                            locations.add(checkLocation);
-                        }
-                }
-            }
-            break;
-
-            case "pawn": {
-                String move;
-                if (chessPiece.contains("black")) {
-                    if (locationX + 1 <= 7) {
-                        move = "box" + (locationX + 1) + locationY;
-                        if (!isPiecePresent(move)) {
-                            locations.add(move);
-                            move = "box" + (locationX + 2) + locationY;
-                            if (locationX == 1 && !isPiecePresent(move)) {
-                                locations.add(move);
-                            }
-                        }
-
-                        move = "box" + (locationX + 1) + (locationY + 1);
-                        if (locationY + 1 <= 7) {
-                            if (isPiecePresent(move)) {
-                                locations.add(move);
-                            }
-                        }
-                        move = "box" + (locationX + 1) + (locationY - 1);
-                        if (locationY - 1 >= 0) {
-                            if (isPiecePresent(move)) {
-                                locations.add(move);
-                            }
-                        }
-                    }
-                }
-
-                if (chessPiece.contains("white")) {
-                    if (locationX - 1 >= 0) {
-                        move = "box" + (locationX - 1) + locationY;
-                        if (!isPiecePresent(move)) {
-                            locations.add(move);
-                            move = "box" + (locationX - 2) + locationY;
-                            if (locationX == 6 && !isPiecePresent(move)) {
-                                locations.add(move);
-                            }
-                        }
-
-                        move = "box" + (locationX - 1) + (locationY + 1);
-                        if (locationY + 1 <= 7) {
-                            if (isPiecePresent(move)) {
-                                locations.add(move);
-                            }
-                        }
-
-                        move = "box" + (locationX - 1) + (locationY - 1);
-                        if (locationY - 1 >= 0) {
-                            if (isPiecePresent(move))
-                                locations.add(move);
-                        }
-                    }
-                }
-            }
-            break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + chessPiece.substring(8));
+        if (Game1.isCheckmate()) {
+            String winner = !WHITE_TURN ? "White" : "Black";
+            gameEnds();
+            Toast.makeText(this, "CHECKMATE!!!  "+winner+" Wins !!!", Toast.LENGTH_LONG).show();
+        } else if (Game1.isCheck()) {
+            Toast.makeText(this, "CHECK !!!", Toast.LENGTH_SHORT).show();
+        }else if (Game1.isDraw()){
+            Toast.makeText(this, "DRAW !!!", Toast.LENGTH_LONG).show();
         }
-        return locations;
+        return false;
     }
 
-    ///Returns List of linearLayouts that are valid for the given view.
-    public List<LinearLayout> possibleMoves(View v, boolean virtualCall) {
-        List<LinearLayout> ret = new ArrayList<>();
-        List<LinearLayout> finalRet = new ArrayList<>();
-        if (v == null) return ret;
-        String imageViewID = v.getResources().getResourceName(v.getId()).substring(v.getResources().getResourceName(v.getId()).indexOf('/') + 1);
-        LinearLayout linearLayout = (LinearLayout) v.getParent();
-        String imageViewLocation = getBoxNameOFLayout(linearLayout);
-
-        ImageView imageView;
-        if (imageViewID.contains("white") && WHITE_TURN) {
-            for (String move : chessMove(imageViewLocation, imageViewID)) {
-                linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
-                if (!isPiecePresent(move)) {
-                    ret.add(linearLayout);
-                } else {
-                    imageView = (ImageView) linearLayout.getChildAt(0);
-                    String childName = imageView.getResources().getResourceName(imageView.getId());
-
-                    if (childName.contains("black")) {
-                        ret.add(linearLayout);
-                    }
-                }
-            }
-        } else if (imageViewID.contains("black") && !WHITE_TURN) {
-            for (String move : chessMove(imageViewLocation, imageViewID)) {
-                linearLayout = findViewById(getResources().getIdentifier(move, "id", getPackageName()));
-                if (!isPiecePresent(move)) {
-                    ret.add(linearLayout);
-                } else {
-                    imageView = (ImageView) linearLayout.getChildAt(0);
-                    String childName = imageView.getResources().getResourceName(imageView.getId());
-                    if (childName.contains("white")) {
-                        ret.add(linearLayout);
-                    }
-                }
-            }
+    private void gameEnds() {
+        for (int i = 0; i < 32; i++) {
+            ImageView iv = IMAGE_VIEW_LIST.get(i);
+            iv.setOnClickListener(null);
+            iv.setOnLongClickListener(null);
         }
-        if (virtualCall) return ret;
-        for (LinearLayout destLl : ret) {
-            String dest = getBoxNameOFLayout(destLl);
-            if (!isMoveCreatingCheckForSelf(imageViewID, imageViewLocation, dest))
-                finalRet.add(destLl);
-        }
-        return finalRet;
     }
 
 
@@ -622,8 +376,11 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
     public void resetGame() {
         WHITE_TURN = true;
+        Game1.resetGame(LOCATION_TABLE);
         for (int i = 0; i < 32; i++) {
             ImageView iv = IMAGE_VIEW_LIST.get(i);
+            iv.setOnClickListener(this);
+            iv.setOnLongClickListener(this);
             movePieceFromSrcToDest(iv, ORIGINAL_LOCATION[i]);
         }
         resetBackground();
@@ -632,13 +389,25 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
     public void playerAI() {
         if (!WHITE_TURN) {
+            if(Game1.isCheckmate() || Game1.isDraw()){
+                gameEnds();
+                return;
+            }
+
             Random rand = new Random();
             String randomPiece;
+
             while (true) {
                 randomPiece = CHESS_PIECE_LIST[rand.nextInt(32)];
                 if (!randomPiece.contains("black")) continue;
                 ImageView iv = (ImageView) getViewByName(randomPiece);
-                PIECE_POSSIBLE_MOVES = possibleMoves(iv, false);
+
+                PIECE_POSSIBLE_MOVES_S = Game1.possibleMoves(randomPiece, false);
+                PIECE_POSSIBLE_MOVES.clear();
+                for (String move : PIECE_POSSIBLE_MOVES_S) {
+                    PIECE_POSSIBLE_MOVES.add((LinearLayout) findViewById(getResources().getIdentifier(move, "id", getPackageName())));
+                }
+
                 int lengthOfPossibleMoves = PIECE_POSSIBLE_MOVES.size();
                 if (lengthOfPossibleMoves == 0) continue;
                 LinearLayout l = PIECE_POSSIBLE_MOVES.get(rand.nextInt(lengthOfPossibleMoves));
@@ -646,6 +415,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 LAST_MOVE[1] = l;
                 String dest = getBoxNameOFLayout(l);
                 movePieceFromSrcToDest(iv, dest);
+                Game1.movePieceFromSrcToDest(randomPiece, dest);
 
 
                 setBackgroundOfLastMove(LAST_MOVE[0], "#FFFF99");
@@ -653,7 +423,8 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 break;
             }
             WHITE_TURN = true;
-            check();
+            Game1.WHITE_TURN = true;
+            showCheckmateOrCheckOrDraw();
         }
     }
 
@@ -738,74 +509,5 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         return removeKilledPiece(destLinearLayout);
     }
 
-    public boolean isMoveCreatingCheckForSelf(String piece, String src, String dest) {
-        ImageView pieceIv = (ImageView) getViewByName(piece);
-        // temporarily move the piece from src to dest
-        ImageView killedPieceIfAny = movePieceFromSrcToDest(pieceIv, dest);
-
-        // check if current piece turn king can be killed by opponent
-        boolean ret = IsCurrentKingInPositionOfOpponentAnyPiecePossibleMove();
-
-        // move back piece from dest to src
-        movePieceFromSrcToDest(pieceIv, src);
-        if (killedPieceIfAny != null) {
-            movePieceFromSrcToDest(killedPieceIfAny, dest);
-        }
-
-        return ret;
-    }
-
-    public boolean IsCurrentKingInPositionOfOpponentAnyPiecePossibleMove() {
-        ImageView x;
-
-        if (WHITE_TURN)
-            x = findViewById(R.id.white_0_king);
-        else
-            x = findViewById(R.id.black_0_king);
-
-        // Linear Layout of the king
-        LinearLayout l = (LinearLayout) x.getParent();
-
-        //loop through all opponent pieces and return true if they can kill current turn's king
-        String piecesColor = WHITE_TURN ? "black" : "white";
-
-        for (String piece : CHESS_PIECE_LIST) {
-            if (piece.contains(piecesColor)) {
-                WHITE_TURN = !WHITE_TURN;
-                if (possibleMoves(getViewByName(piece), true).contains(l)) {
-                    WHITE_TURN = !WHITE_TURN;
-                    return true;
-                }
-                WHITE_TURN = !WHITE_TURN;
-            }
-        }
-        return false;
-    }
-
-    public void check() {
-        IS_CHECK = false;
-        if (IsCurrentKingInPositionOfOpponentAnyPiecePossibleMove()) {
-            if (!isCheckmate()) {
-                Toast.makeText(this, "Check !!!", Toast.LENGTH_SHORT).show();
-                IS_CHECK = true;
-            }
-        }
-    }
-
-    public boolean isCheckmate() {
-        String piecesColor = WHITE_TURN ? "white" : "black";
-        for (String piece : CHESS_PIECE_LIST) {
-            if (piece.contains(piecesColor)) {
-                if (possibleMoves(getViewByName(piece), false).size() > 0) {
-                    return false;
-                }
-            }
-        }
-        String winner = (WHITE_TURN) ? "Black" : "White";
-
-        Toast.makeText(this, "CHECKMATE !!! " + winner + "  Wins !!!", Toast.LENGTH_SHORT).show();
-        WHITE_TURN = true;
-        return true;
-    }
 
 }
