@@ -100,6 +100,11 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
 
             movePieceFromSrcToDest(iv, ORIGINAL_LOCATION[i]);
         }
+
+        for(ImageView imageView : IMAGE_VIEW_LIST){
+            imageView.setOnClickListener(this);
+        }
+
         resetBackground();
     }
 
@@ -799,7 +804,10 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         if (IsCurrentKingInPositionOfOpponentAnyPiecePossibleMove()) {
             if (!isCheckmate())
                 Toast.makeText(this, "Check !!!", Toast.LENGTH_SHORT).show();
+        }else{
+            draw();
         }
+
     }
 
     public boolean isCheckmate() {
@@ -812,6 +820,10 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             }
         }
         String winner = (WHITE_TURN) ? "Black" : "White";
+
+        for(ImageView imageView : IMAGE_VIEW_LIST){
+            imageView.setOnClickListener(null);
+        }
 
         Toast.makeText(this, "CHECKMATE !!! " + winner + "  Wins !!!", Toast.LENGTH_SHORT).show();
         WHITE_TURN = true;
@@ -827,5 +839,37 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             KILLED_WHITE_PIECE.addView(imageView);
         }
     }
+
+    @SuppressLint("ShowToast")
+    public void draw(){
+
+        String side = "black";
+        int imageViewID;
+        ImageView v;
+
+        if(WHITE_TURN){
+            side = "white" ;
+        }
+
+        for(String piece: CHESS_PIECE_LIST){
+            if(piece.contains(side)){
+                imageViewID = getResources().getIdentifier(piece,"id",getPackageName());
+                v = findViewById(imageViewID);
+
+                if(possibleMoves(v, false).size() != 0){
+                    return;
+                }
+            }
+        }
+
+        for(ImageView imageView : IMAGE_VIEW_LIST){
+            imageView.setOnClickListener(null);
+        }
+
+
+        Toast.makeText(this, "Draw", Toast.LENGTH_SHORT);
+
+    }
+
 
 }
