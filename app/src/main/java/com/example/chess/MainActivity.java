@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     public boolean WHITE_TURN = true;
     public List<LinearLayout> PIECE_POSSIBLE_MOVES = new ArrayList<>();
     ImageView PIECE;
+
     public final String[] CHESS_PIECE_LIST = {"black_1_knight", "black_0_knight",
             "black_1_rook", "black_0_rook",
             "black_1_bishop", "black_0_bishop",
@@ -45,10 +46,12 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             "white_0_pawn", "white_1_pawn", "white_2_pawn", "white_3_pawn", "white_4_pawn", "white_5_pawn", "white_6_pawn", "white_7_pawn"
     };
     String[] ORIGINAL_LOCATION = new String[32];
+    LinearLayout KILLED_WHITE_PIECE , KILLED_BLACK_PIECE;
 
     LinearLayout[] LAST_MOVE = new LinearLayout[2];
     public Hashtable<String, String> locationTable = new Hashtable<>();
 
+    @SuppressLint("CutPasteId")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,20 +83,25 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 resetGame();
             }
         });
+
+        KILLED_WHITE_PIECE = findViewById(R.id.killedWhitePiece);
+        KILLED_BLACK_PIECE = findViewById(R.id.killedBlackPiece);
     }
 
     public String getBoxNameOFLayout(LinearLayout l){
         String temp = l.getResources().getResourceName(l.getId());
         return temp.substring(temp.indexOf('/') + 1);
     }
+
     public void resetGame() {
         WHITE_TURN = true;
         for (int i = 0; i < 32; i++) {
-            movePieceFromSrcToDest((ImageView) getViewByName(CHESS_PIECE_LIST[i]), ORIGINAL_LOCATION[i]);
+            ImageView iv = IMAGE_VIEW_LIST.get(i);
+
+            movePieceFromSrcToDest(iv, ORIGINAL_LOCATION[i]);
         }
         resetBackground();
     }
-
 
     //Implement long click and drag listener
     public void implementEvents() {
@@ -322,251 +330,257 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         String locationXS = chessPieceLocation.substring(chessPieceLocation.length() - 2, chessPieceLocation.length() - 1);
         String locationYS = chessPieceLocation.substring(chessPieceLocation.length() - 1);
         List<String> locations = new ArrayList<>();
-        int locationX = Integer.parseInt(locationXS);
-        int locationY = Integer.parseInt(locationYS);
-        locations.clear();
-        String checkLocation;
-        boolean flag1, flag2, flag3, flag4, flag5, flag6, flag7, flag8;
-        flag1 = flag2 = flag3 = flag4 = flag5 = flag6 = flag7 = flag8 = false;
-
-        switch (chessPiece.substring(8)) {
-            case "knight": {
-
-                if (locationX + 2 <= 7 && locationY + 1 <= 7)
-                    locations.add("box" + (locationX + 2) + (locationY + 1));
-                if (locationX + 1 <= 7 && locationY + 2 <= 7)
-                    locations.add("box" + (locationX + 1) + (locationY + 2));
-                if (locationX - 1 >= 0 && locationY - 2 >= 0) {
-                    locations.add("box" + (locationX - 1) + (locationY - 2));
-                }
-                if (locationX - 2 >= 0 && locationY - 1 >= 0) {
-                    locations.add("box" + (locationX - 2) + (locationY - 1));
-                }
-
-
-                if (locationX + 2 <= 7 && locationY - 1 >= 0)
-                    locations.add("box" + (locationX + 2) + (locationY - 1));
-                if (locationX + 1 <= 7 && locationY - 2 >= 0)
-                    locations.add("box" + (locationX + 1) + (locationY - 2));
-                if (locationX - 1 >= 0 && locationY + 2 <= 7) {
-                    locations.add("box" + (locationX - 1) + (locationY + 2));
-                }
-                if (locationX - 2 >= 0 && locationY + 1 <= 7) {
-                    locations.add("box" + (locationX - 2) + (locationY + 1));
-                }
-            }
-            break;
-
-            case "bishop": {
-                for (int i = 1; i <= 7; i++) {
-                    if (locationX + i <= 7 && locationY + i <= 7)
-                        if (!flag1) {
-                            checkLocation = "box" + (locationX + i) + (locationY + i);
-                            if (isPiecePresent(checkLocation)) flag1 = true;
-                            locations.add(checkLocation);
-                        }
-                    if (locationX - i >= 0 && locationY - i >= 0)
-                        if (!flag2) {
-                            checkLocation = "box" + (locationX - i) + (locationY - i);
-                            if (isPiecePresent(checkLocation)) flag2 = true;
-                            locations.add(checkLocation);
-                        }
-                    if (locationX + i <= 7 && locationY - i >= 0)
-                        if (!flag3) {
-                            checkLocation = "box" + (locationX + i) + (locationY - i);
-                            if (isPiecePresent(checkLocation)) flag3 = true;
-                            locations.add(checkLocation);
-                        }
-                    if (locationX - i >= 0 && locationY + i <= 7)
-                        if (!flag4) {
-                            checkLocation = "box" + (locationX - i) + (locationY + i);
-                            if (isPiecePresent(checkLocation)) flag4 = true;
-                            locations.add(checkLocation);
-                        }
-                }
-            }
-            break;
-
-            case "rook": {
-
-                for (int i = 1; i <= 7; i++) {
-                    if (locationX + i <= 7) {
-                        if (!flag1) {
-                            checkLocation = "box" + (locationX + i) + locationY;
-                            if (isPiecePresent(checkLocation)) flag1 = true;
-                            locations.add(checkLocation);
-                        }
-                    }
-                    if (locationY + i <= 7) {
-                        if (!flag2) {
-                            checkLocation = "box" + locationX + (locationY + i);
-                            if (isPiecePresent(checkLocation)) flag2 = true;
-                            locations.add(checkLocation);
-                        }
-                    }
-                    if (locationX - i >= 0) {
-                        if (!flag3) {
-                            checkLocation = "box" + (locationX - i) + locationY;
-                            if (isPiecePresent(checkLocation)) flag3 = true;
-                            locations.add(checkLocation);
-                        }
-                    }
-                    if (locationY - i >= 0) {
-                        if (!flag4) {
-                            checkLocation = "box" + (locationX) + (locationY - i);
-                            if (isPiecePresent(checkLocation)) flag4 = true;
-                            locations.add(checkLocation);
-                        }
-                    }
-                }
-            }
-            break;
-            case "king": {
-                if (locationX + 1 <= 7)
-                    locations.add("box" + (locationX + 1) + locationY);
-
-                if (locationY + 1 <= 7)
-                    locations.add("box" + locationX + (locationY + 1));
-
-                if (locationX - 1 >= 0)
-                    locations.add("box" + (locationX - 1) + locationY);
-
-                if (locationY - 1 >= 0)
-                    locations.add("box" + locationX + (locationY - 1));
-
-                if (locationX + 1 <= 7 && locationY + 1 <= 7)
-                    locations.add("box" + (locationX + 1) + (locationY + 1));
-
-                if (locationX - 1 >= 0 && locationY - 1 >= 0)
-                    locations.add("box" + (locationX - 1) + (locationY - 1));
-
-                if (locationX + 1 <= 7 && locationY - 1 >= 0)
-                    locations.add("box" + (locationX + 1) + (locationY - 1));
-
-                if (locationX - 1 >= 0 && locationY + 1 <= 7)
-                    locations.add("box" + (locationX - 1) + (locationY + 1));
-            }
-            break;
-
-            case "queen": {
-                for (int i = 1; i <= 7; i++) {
-                    if (locationX + i <= 7 && locationY + i <= 7)
-                        if (!flag1) {
-                            checkLocation = "box" + (locationX + i) + (locationY + i);
-                            if (isPiecePresent(checkLocation)) flag1 = true;
-                            locations.add(checkLocation);
-                        }
-
-                    if (locationX - i >= 0 && locationY - i >= 0)
-                        if (!flag2) {
-                            checkLocation = "box" + (locationX - i) + (locationY - i);
-                            if (isPiecePresent(checkLocation)) flag2 = true;
-                            locations.add(checkLocation);
-                        }
-                    if (locationX + i <= 7 && locationY - i >= 0)
-                        if (!flag3) {
-                            checkLocation = "box" + (locationX + i) + (locationY - i);
-                            if (isPiecePresent(checkLocation)) flag3 = true;
-                            locations.add(checkLocation);
-                        }
-
-                    if (locationX - i >= 0 && locationY + i <= 7)
-                        if (!flag4) {
-                            checkLocation = "box" + (locationX - i) + (locationY + i);
-                            if (isPiecePresent(checkLocation)) flag4 = true;
-                            locations.add(checkLocation);
-                        }
-
-                    if (locationX + i <= 7)
-                        if (!flag5) {
-                            checkLocation = "box" + (locationX + i) + (locationY);
-                            if (isPiecePresent(checkLocation)) flag5 = true;
-                            locations.add(checkLocation);
-                        }
-
-                    if (locationY + i <= 7)
-                        if (!flag6) {
-                            checkLocation = "box" + (locationX) + (locationY + i);
-                            if (isPiecePresent(checkLocation)) flag6 = true;
-                            locations.add(checkLocation);
-                        }
-
-                    if (locationX - i >= 0)
-                        if (!flag7) {
-                            checkLocation = "box" + (locationX - i) + (locationY);
-                            if (isPiecePresent(checkLocation)) flag7 = true;
-                            locations.add(checkLocation);
-                        }
-
-                    if (locationY - i >= 0)
-                        if (!flag8) {
-                            checkLocation = "box" + (locationX) + (locationY - i);
-                            if (isPiecePresent(checkLocation)) flag8 = true;
-                            locations.add(checkLocation);
-                        }
-                }
-            }
-            break;
-
-            case "pawn": {
-                String move;
-                if (chessPiece.contains("black")) {
-                    if (locationX + 1 <= 7) {
-                        move = "box" + (locationX + 1) + locationY;
-                        if (!isPiecePresent(move)) {
-                            locations.add(move);
-                            move = "box" + (locationX + 2) + locationY;
-                            if (locationX == 1 && !isPiecePresent(move)) {
-                                locations.add(move);
-                            }
-                        }
-
-                        move = "box" + (locationX + 1) + (locationY + 1);
-                        if (locationY + 1 <= 7) {
-                            if (isPiecePresent(move)) {
-                                locations.add(move);
-                            }
-                        }
-                        move = "box" + (locationX + 1) + (locationY - 1);
-                        if (locationY - 1 >= 0) {
-                            if (isPiecePresent(move)) {
-                                locations.add(move);
-                            }
-                        }
-                    }
-                }
-
-                if (chessPiece.contains("white")) {
-                    if (locationX - 1 >= 0) {
-                        move = "box" + (locationX - 1) + locationY;
-                        if (!isPiecePresent(move)) {
-                            locations.add(move);
-                            move = "box" + (locationX - 2) + locationY;
-                            if (locationX == 6 && !isPiecePresent(move)) {
-                                locations.add(move);
-                            }
-                        }
-
-                        move = "box" + (locationX - 1) + (locationY + 1);
-                        if (locationY + 1 <= 7) {
-                            if (isPiecePresent(move)) {
-                                locations.add(move);
-                            }
-                        }
-
-                        move = "box" + (locationX - 1) + (locationY - 1);
-                        if (locationY - 1 >= 0) {
-                            if (isPiecePresent(move))
-                                locations.add(move);
-                        }
-                    }
-                }
-            }
-            break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + chessPiece.substring(8));
+        int locationX  , locationY ;
+        try {
+            locationX = Integer.parseInt(locationXS);
+            locationY = Integer.parseInt(locationYS);
+        }catch (Exception e){
+            System.err.println("Location is not an integer value");
+            return locations;
         }
-        return locations;
+            locations.clear();
+            String checkLocation;
+            boolean flag1, flag2, flag3, flag4, flag5, flag6, flag7, flag8;
+            flag1 = flag2 = flag3 = flag4 = flag5 = flag6 = flag7 = flag8 = false;
+
+            switch (chessPiece.substring(8)) {
+                case "knight": {
+
+                    if (locationX + 2 <= 7 && locationY + 1 <= 7)
+                        locations.add("box" + (locationX + 2) + (locationY + 1));
+                    if (locationX + 1 <= 7 && locationY + 2 <= 7)
+                        locations.add("box" + (locationX + 1) + (locationY + 2));
+                    if (locationX - 1 >= 0 && locationY - 2 >= 0) {
+                        locations.add("box" + (locationX - 1) + (locationY - 2));
+                    }
+                    if (locationX - 2 >= 0 && locationY - 1 >= 0) {
+                        locations.add("box" + (locationX - 2) + (locationY - 1));
+                    }
+
+
+                    if (locationX + 2 <= 7 && locationY - 1 >= 0)
+                        locations.add("box" + (locationX + 2) + (locationY - 1));
+                    if (locationX + 1 <= 7 && locationY - 2 >= 0)
+                        locations.add("box" + (locationX + 1) + (locationY - 2));
+                    if (locationX - 1 >= 0 && locationY + 2 <= 7) {
+                        locations.add("box" + (locationX - 1) + (locationY + 2));
+                    }
+                    if (locationX - 2 >= 0 && locationY + 1 <= 7) {
+                        locations.add("box" + (locationX - 2) + (locationY + 1));
+                    }
+                }
+                break;
+
+                case "bishop": {
+                    for (int i = 1; i <= 7; i++) {
+                        if (locationX + i <= 7 && locationY + i <= 7)
+                            if (!flag1) {
+                                checkLocation = "box" + (locationX + i) + (locationY + i);
+                                if (isPiecePresent(checkLocation)) flag1 = true;
+                                locations.add(checkLocation);
+                            }
+                        if (locationX - i >= 0 && locationY - i >= 0)
+                            if (!flag2) {
+                                checkLocation = "box" + (locationX - i) + (locationY - i);
+                                if (isPiecePresent(checkLocation)) flag2 = true;
+                                locations.add(checkLocation);
+                            }
+                        if (locationX + i <= 7 && locationY - i >= 0)
+                            if (!flag3) {
+                                checkLocation = "box" + (locationX + i) + (locationY - i);
+                                if (isPiecePresent(checkLocation)) flag3 = true;
+                                locations.add(checkLocation);
+                            }
+                        if (locationX - i >= 0 && locationY + i <= 7)
+                            if (!flag4) {
+                                checkLocation = "box" + (locationX - i) + (locationY + i);
+                                if (isPiecePresent(checkLocation)) flag4 = true;
+                                locations.add(checkLocation);
+                            }
+                    }
+                }
+                break;
+
+                case "rook": {
+
+                    for (int i = 1; i <= 7; i++) {
+                        if (locationX + i <= 7) {
+                            if (!flag1) {
+                                checkLocation = "box" + (locationX + i) + locationY;
+                                if (isPiecePresent(checkLocation)) flag1 = true;
+                                locations.add(checkLocation);
+                            }
+                        }
+                        if (locationY + i <= 7) {
+                            if (!flag2) {
+                                checkLocation = "box" + locationX + (locationY + i);
+                                if (isPiecePresent(checkLocation)) flag2 = true;
+                                locations.add(checkLocation);
+                            }
+                        }
+                        if (locationX - i >= 0) {
+                            if (!flag3) {
+                                checkLocation = "box" + (locationX - i) + locationY;
+                                if (isPiecePresent(checkLocation)) flag3 = true;
+                                locations.add(checkLocation);
+                            }
+                        }
+                        if (locationY - i >= 0) {
+                            if (!flag4) {
+                                checkLocation = "box" + (locationX) + (locationY - i);
+                                if (isPiecePresent(checkLocation)) flag4 = true;
+                                locations.add(checkLocation);
+                            }
+                        }
+                    }
+                }
+                break;
+                case "king": {
+                    if (locationX + 1 <= 7)
+                        locations.add("box" + (locationX + 1) + locationY);
+
+                    if (locationY + 1 <= 7)
+                        locations.add("box" + locationX + (locationY + 1));
+
+                    if (locationX - 1 >= 0)
+                        locations.add("box" + (locationX - 1) + locationY);
+
+                    if (locationY - 1 >= 0)
+                        locations.add("box" + locationX + (locationY - 1));
+
+                    if (locationX + 1 <= 7 && locationY + 1 <= 7)
+                        locations.add("box" + (locationX + 1) + (locationY + 1));
+
+                    if (locationX - 1 >= 0 && locationY - 1 >= 0)
+                        locations.add("box" + (locationX - 1) + (locationY - 1));
+
+                    if (locationX + 1 <= 7 && locationY - 1 >= 0)
+                        locations.add("box" + (locationX + 1) + (locationY - 1));
+
+                    if (locationX - 1 >= 0 && locationY + 1 <= 7)
+                        locations.add("box" + (locationX - 1) + (locationY + 1));
+                }
+                break;
+
+                case "queen": {
+                    for (int i = 1; i <= 7; i++) {
+                        if (locationX + i <= 7 && locationY + i <= 7)
+                            if (!flag1) {
+                                checkLocation = "box" + (locationX + i) + (locationY + i);
+                                if (isPiecePresent(checkLocation)) flag1 = true;
+                                locations.add(checkLocation);
+                            }
+
+                        if (locationX - i >= 0 && locationY - i >= 0)
+                            if (!flag2) {
+                                checkLocation = "box" + (locationX - i) + (locationY - i);
+                                if (isPiecePresent(checkLocation)) flag2 = true;
+                                locations.add(checkLocation);
+                            }
+                        if (locationX + i <= 7 && locationY - i >= 0)
+                            if (!flag3) {
+                                checkLocation = "box" + (locationX + i) + (locationY - i);
+                                if (isPiecePresent(checkLocation)) flag3 = true;
+                                locations.add(checkLocation);
+                            }
+
+                        if (locationX - i >= 0 && locationY + i <= 7)
+                            if (!flag4) {
+                                checkLocation = "box" + (locationX - i) + (locationY + i);
+                                if (isPiecePresent(checkLocation)) flag4 = true;
+                                locations.add(checkLocation);
+                            }
+
+                        if (locationX + i <= 7)
+                            if (!flag5) {
+                                checkLocation = "box" + (locationX + i) + (locationY);
+                                if (isPiecePresent(checkLocation)) flag5 = true;
+                                locations.add(checkLocation);
+                            }
+
+                        if (locationY + i <= 7)
+                            if (!flag6) {
+                                checkLocation = "box" + (locationX) + (locationY + i);
+                                if (isPiecePresent(checkLocation)) flag6 = true;
+                                locations.add(checkLocation);
+                            }
+
+                        if (locationX - i >= 0)
+                            if (!flag7) {
+                                checkLocation = "box" + (locationX - i) + (locationY);
+                                if (isPiecePresent(checkLocation)) flag7 = true;
+                                locations.add(checkLocation);
+                            }
+
+                        if (locationY - i >= 0)
+                            if (!flag8) {
+                                checkLocation = "box" + (locationX) + (locationY - i);
+                                if (isPiecePresent(checkLocation)) flag8 = true;
+                                locations.add(checkLocation);
+                            }
+                    }
+                }
+                break;
+
+                case "pawn": {
+                    String move;
+                    if (chessPiece.contains("black")) {
+                        if (locationX + 1 <= 7) {
+                            move = "box" + (locationX + 1) + locationY;
+                            if (!isPiecePresent(move)) {
+                                locations.add(move);
+                                move = "box" + (locationX + 2) + locationY;
+                                if (locationX == 1 && !isPiecePresent(move)) {
+                                    locations.add(move);
+                                }
+                            }
+
+                            move = "box" + (locationX + 1) + (locationY + 1);
+                            if (locationY + 1 <= 7) {
+                                if (isPiecePresent(move)) {
+                                    locations.add(move);
+                                }
+                            }
+                            move = "box" + (locationX + 1) + (locationY - 1);
+                            if (locationY - 1 >= 0) {
+                                if (isPiecePresent(move)) {
+                                    locations.add(move);
+                                }
+                            }
+                        }
+                    }
+
+                    if (chessPiece.contains("white")) {
+                        if (locationX - 1 >= 0) {
+                            move = "box" + (locationX - 1) + locationY;
+                            if (!isPiecePresent(move)) {
+                                locations.add(move);
+                                move = "box" + (locationX - 2) + locationY;
+                                if (locationX == 6 && !isPiecePresent(move)) {
+                                    locations.add(move);
+                                }
+                            }
+
+                            move = "box" + (locationX - 1) + (locationY + 1);
+                            if (locationY + 1 <= 7) {
+                                if (isPiecePresent(move)) {
+                                    locations.add(move);
+                                }
+                            }
+
+                            move = "box" + (locationX - 1) + (locationY - 1);
+                            if (locationY - 1 >= 0) {
+                                if (isPiecePresent(move))
+                                    locations.add(move);
+                            }
+                        }
+                    }
+                }
+                break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + chessPiece.substring(8));
+            }
+            return locations;
     }
 
     public void removeOnClickEvent() {
@@ -654,6 +668,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
                 parentLayout.addView(PIECE);
                 PIECE = null;
                 PIECE_POSSIBLE_MOVES.clear();
+                killedPieceRemoval((ImageView) v);
                 WHITE_TURN = !WHITE_TURN;
                 removeOnClickEvent();
                 check();
@@ -713,6 +728,7 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         if (linearLayout.getChildCount() > 1) {
             ImageView iv = (ImageView) linearLayout.getChildAt(0);
             linearLayout.removeView(linearLayout.getChildAt(0));
+            killedPieceRemoval(iv);
             return iv;
         }
         return null;
@@ -729,6 +745,8 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
             l.removeView(pieceIv);
         }
         destLinearLayout.addView(pieceIv);
+        pieceIv.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
 
         return removeKilledPiece(destLinearLayout);
     }
@@ -785,7 +803,6 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     }
 
     public boolean isCheckmate() {
-
         String piecesColor = WHITE_TURN ? "white" : "black";
         for (String piece : CHESS_PIECE_LIST) {
             if (piece.contains(piecesColor)) {
@@ -799,6 +816,16 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         Toast.makeText(this, "CHECKMATE !!! " + winner + "  Wins !!!", Toast.LENGTH_SHORT).show();
         WHITE_TURN = true;
         return true;
+    }
+
+    public void killedPieceRemoval(ImageView imageView){
+        imageView.getLayoutParams().height = 70; // OR
+        imageView.getLayoutParams().width = 70;
+        if(!WHITE_TURN){
+            KILLED_BLACK_PIECE.addView(imageView);
+        }else{
+            KILLED_WHITE_PIECE.addView(imageView);
+        }
     }
 
 }
