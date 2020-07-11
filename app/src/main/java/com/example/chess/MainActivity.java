@@ -25,6 +25,8 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity
     implements View.OnLongClickListener, View.OnClickListener, View.OnDragListener {
 
+  final boolean AGAINST_AI = true;
+
   //    private static final String TAG = MainActivity.class.getSimpleName();
   List<ImageView> IMAGE_VIEW_LIST = new ArrayList<>();
   List<ImageView> IMAGE_VIEW_WITH_KILL_EVENTS = new ArrayList<>();
@@ -261,16 +263,30 @@ public class MainActivity extends AppCompatActivity
         } else {
           // if dropped at different location then change turn
           if (!owner.equals(container)) {
-            WHITE_TURN = !WHITE_TURN;
-            Game1.WHITE_TURN = !Game1.WHITE_TURN;
             String chessPiece = getChessPieceName(v);
             String ownerLocation = getBoxNameOFLayout((LinearLayout) owner);
             String destLocation = getBoxNameOFLayout(container);
+
+            // check if the current move is implementation of enPassant
+            if (!Game1.enPassant.equals("") && chessPiece.contains("pawn")) {
+              checkIfEnPassantHappen(chessPiece, ownerLocation, destLocation);
+            }
+
+            WHITE_TURN = !WHITE_TURN;
+            Game1.WHITE_TURN = !Game1.WHITE_TURN;
+
             Game1.movePieceFromSrcToDest(getChessPieceName(v), destLocation, false);
 
             // castle if needed
-            if(chessPiece.contains("king"))
+            if (chessPiece.contains("king"))
               moveRookIfCastle(chessPiece, ownerLocation, destLocation);
+
+            // inform ChessLogic about pawn taking two steps
+            else if (chessPiece.contains("pawn"))
+              enableEnPassantIfPawn2Steps(chessPiece, ownerLocation, destLocation);
+            else {
+              Game1.enPassant = "";
+            }
           }
         }
 
@@ -295,7 +311,7 @@ public class MainActivity extends AppCompatActivity
 
         // returns true; the value is ignored.
 
-        playerAI();
+        if(AGAINST_AI) playerAI();
 
         return true;
 
@@ -355,9 +371,19 @@ public class MainActivity extends AppCompatActivity
                 String destLocation = getBoxNameOFLayout(container);
                 Game1.movePieceFromSrcToDest(chessPiece, destLocation, false);
 
+                // check if the current move is implementation of enPassant
+                if (!Game1.enPassant.equals("") && chessPiece.contains("pawn")) {
+                  checkIfEnPassantHappen(chessPiece, ownerLocation, destLocation);
+                }
+
                 // castle if needed
-                if(chessPiece.contains("king"))
+                if (chessPiece.contains("king"))
                   moveRookIfCastle(chessPiece, ownerLocation, destLocation);
+
+                // inform ChessLogic about pawn taking two steps
+                else if (chessPiece.contains("pawn"))
+                  enableEnPassantIfPawn2Steps(chessPiece, ownerLocation, destLocation);
+                else Game1.enPassant = "";
 
                 PIECE_POSSIBLE_MOVES.clear();
                 PIECE = null;
@@ -365,8 +391,7 @@ public class MainActivity extends AppCompatActivity
                 Game1.WHITE_TURN = !Game1.WHITE_TURN;
                 removeOnClickEvent();
                 showCheckmateOrCheckOrDraw();
-                playerAI();
-              }
+                if(AGAINST_AI) playerAI();              }
             }
           }
         }
@@ -393,8 +418,7 @@ public class MainActivity extends AppCompatActivity
             Game1.WHITE_TURN = !Game1.WHITE_TURN;
             removeOnClickEvent();
             showCheckmateOrCheckOrDraw();
-            playerAI();
-          }
+            if(AGAINST_AI) playerAI();          }
         }
       };
 
@@ -444,6 +468,7 @@ public class MainActivity extends AppCompatActivity
 
       Random rand = new Random();
       String randomPiece;
+      String destLocation;
 
       while (true) {
         randomPiece = CHESS_PIECE_LIST[rand.nextInt(32)];
@@ -463,17 +488,35 @@ public class MainActivity extends AppCompatActivity
         LinearLayout l = PIECE_POSSIBLE_MOVES.get(rand.nextInt(lengthOfPossibleMoves));
         LAST_MOVE[0] = (LinearLayout) iv.getParent();
         LAST_MOVE[1] = l;
-        String dest = getBoxNameOFLayout(l);
-        movePieceFromSrcToDest(iv, dest);
-        Game1.movePieceFromSrcToDest(randomPiece, dest, false);
+        destLocation = getBoxNameOFLayout(l);
+        movePieceFromSrcToDest(iv, destLocation);
+        Game1.movePieceFromSrcToDest(randomPiece, destLocation, false);
 
         setBackgroundOfLastMove(LAST_MOVE[0], "#FFFF99");
         setBackgroundOfLastMove(LAST_MOVE[1], "Yellow");
         break;
       }
+
+      String ownerLocation = getBoxNameOFLayout(LAST_MOVE[0]);
+
+      // check if the current move is implementation of enPassant
+      if (!Game1.enPassant.equals("") && randomPiece.contains("pawn")) {
+        checkIfEnPassantHappen(randomPiece, ownerLocation, destLocation);
+      }
+
       WHITE_TURN = true;
       Game1.WHITE_TURN = true;
       showCheckmateOrCheckOrDraw();
+
+      // castle if needed
+      if (randomPiece.contains("king")) moveRookIfCastle(randomPiece, ownerLocation, destLocation);
+
+      // inform ChessLogic about pawn taking two steps
+      else if (randomPiece.contains("pawn"))
+        enableEnPassantIfPawn2Steps(randomPiece, ownerLocation, destLocation);
+      else {
+        Game1.enPassant = "";
+      }
     }
   }
 
@@ -525,11 +568,11 @@ public class MainActivity extends AppCompatActivity
         if ((x % 2 == 0 && y % 2 == 0) || (x % 2 != 0 && y % 2 != 0)) {
           linearLayout =
               findViewById(getResources().getIdentifier("box" + x + y, "id", getPackageName()));
-          linearLayout.setBackgroundResource(R.color.colorBoardDark);
+          linearLayout.setBackgroundResource(R.color.colorBoardLight);
         } else {
           linearLayout =
               findViewById(getResources().getIdentifier("box" + x + y, "id", getPackageName()));
-          linearLayout.setBackgroundResource(R.color.colorBoardLight);
+          linearLayout.setBackgroundResource(R.color.colorBoardDark);
         }
       }
     }
@@ -583,5 +626,34 @@ public class MainActivity extends AppCompatActivity
         }
       }
     }
+  }
+
+  public void enableEnPassantIfPawn2Steps(
+      String pawnChessPiece, String pawnPrevLocation, String pawnDestLocation) {
+    if (Math.abs(
+            Integer.parseInt(pawnPrevLocation.substring(3, 4))
+                - Integer.parseInt(pawnDestLocation.substring(3, 4)))
+        == 2) {
+      Game1.enPassant = pawnDestLocation;
+    } else Game1.enPassant = "";
+  }
+
+  public void checkIfEnPassantHappen(
+      String pawnChessPiece, String pawnPrevLocation, String pawnDestLocation) {
+
+    int enPassant_x = Integer.parseInt(Game1.enPassant.substring(3, 4));
+    int enPassant_y = Integer.parseInt(Game1.enPassant.substring(4));
+    // if pawn goes diagonal to the enPassant value
+    if (enPassant_x == Integer.parseInt(pawnPrevLocation.substring(3, 4))
+        && enPassant_y == Integer.parseInt(pawnDestLocation.substring(4))) {
+      int resID = getResources().getIdentifier(Game1.enPassant, "id", getPackageName());
+      LinearLayout l = (LinearLayout) findViewById(resID);
+      ImageView iv = (ImageView) (l.getChildAt(0));
+      System.out.println("*****EnPassant***"+Game1.enPassant);
+      String pawnToRemove = getChessPieceName(iv);
+      l.removeView(iv);
+      Game1.movePieceFromSrcToDest(pawnToRemove, "", false);
+    }
+    Game1.enPassant = "";
   }
 }

@@ -8,6 +8,7 @@ import java.util.Objects;
 public class ChessLogic {
 
   public boolean WHITE_TURN;
+  public String enPassant = "";
   private Hashtable<String, String> LOCATION_TABLE = new Hashtable<>();
   private boolean WHITE_K_SIDE_CASTLE_RIGHTS = true;
   private boolean BLACK_K_SIDE_CASTLE_RIGHTS = true;
@@ -205,29 +206,47 @@ public class ChessLogic {
           String move;
           if (chessPiece.contains("black")) {
             if (x + 1 <= 7) {
+              // check single step
               move = "box" + (x + 1) + y;
               if (!LOCATION_TABLE.contains(move)) {
                 locations.add(move);
+                // check double steps
                 move = "box" + (x + 2) + y;
                 if (x == 1 && !LOCATION_TABLE.contains(move)) locations.add(move);
               }
+              // check for the kill
               move = "box" + (x + 1) + (y + 1);
               if (y + 1 <= 7) if (LOCATION_TABLE.contains(move)) locations.add(move);
               move = "box" + (x + 1) + (y - 1);
               if (y - 1 >= 0) if (LOCATION_TABLE.contains(move)) locations.add(move);
+
+              // check for enPassant
+              if (!enPassant.equals("") && x == 4) {
+                int enPassant_y = Integer.parseInt(enPassant.substring(4));
+                if (Math.abs(enPassant_y - y) == 1) locations.add("box" + (x + 1) + (enPassant_y));
+              }
             }
           } else {
             if (x - 1 >= 0) {
+              // check single step
               move = "box" + (x - 1) + y;
               if (!LOCATION_TABLE.contains(move)) {
                 locations.add(move);
+                // check double steps
                 move = "box" + (x - 2) + y;
                 if (x == 6 && !LOCATION_TABLE.contains(move)) locations.add(move);
               }
+              // check for the kill
               move = "box" + (x - 1) + (y + 1);
               if (y + 1 <= 7) if (LOCATION_TABLE.contains(move)) locations.add(move);
               move = "box" + (x - 1) + (y - 1);
               if (y - 1 >= 0) if (LOCATION_TABLE.contains(move)) locations.add(move);
+
+              // check for enPassant
+              if (!enPassant.equals("") && x == 3) {
+                int enPassant_y = Integer.parseInt(enPassant.substring(4));
+                if (Math.abs(enPassant_y - y) == 1) locations.add("box" + (x - 1) + (enPassant_y));
+              }
             }
           }
         }
@@ -383,8 +402,10 @@ public class ChessLogic {
     return null;
   }
 
+
   public void resetGame(Hashtable<String, String> LOCATION_TABLE) {
     this.WHITE_TURN = true;
+    this.enPassant = "";
     this.LOCATION_TABLE.clear();
     this.LOCATION_TABLE.putAll(LOCATION_TABLE);
     this.WHITE_Q_SIDE_CASTLE_RIGHTS =
