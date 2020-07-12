@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ChessLogic {
 
+  private static int DRAW_MOVES_COUNTER = 0;
   public boolean WHITE_TURN;
   public String enPassant = "";
   private Hashtable<String, String> LOCATION_TABLE = new Hashtable<>();
@@ -14,10 +16,12 @@ public class ChessLogic {
   private boolean BLACK_K_SIDE_CASTLE_RIGHTS = true;
   private boolean WHITE_Q_SIDE_CASTLE_RIGHTS = true;
   private boolean BLACK_Q_SIDE_CASTLE_RIGHTS = true;
+  private List<String> PIECES_LEFT_ON_BOARD = new ArrayList<>();
 
   public ChessLogic(Hashtable<String, String> locationTable) {
     this.WHITE_TURN = true;
     this.LOCATION_TABLE.putAll(locationTable);
+    PIECES_LEFT_ON_BOARD.addAll(locationTable.keySet());
   }
 
   private List<String> chessMove(String chessPiece) {
@@ -313,16 +317,25 @@ public class ChessLogic {
       }
     }
 
-    String KilledPiece = getPieceAtLocation(dest);
+    String killedPiece = getPieceAtLocation(dest);
 
-    if (KilledPiece != null) {
-      if (KilledPiece.equals(chessPiece)) return null;
-      else LOCATION_TABLE.put(KilledPiece, "");
+    if (killedPiece != null) {
+      if (killedPiece.equals(chessPiece)) return null;
+      else {
+        LOCATION_TABLE.put(killedPiece, "");
+        if (!virtualCall) PIECES_LEFT_ON_BOARD.remove(killedPiece);
+      }
     }
 
     LOCATION_TABLE.put(chessPiece, dest);
 
-    return KilledPiece;
+    // update counter for draw
+    if (!virtualCall) {
+      if (!chessPiece.contains("pawn") && killedPiece == null) DRAW_MOVES_COUNTER++;
+      else DRAW_MOVES_COUNTER = 0;
+    }
+
+    return killedPiece;
   }
 
   private boolean isMoveCreatingCheckForSelf(String chessPiece, String src, String dest) {
@@ -383,8 +396,27 @@ public class ChessLogic {
   public boolean isDraw() {
     if (isCheck()) return false;
 
+    if (DRAW_MOVES_COUNTER == 150 && !isCheckmate()) return true;
+
+    // insufficient material
+    switch (PIECES_LEFT_ON_BOARD.size()) {
+      case 2:
+        return true;
+      case 3:
+        for (String pieceLeft : PIECES_LEFT_ON_BOARD)
+          if (pieceLeft.contains("bishop") || pieceLeft.contains("knight")) return true;
+      case 4:
+        return ((PIECES_LEFT_ON_BOARD.contains("white_0_bishop")
+                && PIECES_LEFT_ON_BOARD.contains("black_1_bishop"))
+            || (PIECES_LEFT_ON_BOARD.contains("white_1_bishop")
+                && PIECES_LEFT_ON_BOARD.contains("black_0_bishop")));
+      default:
+        break;
+    }
+
     String piecesColor = WHITE_TURN ? "white" : "black";
 
+    // no moves for the player
     for (String piece : LOCATION_TABLE.keySet())
       if (piece.contains(piecesColor) && possibleMoves(piece, false).size() > 0) return false;
 
@@ -402,12 +434,14 @@ public class ChessLogic {
     return null;
   }
 
-
-  public void resetGame(Hashtable<String, String> LOCATION_TABLE) {
+  public void resetGame(Hashtable<String, String> locationTable) {
+    this.DRAW_MOVES_COUNTER = 0;
     this.WHITE_TURN = true;
     this.enPassant = "";
     this.LOCATION_TABLE.clear();
-    this.LOCATION_TABLE.putAll(LOCATION_TABLE);
+    this.LOCATION_TABLE.putAll(locationTable);
+    this.PIECES_LEFT_ON_BOARD.clear();
+    this.PIECES_LEFT_ON_BOARD.addAll(locationTable.keySet());
     this.WHITE_Q_SIDE_CASTLE_RIGHTS =
         this.WHITE_K_SIDE_CASTLE_RIGHTS =
             this.BLACK_K_SIDE_CASTLE_RIGHTS = this.BLACK_Q_SIDE_CASTLE_RIGHTS = true;
