@@ -25,7 +25,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity
     implements View.OnLongClickListener, View.OnClickListener, View.OnDragListener {
 
-  final boolean AGAINST_AI = false;
+  final boolean AGAINST_AI = true;
 
   //    private static final String TAG = MainActivity.class.getSimpleName();
   List<ImageView> IMAGE_VIEW_LIST = new ArrayList<>();
@@ -271,30 +271,9 @@ public class MainActivity extends AppCompatActivity
             String ownerLocation = getBoxNameOFLayout((LinearLayout) owner);
             String destLocation = getBoxNameOFLayout(container);
 
-            // check if the current move is implementation of enPassant
-            if (!Game1.enPassant.equals("") && chessPiece.contains("pawn")) {
-              checkIfEnPassantHappen(chessPiece, ownerLocation, destLocation);
-            }
-
-            WHITE_TURN = !WHITE_TURN;
-            Game1.WHITE_TURN = !Game1.WHITE_TURN;
-
-            Game1.movePieceFromSrcToDest(getChessPieceName(v), destLocation, false);
-
-            // castle if needed
-            if (chessPiece.contains("king"))
-              moveRookIfCastle(chessPiece, ownerLocation, destLocation);
-
-            // inform ChessLogic about pawn taking two steps
-            else if (chessPiece.contains("pawn"))
-              enableEnPassantIfPawn2Steps(chessPiece, ownerLocation, destLocation);
-            else {
-              Game1.enPassant = "";
-            }
+            postMoveSteps(chessPiece, ownerLocation, destLocation);
           }
         }
-
-        showCheckmateOrCheckOrDraw();
 
         // Returns true. DragEvent.getResult() will return true.
         return true;
@@ -374,28 +353,11 @@ public class MainActivity extends AppCompatActivity
                 String ownerLocation = getBoxNameOFLayout(owner);
                 String destLocation = getBoxNameOFLayout(container);
 
-                Game1.movePieceFromSrcToDest(chessPiece, destLocation, false);
-
-                // check if the current move is implementation of enPassant
-                if (!Game1.enPassant.equals("") && chessPiece.contains("pawn")) {
-                  checkIfEnPassantHappen(chessPiece, ownerLocation, destLocation);
-                }
-
-                // castle if needed
-                if (chessPiece.contains("king"))
-                  moveRookIfCastle(chessPiece, ownerLocation, destLocation);
-
-                // inform ChessLogic about pawn taking two steps
-                else if (chessPiece.contains("pawn"))
-                  enableEnPassantIfPawn2Steps(chessPiece, ownerLocation, destLocation);
-                else Game1.enPassant = "";
+                postMoveSteps(chessPiece, ownerLocation, destLocation);
 
                 PIECE_POSSIBLE_MOVES.clear();
                 PIECE = null;
-                WHITE_TURN = !WHITE_TURN;
-                Game1.WHITE_TURN = !Game1.WHITE_TURN;
                 removeOnClickEvent();
-                showCheckmateOrCheckOrDraw();
                 if (AGAINST_AI) playerAI();
               }
             }
@@ -429,6 +391,30 @@ public class MainActivity extends AppCompatActivity
           }
         }
       };
+
+  public void postMoveSteps(String chessPiece, String ownerLocation, String destLocation) {
+
+    Game1.movePieceFromSrcToDest(chessPiece, destLocation, false);
+
+    // check if the current move is implementation of enPassant
+    if (!Game1.enPassant.equals("") && chessPiece.contains("pawn")) {
+      checkIfEnPassantHappen(chessPiece, ownerLocation, destLocation);
+    }
+
+    // castle if needed
+    if (chessPiece.contains("king")) moveRookIfCastle(chessPiece, ownerLocation, destLocation);
+
+    // inform ChessLogic about pawn taking two steps
+    else if (chessPiece.contains("pawn"))
+      enableEnPassantIfPawn2Steps(chessPiece, ownerLocation, destLocation);
+    else Game1.enPassant = "";
+
+    WHITE_TURN = !WHITE_TURN;
+    Game1.WHITE_TURN = !Game1.WHITE_TURN;
+
+    // This has to be called after changing the turn
+    showCheckmateOrCheckOrDraw();
+  }
 
   private boolean showCheckmateOrCheckOrDraw() {
     if (Game1.isCheckmate()) {
@@ -464,8 +450,8 @@ public class MainActivity extends AppCompatActivity
       iv.setOnLongClickListener(this);
       movePieceFromSrcToDest(iv, ORIGINAL_LOCATION[i]);
       iv.setLayoutParams(
-              new LinearLayout.LayoutParams(
-                      LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+          new LinearLayout.LayoutParams(
+              LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
     }
     resetBackground();
   }
@@ -505,30 +491,11 @@ public class MainActivity extends AppCompatActivity
       destLocation = getBoxNameOFLayout(l);
       movePieceFromSrcToDest(iv, destLocation);
 
-      Game1.movePieceFromSrcToDest(randomPiece, destLocation, false);
-
       setBackgroundOfLastMove(LAST_MOVE[0], "#FFFF99");
       setBackgroundOfLastMove(LAST_MOVE[1], "Yellow");
       String ownerLocation = getBoxNameOFLayout(LAST_MOVE[0]);
 
-      // check if the current move is implementation of enPassant
-      if (!Game1.enPassant.equals("") && randomPiece.contains("pawn")) {
-        checkIfEnPassantHappen(randomPiece, ownerLocation, destLocation);
-      }
-
-      WHITE_TURN = true;
-      Game1.WHITE_TURN = true;
-      showCheckmateOrCheckOrDraw();
-
-      // castle if needed
-      if (randomPiece.contains("king")) moveRookIfCastle(randomPiece, ownerLocation, destLocation);
-
-      // inform ChessLogic about pawn taking two steps
-      else if (randomPiece.contains("pawn"))
-        enableEnPassantIfPawn2Steps(randomPiece, ownerLocation, destLocation);
-      else {
-        Game1.enPassant = "";
-      }
+      postMoveSteps(randomPiece, ownerLocation, destLocation);
     }
   }
 
