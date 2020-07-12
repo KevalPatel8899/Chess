@@ -25,7 +25,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity
     implements View.OnLongClickListener, View.OnClickListener, View.OnDragListener {
 
-  final boolean AGAINST_AI = true;
+  final boolean AGAINST_AI = false;
 
   //    private static final String TAG = MainActivity.class.getSimpleName();
   List<ImageView> IMAGE_VIEW_LIST = new ArrayList<>();
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity
   };
 
   String[] ORIGINAL_LOCATION = new String[32];
+  LinearLayout KILLED_WHITE_PIECE_CONTAINER, KILLED_BLACK_PIECE_CONTAINER;
 
   LinearLayout[] LAST_MOVE = new LinearLayout[2];
   public Hashtable<String, String> LOCATION_TABLE = new Hashtable<>();
@@ -107,6 +108,9 @@ public class MainActivity extends AppCompatActivity
             resetGame();
           }
         });
+
+    KILLED_WHITE_PIECE_CONTAINER = findViewById(R.id.killedWhitePiece);
+    KILLED_BLACK_PIECE_CONTAINER = findViewById(R.id.killedBlackPiece);
 
     Game1 = new ChessLogic(LOCATION_TABLE);
   }
@@ -311,7 +315,7 @@ public class MainActivity extends AppCompatActivity
 
         // returns true; the value is ignored.
 
-        if(AGAINST_AI) playerAI();
+        if (AGAINST_AI) playerAI();
 
         return true;
 
@@ -369,6 +373,7 @@ public class MainActivity extends AppCompatActivity
                 String chessPiece = getChessPieceName(PIECE);
                 String ownerLocation = getBoxNameOFLayout(owner);
                 String destLocation = getBoxNameOFLayout(container);
+
                 Game1.movePieceFromSrcToDest(chessPiece, destLocation, false);
 
                 // check if the current move is implementation of enPassant
@@ -391,7 +396,8 @@ public class MainActivity extends AppCompatActivity
                 Game1.WHITE_TURN = !Game1.WHITE_TURN;
                 removeOnClickEvent();
                 showCheckmateOrCheckOrDraw();
-                if(AGAINST_AI) playerAI();              }
+                if (AGAINST_AI) playerAI();
+              }
             }
           }
         }
@@ -414,11 +420,13 @@ public class MainActivity extends AppCompatActivity
 
             PIECE = null;
             PIECE_POSSIBLE_MOVES.clear();
+            addPieceToKillContainer((ImageView) v);
             WHITE_TURN = !WHITE_TURN;
             Game1.WHITE_TURN = !Game1.WHITE_TURN;
             removeOnClickEvent();
             showCheckmateOrCheckOrDraw();
-            if(AGAINST_AI) playerAI();          }
+            if (AGAINST_AI) playerAI();
+          }
         }
       };
 
@@ -455,6 +463,9 @@ public class MainActivity extends AppCompatActivity
       iv.setOnClickListener(this);
       iv.setOnLongClickListener(this);
       movePieceFromSrcToDest(iv, ORIGINAL_LOCATION[i]);
+      iv.setLayoutParams(
+              new LinearLayout.LayoutParams(
+                      LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
     }
     resetBackground();
   }
@@ -469,11 +480,13 @@ public class MainActivity extends AppCompatActivity
       Random rand = new Random();
       String randomPiece;
       String destLocation;
+      ImageView iv;
+      int lengthOfPossibleMoves;
 
       while (true) {
         randomPiece = CHESS_PIECE_LIST[rand.nextInt(32)];
         if (!randomPiece.contains("black")) continue;
-        ImageView iv = (ImageView) getViewByName(randomPiece);
+        iv = (ImageView) getViewByName(randomPiece);
 
         PIECE_POSSIBLE_MOVES_S = Game1.possibleMoves(randomPiece, false);
         PIECE_POSSIBLE_MOVES.clear();
@@ -483,20 +496,19 @@ public class MainActivity extends AppCompatActivity
                   findViewById(getResources().getIdentifier(move, "id", getPackageName())));
         }
 
-        int lengthOfPossibleMoves = PIECE_POSSIBLE_MOVES.size();
-        if (lengthOfPossibleMoves == 0) continue;
-        LinearLayout l = PIECE_POSSIBLE_MOVES.get(rand.nextInt(lengthOfPossibleMoves));
-        LAST_MOVE[0] = (LinearLayout) iv.getParent();
-        LAST_MOVE[1] = l;
-        destLocation = getBoxNameOFLayout(l);
-        movePieceFromSrcToDest(iv, destLocation);
-        Game1.movePieceFromSrcToDest(randomPiece, destLocation, false);
-
-        setBackgroundOfLastMove(LAST_MOVE[0], "#FFFF99");
-        setBackgroundOfLastMove(LAST_MOVE[1], "Yellow");
-        break;
+        lengthOfPossibleMoves = PIECE_POSSIBLE_MOVES.size();
+        if (lengthOfPossibleMoves != 0) break;
       }
+      LinearLayout l = PIECE_POSSIBLE_MOVES.get(rand.nextInt(lengthOfPossibleMoves));
+      LAST_MOVE[0] = (LinearLayout) iv.getParent();
+      LAST_MOVE[1] = l;
+      destLocation = getBoxNameOFLayout(l);
+      movePieceFromSrcToDest(iv, destLocation);
 
+      Game1.movePieceFromSrcToDest(randomPiece, destLocation, false);
+
+      setBackgroundOfLastMove(LAST_MOVE[0], "#FFFF99");
+      setBackgroundOfLastMove(LAST_MOVE[1], "Yellow");
       String ownerLocation = getBoxNameOFLayout(LAST_MOVE[0]);
 
       // check if the current move is implementation of enPassant
@@ -582,6 +594,7 @@ public class MainActivity extends AppCompatActivity
     if (linearLayout.getChildCount() > 1) {
       ImageView iv = (ImageView) linearLayout.getChildAt(0);
       linearLayout.removeView(linearLayout.getChildAt(0));
+      addPieceToKillContainer(iv);
       return iv;
     }
     return null;
@@ -649,11 +662,19 @@ public class MainActivity extends AppCompatActivity
       int resID = getResources().getIdentifier(Game1.enPassant, "id", getPackageName());
       LinearLayout l = (LinearLayout) findViewById(resID);
       ImageView iv = (ImageView) (l.getChildAt(0));
-      System.out.println("*****EnPassant***"+Game1.enPassant);
+
       String pawnToRemove = getChessPieceName(iv);
       l.removeView(iv);
+      addPieceToKillContainer(iv);
       Game1.movePieceFromSrcToDest(pawnToRemove, "", false);
     }
     Game1.enPassant = "";
+  }
+
+  public void addPieceToKillContainer(ImageView iv) {
+    iv.getLayoutParams().height = 70; // OR
+    iv.getLayoutParams().width = 70;
+    if (WHITE_TURN) KILLED_BLACK_PIECE_CONTAINER.addView(iv);
+    else KILLED_WHITE_PIECE_CONTAINER.addView(iv);
   }
 }

@@ -8,176 +8,165 @@
     tools:context=".MainActivity">
 
 
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/text_view_p1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:freezesText="true"
-            android:text="Player 1: 0"
-            android:textSize="30sp" />
-        <TextView
-            android:id="@+id/text_view_p2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text_view_p1"
-            android:text="Player 2: 0"
-            android:textSize="30sp"
-            android:freezesText="true"/>
         <Button
             android:id="@+id/button_reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="33dp"
-            android:text="reset"/>
-    </RelativeLayout>
+            android:text="reset" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/killedWhitePiece"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/r0"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/r0"
-            android:layout_width="fill_parent"
+            android:id="@+id/box00"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/box00"
+            <ImageView
+                android:id="@+id/black_0_rook"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorBoardLight"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/black_0_rook"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_action_black_rook" />
-            </LinearLayout>
-
-            />
-
-            <LinearLayout
-                android:id="@+id/box01"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorBoardDark"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/black_0_knight"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_action_black_knight" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/box02"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorBoardLight"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/black_0_bishop"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_action_black_bishop" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/box03"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorBoardDark"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/black_0_queen"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_action_black_queen" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/box04"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorBoardLight"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/black_0_king"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_action_black_king" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/box05"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorBoardDark"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/black_1_bishop"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_action_black_bishop" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/box06"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorBoardLight"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/black_1_knight"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_action_black_knight" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/box07"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorBoardDark"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/black_1_rook"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_action_black_rook" />
-            </LinearLayout>
+                android:src="@drawable/ic_action_black_rook" />
         </LinearLayout>
+
+        />
+
+        <LinearLayout
+            android:id="@+id/box01"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorBoardDark"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/black_0_knight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_black_knight" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/box02"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorBoardLight"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/black_0_bishop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_black_bishop" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/box03"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorBoardDark"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/black_0_queen"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_black_queen" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/box04"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorBoardLight"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/black_0_king"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_black_king" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/box05"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorBoardDark"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/black_1_bishop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_black_bishop" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/box06"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorBoardLight"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/black_1_knight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_black_knight" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/box07"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorBoardDark"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/black_1_rook"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_action_black_rook" />
+        </LinearLayout>
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/r1"
         android:layout_width="fill_parent"
@@ -193,13 +182,13 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/black_0_pawn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-               android:src="@drawable/ic_action_black_pawn" />
+                android:src="@drawable/ic_action_black_pawn" />
         </LinearLayout>
 
         <LinearLayout
@@ -209,13 +198,13 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/black_1_pawn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-               android:src="@drawable/ic_action_black_pawn" />
+                android:src="@drawable/ic_action_black_pawn" />
         </LinearLayout>
 
         <LinearLayout
@@ -225,14 +214,15 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/black_2_pawn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-               android:src="@drawable/ic_action_black_pawn" />
+                android:src="@drawable/ic_action_black_pawn" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/box13"
             android:layout_width="match_parent"
@@ -240,13 +230,13 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/black_3_pawn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-               android:src="@drawable/ic_action_black_pawn" />
+                android:src="@drawable/ic_action_black_pawn" />
         </LinearLayout>
 
         <LinearLayout
@@ -256,14 +246,15 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/black_4_pawn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-               android:src="@drawable/ic_action_black_pawn" />
+                android:src="@drawable/ic_action_black_pawn" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/box15"
             android:layout_width="match_parent"
@@ -271,13 +262,13 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/black_5_pawn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-               android:src="@drawable/ic_action_black_pawn" />
+                android:src="@drawable/ic_action_black_pawn" />
         </LinearLayout>
 
         <LinearLayout
@@ -287,13 +278,13 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/black_6_pawn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-               android:src="@drawable/ic_action_black_pawn" />
+                android:src="@drawable/ic_action_black_pawn" />
         </LinearLayout>
 
         <LinearLayout
@@ -304,13 +295,15 @@
             android:background="@color/colorBoardLight"
             android:gravity="center"
             android:orientation="vertical">
+
             <ImageView
                 android:id="@+id/black_7_pawn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-               android:src="@drawable/ic_action_black_pawn" />
+                android:src="@drawable/ic_action_black_pawn" />
         </LinearLayout>
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/r2"
         android:layout_width="fill_parent"
@@ -354,6 +347,7 @@
             android:background="@color/colorBoardDark"
             android:gravity="center"
             android:orientation="vertical" />
+
         <LinearLayout
             android:id="@+id/box24"
             android:layout_width="match_parent"
@@ -371,6 +365,7 @@
             android:background="@color/colorBoardDark"
             android:gravity="center"
             android:orientation="vertical" />
+
         <LinearLayout
             android:id="@+id/box26"
             android:layout_width="match_parent"
@@ -399,7 +394,6 @@
         android:orientation="horizontal">
 
 
-
         <LinearLayout
             android:id="@+id/box30"
             android:layout_width="match_parent"
@@ -426,6 +420,7 @@
             android:background="@color/colorBoardDark"
             android:gravity="center"
             android:orientation="vertical" />
+
         <LinearLayout
             android:id="@+id/box33"
             android:layout_width="match_parent"
@@ -443,6 +438,7 @@
             android:background="@color/colorBoardDark"
             android:gravity="center"
             android:orientation="vertical" />
+
         <LinearLayout
             android:id="@+id/box35"
             android:layout_width="match_parent"
@@ -470,6 +466,7 @@
             android:gravity="center"
             android:orientation="vertical" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/r4"
         android:layout_width="fill_parent"
@@ -513,6 +510,7 @@
             android:background="@color/colorBoardDark"
             android:gravity="center"
             android:orientation="vertical" />
+
         <LinearLayout
             android:id="@+id/box44"
             android:layout_width="match_parent"
@@ -530,6 +528,7 @@
             android:background="@color/colorBoardDark"
             android:gravity="center"
             android:orientation="vertical" />
+
         <LinearLayout
             android:id="@+id/box46"
             android:layout_width="match_parent"
@@ -548,6 +547,7 @@
             android:gravity="center"
             android:orientation="vertical" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/r5"
         android:layout_width="fill_parent"
@@ -555,7 +555,6 @@
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal">
-
 
 
         <LinearLayout
@@ -584,6 +583,7 @@
             android:background="@color/colorBoardDark"
             android:gravity="center"
             android:orientation="vertical" />
+
         <LinearLayout
             android:id="@+id/box53"
             android:layout_width="match_parent"
@@ -601,6 +601,7 @@
             android:background="@color/colorBoardDark"
             android:gravity="center"
             android:orientation="vertical" />
+
         <LinearLayout
             android:id="@+id/box55"
             android:layout_width="match_parent"
@@ -628,6 +629,7 @@
             android:gravity="center"
             android:orientation="vertical" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/r6"
         android:layout_width="fill_parent"
@@ -643,7 +645,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_0_pawn"
@@ -659,7 +661,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_1_pawn"
@@ -675,7 +677,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_2_pawn"
@@ -683,6 +685,7 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_white_pawn" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/box63"
             android:layout_width="match_parent"
@@ -690,7 +693,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_3_pawn"
@@ -706,7 +709,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_4_pawn"
@@ -714,6 +717,7 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_white_pawn" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/box65"
             android:layout_width="match_parent"
@@ -721,7 +725,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_5_pawn"
@@ -737,7 +741,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_6_pawn"
@@ -753,7 +757,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_7_pawn"
@@ -762,6 +766,7 @@
                 android:src="@drawable/ic_action_white_pawn" />
         </LinearLayout>
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/r7"
         android:layout_width="fill_parent"
@@ -769,7 +774,6 @@
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal">
-
 
 
         <LinearLayout
@@ -797,7 +801,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_0_knight"
@@ -813,7 +817,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_0_bishop"
@@ -829,7 +833,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_0_queen"
@@ -837,6 +841,7 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_white_queen" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/box74"
             android:layout_width="match_parent"
@@ -844,7 +849,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_0_king"
@@ -860,7 +865,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_1_bishop"
@@ -868,6 +873,7 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_white_bishop" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/box76"
             android:layout_width="match_parent"
@@ -875,7 +881,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_1_knight"
@@ -891,7 +897,7 @@
             android:layout_weight="1"
             android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/white_1_rook"
@@ -899,6 +905,15 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_action_white_rook" />
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/killedBlackPiece"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
     </LinearLayout>
 
 </LinearLayout>
