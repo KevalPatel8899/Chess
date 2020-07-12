@@ -8,6 +8,7 @@ import android.content.ClipDescription;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
@@ -25,11 +26,13 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity
     implements View.OnLongClickListener, View.OnClickListener, View.OnDragListener {
 
-  final boolean AGAINST_AI = true;
+  final boolean AGAINST_AI = false;
 
   //    private static final String TAG = MainActivity.class.getSimpleName();
   List<ImageView> IMAGE_VIEW_LIST = new ArrayList<>();
   List<ImageView> IMAGE_VIEW_WITH_KILL_EVENTS = new ArrayList<>();
+
+  MediaPlayer MOVE_SOUND = new MediaPlayer(), KILLED_SOUND = new MediaPlayer();
 
   public static final String IMAGE_VIEW_TAG = "LAUNCHER LOGO";
   public boolean WHITE_TURN = true;
@@ -113,6 +116,9 @@ public class MainActivity extends AppCompatActivity
     KILLED_BLACK_PIECE_CONTAINER = findViewById(R.id.killedBlackPiece);
 
     Game1 = new ChessLogic(LOCATION_TABLE);
+    MOVE_SOUND = MediaPlayer.create(this,R.raw.chess_move_audio);
+    KILLED_SOUND = MediaPlayer.create(this,R.raw.chess_killed_piece);
+
   }
 
   // Implement long click and drag listener
@@ -274,7 +280,7 @@ public class MainActivity extends AppCompatActivity
             postMoveSteps(chessPiece, ownerLocation, destLocation);
           }
         }
-
+        MOVE_SOUND.start();
         // Returns true. DragEvent.getResult() will return true.
         return true;
       case DragEvent.ACTION_DRAG_ENDED:
@@ -345,6 +351,7 @@ public class MainActivity extends AppCompatActivity
           if (PIECE_POSSIBLE_MOVES.size() > 0) {
             if (PIECE_POSSIBLE_MOVES.contains((LinearLayout) v)) {
               if (PIECE != null) {
+                MOVE_SOUND.start();
                 LinearLayout owner = (LinearLayout) PIECE.getParent();
                 owner.removeView(PIECE);
                 LinearLayout container = (LinearLayout) v;
@@ -372,6 +379,7 @@ public class MainActivity extends AppCompatActivity
           resetBackground();
           LinearLayout parentLayout = (LinearLayout) v.getParent();
           if (PIECE != null) {
+            KILLED_SOUND.start();
             LinearLayout chessPieceParentLayout = (LinearLayout) PIECE.getParent();
             parentLayout.removeView(v);
             chessPieceParentLayout.removeView(PIECE);
@@ -494,7 +502,7 @@ public class MainActivity extends AppCompatActivity
       setBackgroundOfLastMove(LAST_MOVE[0], "#FFFF99");
       setBackgroundOfLastMove(LAST_MOVE[1], "Yellow");
       String ownerLocation = getBoxNameOFLayout(LAST_MOVE[0]);
-
+      MOVE_SOUND.start();
       postMoveSteps(randomPiece, ownerLocation, destLocation);
     }
   }
