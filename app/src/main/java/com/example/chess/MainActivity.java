@@ -739,7 +739,6 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         return null;
     }
 
-
     public ImageView movePieceFromSrcToDest(ImageView pieceIv, String dest) {
 
         int destResId = getResources().getIdentifier(dest, "id", getPackageName());
@@ -769,7 +768,6 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
         if (killedPieceIfAny != null) {
             movePieceFromSrcToDest(killedPieceIfAny, dest);
         }
-
         return ret;
     }
 
@@ -831,9 +829,14 @@ public class MainActivity extends AppCompatActivity implements View.OnLongClickL
     }
 
     public void killedPieceRemoval(ImageView imageView){
+        String imageViewID = getResources().getResourceName(imageView.getId());
+        imageViewID = imageViewID.substring(imageViewID.indexOf("/")+1);
         imageView.getLayoutParams().height = 70; // OR
         imageView.getLayoutParams().width = 70;
-        if(!WHITE_TURN){
+
+        System.out.println(imageViewID);
+
+        if(!imageViewID.contains("black")){
             KILLED_BLACK_PIECE.addView(imageView);
         }else{
             KILLED_WHITE_PIECE.addView(imageView);
