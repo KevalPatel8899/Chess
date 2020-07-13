@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class ChessLogic {
 
-  private static int DRAW_MOVES_COUNTER = 0;
+  private int DRAW_MOVES_COUNTER = 0;
   public boolean WHITE_TURN;
   public String enPassant = "";
   private Hashtable<String, String> LOCATION_TABLE = new Hashtable<>();
