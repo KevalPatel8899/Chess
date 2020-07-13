@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textViewForPiece"
+        android:layout_width="297dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="50dp"
+        android:text="Please choose new Piece"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_rook"
+        android:layout_width="53dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
+        android:drawableBottom="@drawable/ic_action_black_rook"
+        app:layout_constraintStart_toEndOf="@+id/button_bishop"
+        app:layout_constraintTop_toBottomOf="@+id/textViewForPiece" />
+
+    <Button
+        android:id="@+id/button_queen"
+        android:layout_width="53dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
+        android:drawableBottom="@drawable/ic_action_black_queen"
+        app:layout_constraintStart_toEndOf="@+id/button_knight"
+        app:layout_constraintTop_toBottomOf="@+id/textViewForPiece" />
+
+    <Button
+        android:id="@+id/button_knight"
+        android:layout_width="53dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
+        android:drawableBottom="@drawable/ic_action_black_knight"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewForPiece" />
+
+    <Button
+        android:id="@+id/button_bishop"
+        android:layout_width="53dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
+        android:drawableBottom="@drawable/ic_action_black_bishop"
+        app:layout_constraintStart_toEndOf="@+id/button_queen"
+        app:layout_constraintTop_toBottomOf="@+id/textViewForPiece" />
+</androidx.constraintlayout.widget.ConstraintLayout>

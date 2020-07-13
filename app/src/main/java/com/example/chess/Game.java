@@ -1,10 +1,12 @@
 package com.example.chess;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -32,6 +34,10 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
     //    private static final String TAG = MainActivity.class.getSimpleName();
     List<ImageView> IMAGE_VIEW_LIST = new ArrayList<>();
     List<ImageView> IMAGE_VIEW_WITH_KILL_EVENTS = new ArrayList<>();
+
+    String PAWN_PROMOTION = "";
+    View PAWN_PROMOTION_VIEW;
+    AlertDialog ALERT ;
 
     MediaPlayer MOVE_SOUND = new MediaPlayer(), KILLED_SOUND = new MediaPlayer();
 
@@ -90,7 +96,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
 
         Intent intent = getIntent();
         AGAINST_AI = intent.getBooleanExtra("AGAINST_AI",true);
-
+        findViewById(R.id.buttonPromotion).setOnClickListener(pawnPromotionCheck);
         int index = 0;
         for (String chessPiece : CHESS_PIECE_LIST) {
             ImageView pieceIv = (ImageView) getViewByName(chessPiece);
@@ -667,4 +673,41 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         if (WHITE_TURN) KILLED_BLACK_PIECE_CONTAINER.addView(iv);
         else KILLED_WHITE_PIECE_CONTAINER.addView(iv);
     }
+
+
+    View.OnClickListener pawnPromotionCheck = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AlertDialog.Builder mBuilder = new AlertDialog.Builder(Game.this);
+            PAWN_PROMOTION_VIEW = getLayoutInflater().inflate(R.layout.pawn_promotion_dialog_box,null );
+
+
+            mBuilder.setView(PAWN_PROMOTION_VIEW) ;
+            ALERT = mBuilder.create();
+            ALERT.show();
+            PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setOnClickListener(pawnPromotionPiece);
+            PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setOnClickListener(pawnPromotionPiece);
+            PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setOnClickListener(pawnPromotionPiece);
+            PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setOnClickListener(pawnPromotionPiece);
+        }
+    };
+
+    View.OnClickListener pawnPromotionPiece = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if ((PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).equals(v))){
+                System.out.println("bishop");
+                ALERT.dismiss();
+            }else if(PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).equals(v)){
+                System.out.println("queen");
+                ALERT.dismiss();
+            }else if(PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).equals(v)){
+                System.out.println("rook");
+                ALERT.dismiss();
+            }else if(PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).equals(v)){
+                System.out.println("knight");
+                ALERT.dismiss();
+            }
+        }
+    };
 }
