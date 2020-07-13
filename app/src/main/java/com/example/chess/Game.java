@@ -35,7 +35,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
     List<ImageView> IMAGE_VIEW_LIST = new ArrayList<>();
     List<ImageView> IMAGE_VIEW_WITH_KILL_EVENTS = new ArrayList<>();
 
-    String PAWN_PROMOTION = "";
+    String PROMOTED_PIECE = "";
     View PAWN_PROMOTION_VIEW;
     AlertDialog ALERT ;
 
@@ -423,6 +423,8 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
 
     public void postMoveSteps(String chessPiece, String ownerLocation, String destLocation) {
 
+//        if(!WHITE_TURN) promotePawn();
+
         Game1.movePieceFromSrcToDest(chessPiece, destLocation, false);
 
         // check if the current move is implementation of enPassant
@@ -696,18 +698,55 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         @Override
         public void onClick(View v) {
             if ((PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).equals(v))){
-                System.out.println("bishop");
+                PROMOTED_PIECE = "bishop";
                 ALERT.dismiss();
             }else if(PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).equals(v)){
-                System.out.println("queen");
+                PROMOTED_PIECE ="queen";
                 ALERT.dismiss();
             }else if(PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).equals(v)){
-                System.out.println("rook");
+                PROMOTED_PIECE ="rook";
                 ALERT.dismiss();
             }else if(PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).equals(v)){
-                System.out.println("knight");
+                PROMOTED_PIECE ="knight";
                 ALERT.dismiss();
+            }
+            if(!PROMOTED_PIECE.equals("")){
+                // Initialize a new ImageView widget
+                ImageView iv = new ImageView(getApplicationContext());
+
+                // Set an image for ImageView
+//        iv.setImageDrawable(getDrawable(R.drawable.ic_action_black_queen));
+
+                iv.setImageResource(R.drawable.ic_action_black_queen);
+
+                // Create layout parameters for ImageView
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+
+                // Add layout parameters to ImageView
+                iv.setLayoutParams(lp);
+
+                iv.setId(R.id.black_1_queen);
+                iv.setOnClickListener(this);
+
+                LinearLayout l = (LinearLayout) getViewByName("box20");
+                l.removeView(l.getChildAt(0));
+                l.addView(iv);
             }
         }
     };
+
+    public void promotePawn(){
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(Game.this);
+        PAWN_PROMOTION_VIEW = getLayoutInflater().inflate(R.layout.pawn_promotion_dialog_box,null );
+
+
+        mBuilder.setView(PAWN_PROMOTION_VIEW) ;
+        ALERT = mBuilder.create();
+        ALERT.show();
+        PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setOnClickListener(pawnPromotionPiece);
+        PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setOnClickListener(pawnPromotionPiece);
+        PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setOnClickListener(pawnPromotionPiece);
+        PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setOnClickListener(pawnPromotionPiece);
+
+    }
 }
