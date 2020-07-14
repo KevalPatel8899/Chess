@@ -23,7 +23,6 @@
         android:layout_height="53dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="40dp"
-        android:drawableBottom="@drawable/ic_action_black_rook"
         app:layout_constraintStart_toEndOf="@+id/button_bishop"
         app:layout_constraintTop_toBottomOf="@+id/textViewForPiece" />
 
@@ -33,7 +32,6 @@
         android:layout_height="53dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="40dp"
-        android:drawableBottom="@drawable/ic_action_black_queen"
         app:layout_constraintStart_toEndOf="@+id/button_knight"
         app:layout_constraintTop_toBottomOf="@+id/textViewForPiece" />
 
@@ -43,7 +41,6 @@
         android:layout_height="53dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="40dp"
-        android:drawableBottom="@drawable/ic_action_black_knight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewForPiece" />
 
@@ -53,7 +50,6 @@
         android:layout_height="53dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="40dp"
-        android:drawableBottom="@drawable/ic_action_black_bishop"
         app:layout_constraintStart_toEndOf="@+id/button_queen"
         app:layout_constraintTop_toBottomOf="@+id/textViewForPiece" />
 </androidx.constraintlayout.widget.ConstraintLayout>

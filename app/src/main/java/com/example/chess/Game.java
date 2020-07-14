@@ -98,7 +98,6 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
 
         Intent intent = getIntent();
         AGAINST_AI = intent.getBooleanExtra("AGAINST_AI", true);
-//        findViewById(R.id.buttonPromotion).setOnClickListener(pawnPromotionCheck);
         int index = 0;
         for (String chessPiece : CHESS_PIECE_LIST) {
             ImageView pieceIv = (ImageView) getViewByName(chessPiece);
@@ -413,6 +412,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
                         PIECE = null;
                         PIECE_POSSIBLE_MOVES.clear();
                         addPieceToKillContainer((ImageView) v);
+                        pawnPromotionCheck((ImageView) getViewByName(chessPiece));
                         WHITE_TURN = !WHITE_TURN;
                         Game1.WHITE_TURN = !Game1.WHITE_TURN;
                         removeOnClickEvent();
@@ -442,8 +442,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         else Game1.enPassant = "";
 
 
-
-        pawnPromotionCheck((ImageView)getViewByName(chessPiece));
+        pawnPromotionCheck((ImageView) getViewByName(chessPiece));
 
         WHITE_TURN = !WHITE_TURN;
         Game1.WHITE_TURN = !Game1.WHITE_TURN;
@@ -478,9 +477,15 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
 
     public void resetGame() {
         WHITE_TURN = true;
+        ADDED_WHITE_PIECE = ADDED_BLACK_PIECE = 2;
 
-        for(ImageView imageView: EXTRA_IMAGE_VIEW_LIST){
+        for (ImageView imageView : EXTRA_IMAGE_VIEW_LIST) {
             IMAGE_VIEW_LIST.remove(imageView);
+
+            if (getChessPieceName((View) imageView).contains("black"))
+                KILLED_BLACK_PIECE_CONTAINER.removeView(imageView);
+            else
+                KILLED_WHITE_PIECE_CONTAINER.removeView(imageView);
         }
 
         Game1.resetGame(LOCATION_TABLE);
@@ -494,6 +499,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
                     new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         }
+        EXTRA_IMAGE_VIEW_LIST.clear();
         resetBackground();
     }
 
@@ -686,24 +692,6 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         else KILLED_WHITE_PIECE_CONTAINER.addView(iv);
     }
 
-
-//    View.OnClickListener pawnPromotionCheck = new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            AlertDialog.Builder mBuilder = new AlertDialog.Builder(Game.this);
-//            PAWN_PROMOTION_VIEW = getLayoutInflater().inflate(R.layout.pawn_promotion_dialog_box,null );
-//
-//
-//            mBuilder.setView(PAWN_PROMOTION_VIEW) ;
-//            ALERT = mBuilder.create();
-//            ALERT.show();
-//            PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setOnClickListener(pawnPromotionPiece);
-//            PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setOnClickListener(pawnPromotionPiece);
-//            PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setOnClickListener(pawnPromotionPiece);
-//            PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setOnClickListener(pawnPromotionPiece);
-//        }
-//    };
-
     View.OnClickListener pawnPromotionPiece = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -721,27 +709,6 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
                 ALERT.dismiss();
             }
             if (!PROMOTED_PIECE.equals("") && PAWN_PROMOTION_PARENT_LAYOUT != null) {
-//                // Initialize a new ImageView widget
-//                ImageView iv = new ImageView(getApplicationContext());
-//
-//                // Set an image for ImageView
-////        iv.setImageDrawable(getDrawable(R.drawable.ic_action_black_queen));
-//
-//                iv.setImageResource(R.drawable.ic_action_black_queen);
-//
-//                // Create layout parameters for ImageView
-//                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-//
-//                // Add layout parameters to ImageView
-//                iv.setLayoutParams(lp);
-//                View.generateViewId();
-//                iv.setId(R.id.black_1_queen);
-//                System.out.println(getResources().getResourceName(iv.getId()));
-//                iv.setOnClickListener(this);
-//
-//                LinearLayout l = (LinearLayout) getViewByName("box20");
-//                l.removeView(l.getChildAt(0));
-//                l.addView(iv);
 
                 promotePawn(PAWN_PROMOTION_PARENT_LAYOUT);
                 PAWN_PROMOTION_PARENT_LAYOUT = null;
@@ -760,26 +727,38 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         chessPieceID = chessPieceID.substring(chessPieceID.indexOf("/") + 1);
         String location = getChessPieceLocation(chessPieceID);
 
+
         if (chessPieceID.contains("pawn")) {
             if (location.contains("box0") || location.contains("box7")) {
-                PAWN_PROMOTION_PARENT_LAYOUT = (LinearLayout) imageView.getParent();
-                PAWN_PROMOTION_PARENT_LAYOUT.removeView(imageView);
+                if (AGAINST_AI) {
+                    PROMOTED_PIECE = "QUEEN";
+                    PAWN_PROMOTION_PARENT_LAYOUT = (LinearLayout) imageView.getParent();
+                    PAWN_PROMOTION_PARENT_LAYOUT.removeView(imageView);
+                    promotePawn(PAWN_PROMOTION_PARENT_LAYOUT);
+                } else {
+                    PAWN_PROMOTION_PARENT_LAYOUT = (LinearLayout) imageView.getParent();
+                    PAWN_PROMOTION_PARENT_LAYOUT.removeView(imageView);
 
+                    if (location.contains("box0")) {
+                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setBackgroundResource(R.drawable.ic_action_white_knight);
+                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setBackgroundResource(R.drawable.ic_action_white_queen);
+                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setBackgroundResource(R.drawable.ic_action_white_rook);
+                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setBackgroundResource(R.drawable.ic_action_white_bishop);
+                    } else {
+                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setBackgroundResource(R.drawable.ic_action_black_knight);
+                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setBackgroundResource(R.drawable.ic_action_black_queen);
+                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setBackgroundResource(R.drawable.ic_action_black_rook);
+                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setBackgroundResource(R.drawable.ic_action_black_bishop);
+                    }
 
-                if (location.contains("box0")) {
-                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setBackgroundResource(R.drawable.ic_action_white_knight);
-                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setBackgroundResource(R.drawable.ic_action_white_queen);
-                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setBackgroundResource(R.drawable.ic_action_white_rook);
-                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setBackgroundResource(R.drawable.ic_action_white_bishop);
+                    ALERT = mBuilder.create();
+                    ALERT.show();
+
+                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setOnClickListener(pawnPromotionPiece);
+                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setOnClickListener(pawnPromotionPiece);
+                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setOnClickListener(pawnPromotionPiece);
+                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setOnClickListener(pawnPromotionPiece);
                 }
-
-                ALERT = mBuilder.create();
-                ALERT.show();
-
-                PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setOnClickListener(pawnPromotionPiece);
-                PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setOnClickListener(pawnPromotionPiece);
-                PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setOnClickListener(pawnPromotionPiece);
-                PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setOnClickListener(pawnPromotionPiece);
             }
         }
     }
@@ -796,7 +775,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
 
         String piece_name = "", piece_image = "ic_action_", turn = "white";
         int resId;
-        if (!WHITE_TURN) {
+        if (WHITE_TURN) {
             turn = "black";
             piece_name = turn + "_" + ADDED_BLACK_PIECE + "_" + PROMOTED_PIECE;
 
@@ -830,6 +809,6 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         String chessPieceID = getResources().getResourceName(iv.getId());
         chessPieceID = chessPieceID.substring(chessPieceID.indexOf("/") + 1);
         String location = getChessPieceLocation(chessPieceID);
-        Game1.setPieceAtLocation(chessPieceID,location);
+        Game1.setPieceAtLocation(chessPieceID, location);
     }
 }
