@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipDescription;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -33,11 +32,14 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
 
     //    private static final String TAG = MainActivity.class.getSimpleName();
     List<ImageView> IMAGE_VIEW_LIST = new ArrayList<>();
+    List<ImageView> EXTRA_IMAGE_VIEW_LIST = new ArrayList<>();
     List<ImageView> IMAGE_VIEW_WITH_KILL_EVENTS = new ArrayList<>();
 
     String PROMOTED_PIECE = "";
     View PAWN_PROMOTION_VIEW;
-    AlertDialog ALERT ;
+    AlertDialog ALERT;
+    int ADDED_BLACK_PIECE = 2, ADDED_WHITE_PIECE = 2;
+    LinearLayout PAWN_PROMOTION_PARENT_LAYOUT;
 
     MediaPlayer MOVE_SOUND = new MediaPlayer(), KILLED_SOUND = new MediaPlayer();
 
@@ -95,8 +97,8 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         setContentView(R.layout.activity_game);
 
         Intent intent = getIntent();
-        AGAINST_AI = intent.getBooleanExtra("AGAINST_AI",true);
-        findViewById(R.id.buttonPromotion).setOnClickListener(pawnPromotionCheck);
+        AGAINST_AI = intent.getBooleanExtra("AGAINST_AI", true);
+//        findViewById(R.id.buttonPromotion).setOnClickListener(pawnPromotionCheck);
         int index = 0;
         for (String chessPiece : CHESS_PIECE_LIST) {
             ImageView pieceIv = (ImageView) getViewByName(chessPiece);
@@ -129,7 +131,6 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         MOVE_SOUND = MediaPlayer.create(this, R.raw.chess_move_audio);
         KILLED_SOUND = MediaPlayer.create(this, R.raw.chess_killed_piece);
     }
-
 
 
     // Implement long click and drag listener
@@ -440,6 +441,10 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
             enableEnPassantIfPawn2Steps(chessPiece, ownerLocation, destLocation);
         else Game1.enPassant = "";
 
+
+
+        pawnPromotionCheck((ImageView)getViewByName(chessPiece));
+
         WHITE_TURN = !WHITE_TURN;
         Game1.WHITE_TURN = !Game1.WHITE_TURN;
 
@@ -473,6 +478,11 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
 
     public void resetGame() {
         WHITE_TURN = true;
+
+        for(ImageView imageView: EXTRA_IMAGE_VIEW_LIST){
+            IMAGE_VIEW_LIST.remove(imageView);
+        }
+
         Game1.resetGame(LOCATION_TABLE);
 
         for (int i = 0; i < 32; i++) {
@@ -533,7 +543,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
     public void setBackgroundOfLastMove(LinearLayout l, String color) {
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadii(new float[] {12, 12, 12, 12, 12, 12, 12, 12});
+        shape.setCornerRadii(new float[]{12, 12, 12, 12, 12, 12, 12, 12});
         shape.setColor(Color.parseColor(color));
         shape.setStroke(6, Color.parseColor("Black"));
         l.setBackground(shape);
@@ -565,7 +575,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
     public static void customView(View v) {
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadii(new float[] {12, 12, 12, 12, 12, 12, 12, 12});
+        shape.setCornerRadii(new float[]{12, 12, 12, 12, 12, 12, 12, 12});
         shape.setColor(Color.parseColor("Green"));
         shape.setStroke(6, Color.parseColor("Black"));
         v.setBackground(shape);
@@ -677,76 +687,149 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
     }
 
 
-    View.OnClickListener pawnPromotionCheck = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            AlertDialog.Builder mBuilder = new AlertDialog.Builder(Game.this);
-            PAWN_PROMOTION_VIEW = getLayoutInflater().inflate(R.layout.pawn_promotion_dialog_box,null );
-
-
-            mBuilder.setView(PAWN_PROMOTION_VIEW) ;
-            ALERT = mBuilder.create();
-            ALERT.show();
-            PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setOnClickListener(pawnPromotionPiece);
-            PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setOnClickListener(pawnPromotionPiece);
-            PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setOnClickListener(pawnPromotionPiece);
-            PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setOnClickListener(pawnPromotionPiece);
-        }
-    };
+//    View.OnClickListener pawnPromotionCheck = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            AlertDialog.Builder mBuilder = new AlertDialog.Builder(Game.this);
+//            PAWN_PROMOTION_VIEW = getLayoutInflater().inflate(R.layout.pawn_promotion_dialog_box,null );
+//
+//
+//            mBuilder.setView(PAWN_PROMOTION_VIEW) ;
+//            ALERT = mBuilder.create();
+//            ALERT.show();
+//            PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setOnClickListener(pawnPromotionPiece);
+//            PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setOnClickListener(pawnPromotionPiece);
+//            PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setOnClickListener(pawnPromotionPiece);
+//            PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setOnClickListener(pawnPromotionPiece);
+//        }
+//    };
 
     View.OnClickListener pawnPromotionPiece = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if ((PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).equals(v))){
+            if ((PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).equals(v))) {
                 PROMOTED_PIECE = "bishop";
                 ALERT.dismiss();
-            }else if(PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).equals(v)){
-                PROMOTED_PIECE ="queen";
+            } else if (PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).equals(v)) {
+                PROMOTED_PIECE = "queen";
                 ALERT.dismiss();
-            }else if(PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).equals(v)){
-                PROMOTED_PIECE ="rook";
+            } else if (PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).equals(v)) {
+                PROMOTED_PIECE = "rook";
                 ALERT.dismiss();
-            }else if(PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).equals(v)){
-                PROMOTED_PIECE ="knight";
+            } else if (PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).equals(v)) {
+                PROMOTED_PIECE = "knight";
                 ALERT.dismiss();
             }
-            if(!PROMOTED_PIECE.equals("")){
-                // Initialize a new ImageView widget
-                ImageView iv = new ImageView(getApplicationContext());
+            if (!PROMOTED_PIECE.equals("") && PAWN_PROMOTION_PARENT_LAYOUT != null) {
+//                // Initialize a new ImageView widget
+//                ImageView iv = new ImageView(getApplicationContext());
+//
+//                // Set an image for ImageView
+////        iv.setImageDrawable(getDrawable(R.drawable.ic_action_black_queen));
+//
+//                iv.setImageResource(R.drawable.ic_action_black_queen);
+//
+//                // Create layout parameters for ImageView
+//                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+//
+//                // Add layout parameters to ImageView
+//                iv.setLayoutParams(lp);
+//                View.generateViewId();
+//                iv.setId(R.id.black_1_queen);
+//                System.out.println(getResources().getResourceName(iv.getId()));
+//                iv.setOnClickListener(this);
+//
+//                LinearLayout l = (LinearLayout) getViewByName("box20");
+//                l.removeView(l.getChildAt(0));
+//                l.addView(iv);
 
-                // Set an image for ImageView
-//        iv.setImageDrawable(getDrawable(R.drawable.ic_action_black_queen));
-
-                iv.setImageResource(R.drawable.ic_action_black_queen);
-
-                // Create layout parameters for ImageView
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-
-                // Add layout parameters to ImageView
-                iv.setLayoutParams(lp);
-
-                iv.setId(R.id.black_1_queen);
-                iv.setOnClickListener(this);
-
-                LinearLayout l = (LinearLayout) getViewByName("box20");
-                l.removeView(l.getChildAt(0));
-                l.addView(iv);
+                promotePawn(PAWN_PROMOTION_PARENT_LAYOUT);
+                PAWN_PROMOTION_PARENT_LAYOUT = null;
             }
         }
     };
 
-    public void promotePawn(){
+    public void pawnPromotionCheck(ImageView imageView) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(Game.this);
-        PAWN_PROMOTION_VIEW = getLayoutInflater().inflate(R.layout.pawn_promotion_dialog_box,null );
+        PAWN_PROMOTION_VIEW = getLayoutInflater().inflate(R.layout.pawn_promotion_dialog_box, null);
+
+        mBuilder.setView(PAWN_PROMOTION_VIEW);
 
 
-        mBuilder.setView(PAWN_PROMOTION_VIEW) ;
-        ALERT = mBuilder.create();
-        ALERT.show();
-        PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setOnClickListener(pawnPromotionPiece);
-        PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setOnClickListener(pawnPromotionPiece);
-        PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setOnClickListener(pawnPromotionPiece);
-        PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setOnClickListener(pawnPromotionPiece);
+        String chessPieceID = getResources().getResourceName(imageView.getId());
+        chessPieceID = chessPieceID.substring(chessPieceID.indexOf("/") + 1);
+        String location = getChessPieceLocation(chessPieceID);
 
+        if (chessPieceID.contains("pawn")) {
+            if (location.contains("box0") || location.contains("box7")) {
+                PAWN_PROMOTION_PARENT_LAYOUT = (LinearLayout) imageView.getParent();
+                PAWN_PROMOTION_PARENT_LAYOUT.removeView(imageView);
+
+
+                if (location.contains("box0")) {
+                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setBackgroundResource(R.drawable.ic_action_white_knight);
+                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setBackgroundResource(R.drawable.ic_action_white_queen);
+                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setBackgroundResource(R.drawable.ic_action_white_rook);
+                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setBackgroundResource(R.drawable.ic_action_white_bishop);
+                }
+
+                ALERT = mBuilder.create();
+                ALERT.show();
+
+                PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setOnClickListener(pawnPromotionPiece);
+                PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setOnClickListener(pawnPromotionPiece);
+                PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setOnClickListener(pawnPromotionPiece);
+                PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setOnClickListener(pawnPromotionPiece);
+            }
+        }
+    }
+
+    public void promotePawn(LinearLayout linearLayout) {
+
+        ImageView iv = new ImageView(getApplicationContext());
+
+        // Create layout parameters for ImageView
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+
+        // Add layout parameters to ImageView
+        iv.setLayoutParams(lp);
+
+        String piece_name = "", piece_image = "ic_action_", turn = "white";
+        int resId;
+        if (!WHITE_TURN) {
+            turn = "black";
+            piece_name = turn + "_" + ADDED_BLACK_PIECE + "_" + PROMOTED_PIECE;
+
+            resId = getResources().getIdentifier(piece_name, "id", getPackageName());
+            iv.setId(resId);
+
+            piece_image = piece_image + turn + "_" + PROMOTED_PIECE;
+            resId = getResources().getIdentifier(piece_image, "drawable", getPackageName());
+            iv.setImageResource(resId);
+            linearLayout.addView(iv);
+            ADDED_BLACK_PIECE++;
+        } else {
+            piece_name = turn + "_" + ADDED_WHITE_PIECE + "_" + PROMOTED_PIECE;
+
+            resId = getResources().getIdentifier(piece_name, "id", getPackageName());
+            iv.setId(resId);
+            piece_image = piece_image + turn + "_" + PROMOTED_PIECE;
+
+            resId = getResources().getIdentifier(piece_image, "drawable", getPackageName());
+            iv.setImageResource(resId);
+            linearLayout.addView(iv);
+            ADDED_WHITE_PIECE++;
+        }
+
+
+        IMAGE_VIEW_LIST.add(iv);
+        EXTRA_IMAGE_VIEW_LIST.add(iv);
+
+        iv.setOnClickListener(this);
+
+        String chessPieceID = getResources().getResourceName(iv.getId());
+        chessPieceID = chessPieceID.substring(chessPieceID.indexOf("/") + 1);
+        String location = getChessPieceLocation(chessPieceID);
+        Game1.setPieceAtLocation(chessPieceID,location);
     }
 }

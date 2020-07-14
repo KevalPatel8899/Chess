@@ -1,6 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item type="id" name="black_1_queen" />
-    <item type="id" name="layout2" />
-    <item type="id" name="layout3" />
+    <item type="id" name="black_9_queen" />
+    <item type="id" name="black_2_queen" />
+    <item type="id" name="black_3_queen" />
+    <item type="id" name="black_4_queen" />
+    <item type="id" name="black_5_queen" />
+    <item type="id" name="black_6_queen" />
+    <item type="id" name="black_7_queen" />
+    <item type="id" name="black_8_queen" />
+    <item type="id" name="white_9_queen" />
+    <item type="id" name="white_2_queen" />
+    <item type="id" name="white_3_queen" />
+    <item type="id" name="white_4_queen" />
+    <item type="id" name="white_5_queen" />
+    <item type="id" name="white_6_queen" />
+    <item type="id" name="white_7_queen" />
+    <item type="id" name="white_8_queen" />
+
+    <item type="id" name="black_9_knight" />
+    <item type="id" name="black_2_knight" />
+    <item type="id" name="black_3_knight" />
+    <item type="id" name="black_4_knight" />
+    <item type="id" name="black_5_knight" />
+    <item type="id" name="black_6_knight" />
+    <item type="id" name="black_7_knight" />
+    <item type="id" name="black_8_knight" />
+    <item type="id" name="white_9_knight" />
+    <item type="id" name="white_2_knight" />
+    <item type="id" name="white_3_knight" />
+    <item type="id" name="white_4_knight" />
+    <item type="id" name="white_5_knight" />
+    <item type="id" name="white_6_knight" />
+    <item type="id" name="white_7_knight" />
+    <item type="id" name="white_8_knight" />
+
+    <item type="id" name="black_9_bishop" />
+    <item type="id" name="black_2_bishop" />
+    <item type="id" name="black_3_bishop" />
+    <item type="id" name="black_4_bishop" />
+    <item type="id" name="black_5_bishop" />
+    <item type="id" name="black_6_bishop" />
+    <item type="id" name="black_7_bishop" />
+    <item type="id" name="black_8_bishop" />
+    <item type="id" name="white_9_bishop" />
+    <item type="id" name="white_2_bishop" />
+    <item type="id" name="white_3_bishop" />
+    <item type="id" name="white_4_bishop" />
+    <item type="id" name="white_5_bishop" />
+    <item type="id" name="white_6_bishop" />
+    <item type="id" name="white_7_bishop" />
+    <item type="id" name="white_8_bishop" />
+
+    <item type="id" name="black_9_rook" />
+    <item type="id" name="black_2_rook" />
+    <item type="id" name="black_3_rook" />
+    <item type="id" name="black_4_rook" />
+    <item type="id" name="black_5_rook" />
+    <item type="id" name="black_6_rook" />
+    <item type="id" name="black_7_rook" />
+    <item type="id" name="black_8_rook" />
+    <item type="id" name="white_9_rook" />
+    <item type="id" name="white_2_rook" />
+    <item type="id" name="white_3_rook" />
+    <item type="id" name="white_4_rook" />
+    <item type="id" name="white_5_rook" />
+    <item type="id" name="white_6_rook" />
+    <item type="id" name="white_7_rook" />
+    <item type="id" name="white_8_rook" />
 </resources>
