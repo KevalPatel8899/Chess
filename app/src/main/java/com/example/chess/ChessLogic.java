@@ -444,7 +444,7 @@ public class ChessLogic {
                         this.BLACK_K_SIDE_CASTLE_RIGHTS = this.BLACK_Q_SIDE_CASTLE_RIGHTS = true;
     }
 
-    public void setPieceAtLocation(String chessPiece,String location){
-        LOCATION_TABLE.put(chessPiece,location);
+    public void setPieceAtLocation(String chessPiece, String location) {
+        LOCATION_TABLE.put(chessPiece, location);
     }
 }

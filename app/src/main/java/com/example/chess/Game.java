@@ -26,7 +26,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
-public class Game extends AppCompatActivity implements View.OnLongClickListener, View.OnClickListener, View.OnDragListener {
+public class Game extends AppCompatActivity
+        implements View.OnLongClickListener, View.OnClickListener, View.OnDragListener {
 
     private boolean AGAINST_AI;
 
@@ -49,38 +50,18 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
     public List<String> PIECE_POSSIBLE_MOVES_S = new ArrayList<>();
     ImageView PIECE;
     public final String[] CHESS_PIECE_LIST = {
-            "black_1_knight",
-            "black_0_knight",
-            "black_1_rook",
-            "black_0_rook",
-            "black_1_bishop",
-            "black_0_bishop",
-            "black_0_king",
-            "black_0_queen",
-            "black_0_pawn",
-            "black_1_pawn",
-            "black_2_pawn",
-            "black_3_pawn",
-            "black_4_pawn",
-            "black_5_pawn",
-            "black_6_pawn",
-            "black_7_pawn",
-            "white_1_knight",
-            "white_0_knight",
-            "white_1_rook",
-            "white_0_rook",
-            "white_1_bishop",
-            "white_0_bishop",
-            "white_0_king",
-            "white_0_queen",
-            "white_0_pawn",
-            "white_1_pawn",
-            "white_2_pawn",
-            "white_3_pawn",
-            "white_4_pawn",
-            "white_5_pawn",
-            "white_6_pawn",
-            "white_7_pawn"
+            "black_1_knight", "black_0_knight",
+            "black_1_rook", "black_0_rook",
+            "black_1_bishop", "black_0_bishop",
+            "black_0_king", "black_0_queen",
+            "black_0_pawn", "black_1_pawn", "black_2_pawn", "black_3_pawn",
+            "black_4_pawn", "black_5_pawn", "black_6_pawn", "black_7_pawn",
+            "white_1_knight", "white_0_knight",
+            "white_1_rook", "white_0_rook",
+            "white_1_bishop", "white_0_bishop",
+            "white_0_king", "white_0_queen",
+            "white_0_pawn", "white_1_pawn", "white_2_pawn", "white_3_pawn",
+            "white_4_pawn", "white_5_pawn", "white_6_pawn", "white_7_pawn"
     };
 
     String[] ORIGINAL_LOCATION = new String[32];
@@ -104,7 +85,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
             IMAGE_VIEW_LIST.add(pieceIv);
             pieceIv.setOnClickListener(this);
             LinearLayout l = (LinearLayout) pieceIv.getParent();
-            ORIGINAL_LOCATION[index] = getBoxNameOFLayout(l);
+            ORIGINAL_LOCATION[index] = getNameOfView(l);
             LOCATION_TABLE.put(chessPiece, ORIGINAL_LOCATION[index]);
             index++;
         }
@@ -130,7 +111,6 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         MOVE_SOUND = MediaPlayer.create(this, R.raw.chess_move_audio);
         KILLED_SOUND = MediaPlayer.create(this, R.raw.chess_killed_piece);
     }
-
 
     // Implement long click and drag listener
     public void implementEvents() {
@@ -208,28 +188,13 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         // Handles each of the expected events
         switch (action) {
             case DragEvent.ACTION_DRAG_STARTED:
-                // Determines if this View can accept the dragged data
-                // if you want to apply color when drag started to your view you can uncomment below lines
-                // to give any color tint to the View to indicate that it can accept
-                // data.
-                //  view.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);//set background
-                // color to your view
-                // Invalidate the view to force a redraw in the new tint
-                //  view.invalidate();
                 // returns true to indicate that the View can accept the dragged data.
                 return event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN);
 
-            // Returns false. During the current drag and drop operation, this View will
-            // not receive events again until ACTION_DRAG_ENDED is sent.
-
             case DragEvent.ACTION_DRAG_ENTERED:
-                // Applies a YELLOW or any color tint to the View, when the dragged view entered into drag
-                // acceptable view
-                // Return true; the return value is ignored.
                 if (PIECE_POSSIBLE_MOVES.contains(view)) {
                     view.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
                 }
-
                 // Invalidate the view to force a redraw in the new tint
                 view.invalidate();
 
@@ -237,29 +202,14 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
             case DragEvent.ACTION_DRAG_LOCATION:
                 // Ignore the event
                 return true;
+
             case DragEvent.ACTION_DRAG_EXITED:
-                // Re-sets the color tint to blue, if you had set the BLUE color or any color in
-                // ACTION_DRAG_STARTED. Returns true; the return value is ignored.
-
-                //  view.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);
-
-                // If u had not provided any color in ACTION_DRAG_STARTED then clear color filter.
                 view.getBackground().clearColorFilter();
                 // Invalidate the view to force a redraw in the new tint
                 view.invalidate();
-
                 return true;
+
             case DragEvent.ACTION_DROP:
-                // Gets the item containing the dragged data
-                //                ClipData.Item item = event.getClipData().getItemAt(0);
-
-                // Gets the text data from the item.
-                //                String dragData = item.getText().toString();
-
-                // Displays a message containing the dragged data.
-                //                Toast.makeText(this, "Dragged data is " + dragData,
-                // Toast.LENGTH_SHORT).show();
-
                 // Turns off any color tints
                 view.getBackground().clearColorFilter();
 
@@ -284,9 +234,9 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
                 } else {
                     // if dropped at different location then change turn
                     if (!owner.equals(container)) {
-                        String chessPiece = getChessPieceName(v);
-                        String ownerLocation = getBoxNameOFLayout((LinearLayout) owner);
-                        String destLocation = getBoxNameOFLayout(container);
+                        String chessPiece = getNameOfView(v);
+                        String ownerLocation = getNameOfView((LinearLayout) owner);
+                        String destLocation = getNameOfView(container);
 
                         movePieceFromSrcToDest((ImageView) v, destLocation);
 
@@ -303,18 +253,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
                 // Invalidates the view to force a redraw
                 view.invalidate();
 
-                // Does a getResult(), and displays what happened.
-                //                if (event.getResult())
-                //                    Toast.makeText(this, imageViewID + " " + imageViewLocation,
-                // Toast.LENGTH_SHORT).show();
-                //                else
-                //                    Toast.makeText(this, "The drop didn't work.",
-                // Toast.LENGTH_SHORT).show();
-
-                // returns true; the value is ignored.
-
                 if (AGAINST_AI) playerAI();
-
                 return true;
 
             // An unknown action type was received.
@@ -325,7 +264,8 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         return false;
     }
 
-    private String getChessPieceName(View v) {
+    //Returns the string id/name of the View v
+    private String getNameOfView(View v) {
         String temp = v.getResources().getResourceName(v.getId());
         return temp.substring(temp.indexOf('/') + 1);
     }
@@ -337,7 +277,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         resetBackground();
         removeOnClickEvent();
 
-        String chessPiece = getChessPieceName(v);
+        String chessPiece = getNameOfView(v);
 
         PIECE_POSSIBLE_MOVES_S = Game1.possibleMoves(chessPiece, false);
         PIECE_POSSIBLE_MOVES.clear();
@@ -369,9 +309,9 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
                                 owner.removeView(PIECE);
                                 LinearLayout container = (LinearLayout) v;
                                 container.addView(PIECE);
-                                String chessPiece = getChessPieceName(PIECE);
-                                String ownerLocation = getBoxNameOFLayout(owner);
-                                String destLocation = getBoxNameOFLayout(container);
+                                String chessPiece = getNameOfView(PIECE);
+                                String ownerLocation = getNameOfView(owner);
+                                String destLocation = getNameOfView(container);
 
                                 postMoveSteps(chessPiece, ownerLocation, destLocation);
 
@@ -394,19 +334,19 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
                     if (PIECE != null) {
                         KILLED_SOUND.start();
                         LinearLayout chessPieceParentLayout = (LinearLayout) PIECE.getParent();
-                        String ownerLocation = getBoxNameOFLayout(chessPieceParentLayout);
+                        String ownerLocation = getNameOfView(chessPieceParentLayout);
                         parentLayout.removeView(v);
                         chessPieceParentLayout.removeView(PIECE);
                         parentLayout.addView(PIECE);
-                        String destLocation = getBoxNameOFLayout(parentLayout);
+                        String destLocation = getNameOfView(parentLayout);
 
-                        String chessPiece = getChessPieceName(PIECE);
+                        String chessPiece = getNameOfView(PIECE);
 
-                        Game1.movePieceFromSrcToDest(chessPiece, getBoxNameOFLayout(parentLayout), false);
+                        Game1.movePieceFromSrcToDest(chessPiece, getNameOfView(parentLayout), false);
 
                         // inform ChessLogic about pawn taking two steps
                         if (chessPiece.contains("pawn"))
-                            enableEnPassantIfPawn2Steps(chessPiece, ownerLocation, destLocation);
+                            enableEnPassantIfPawn2Steps(ownerLocation, destLocation);
                         else Game1.enPassant = "";
 
                         PIECE = null;
@@ -424,23 +364,21 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
 
     public void postMoveSteps(String chessPiece, String ownerLocation, String destLocation) {
 
-//        if(!WHITE_TURN) promotePawn();
-
         Game1.movePieceFromSrcToDest(chessPiece, destLocation, false);
 
         // check if the current move is implementation of enPassant
         if (!Game1.enPassant.equals("") && chessPiece.contains("pawn")) {
-            checkIfEnPassantHappen(chessPiece, ownerLocation, destLocation);
+            checkIfEnPassantHappen(ownerLocation, destLocation);
         }
 
-        // castle if needed
-        if (chessPiece.contains("king")) moveRookIfCastle(chessPiece, ownerLocation, destLocation);
 
-            // inform ChessLogic about pawn taking two steps
+        if (chessPiece.contains("king"))
+            // castle if needed
+            moveRookIfCastle(chessPiece, ownerLocation, destLocation);
         else if (chessPiece.contains("pawn"))
-            enableEnPassantIfPawn2Steps(chessPiece, ownerLocation, destLocation);
+            // inform ChessLogic about pawn taking two steps
+            enableEnPassantIfPawn2Steps(ownerLocation, destLocation);
         else Game1.enPassant = "";
-
 
         pawnPromotionCheck((ImageView) getViewByName(chessPiece));
 
@@ -451,28 +389,25 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         showCheckmateOrCheckOrDraw();
     }
 
-    private boolean showCheckmateOrCheckOrDraw() {
+    private void showCheckmateOrCheckOrDraw() {
         if (Game1.isCheckmate()) {
             String winner = !WHITE_TURN ? "White" : "Black";
             gameEnds();
             Toast.makeText(this, "CHECKMATE!!!  " + winner + " Wins !!!", Toast.LENGTH_LONG).show();
         } else if (Game1.isCheck()) Toast.makeText(this, "CHECK !!!", Toast.LENGTH_SHORT).show();
-        else if (Game1.isDraw()) Toast.makeText(this, "DRAW !!!", Toast.LENGTH_LONG).show();
-
-        return false;
+        else if (Game1.isDraw()) {
+            Toast.makeText(this, "DRAW !!!", Toast.LENGTH_LONG).show();
+            gameEnds();
+        }
     }
 
     private void gameEnds() {
+        // remove click and long click listener from all chess pieces
         for (int i = 0; i < 32; i++) {
             ImageView iv = IMAGE_VIEW_LIST.get(i);
             iv.setOnClickListener(null);
             iv.setOnLongClickListener(null);
         }
-    }
-
-    public String getBoxNameOFLayout(LinearLayout l) {
-        String temp = l.getResources().getResourceName(l.getId());
-        return temp.substring(temp.indexOf('/') + 1);
     }
 
     public void resetGame() {
@@ -481,13 +416,13 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
 
         for (ImageView imageView : EXTRA_IMAGE_VIEW_LIST) {
             IMAGE_VIEW_LIST.remove(imageView);
-
-            if (getChessPieceName((View) imageView).contains("black"))
+            // remove the extra pieces from the killed containers
+            if (getNameOfView(imageView).contains("black"))
                 KILLED_BLACK_PIECE_CONTAINER.removeView(imageView);
-            else
-                KILLED_WHITE_PIECE_CONTAINER.removeView(imageView);
+            else KILLED_WHITE_PIECE_CONTAINER.removeView(imageView);
         }
 
+        // reset location table of Chess Logic
         Game1.resetGame(LOCATION_TABLE);
 
         for (int i = 0; i < 32; i++) {
@@ -524,9 +459,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
                 PIECE_POSSIBLE_MOVES_S = Game1.possibleMoves(randomPiece, false);
                 PIECE_POSSIBLE_MOVES.clear();
                 for (String move : PIECE_POSSIBLE_MOVES_S) {
-                    PIECE_POSSIBLE_MOVES.add(
-                            (LinearLayout)
-                                    findViewById(getResources().getIdentifier(move, "id", getPackageName())));
+                    PIECE_POSSIBLE_MOVES.add((LinearLayout) getViewByName(move));
                 }
 
                 lengthOfPossibleMoves = PIECE_POSSIBLE_MOVES.size();
@@ -535,12 +468,12 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
             LinearLayout l = PIECE_POSSIBLE_MOVES.get(rand.nextInt(lengthOfPossibleMoves));
             LAST_MOVE[0] = (LinearLayout) iv.getParent();
             LAST_MOVE[1] = l;
-            destLocation = getBoxNameOFLayout(l);
+            destLocation = getNameOfView(l);
             movePieceFromSrcToDest(iv, destLocation);
 
             setBackgroundOfLastMove(LAST_MOVE[0], "#FFFF99");
             setBackgroundOfLastMove(LAST_MOVE[1], "Yellow");
-            String ownerLocation = getBoxNameOFLayout(LAST_MOVE[0]);
+            String ownerLocation = getNameOfView(LAST_MOVE[0]);
             MOVE_SOUND.start();
             postMoveSteps(randomPiece, ownerLocation, destLocation);
         }
@@ -561,19 +494,23 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         return linearLayout.getChildCount() > 0;
     }
 
+    // returns the view of the given name
     public View getViewByName(String name) {
         int id = getResources().getIdentifier(name, "id", getPackageName());
         return findViewById(id);
     }
 
+    // returns "boxXY" for the chessPiece
     public String getChessPieceLocation(String chessPiece) {
         View pieceView = getViewByName(chessPiece);
         LinearLayout l = (LinearLayout) pieceView.getParent();
-        return getBoxNameOFLayout(l);
+        return getNameOfView(l);
     }
 
+    // This method removes on click kill listener on pieces that were targeted to be killed
     public void removeOnClickEvent() {
-        for (ImageView iv : IMAGE_VIEW_WITH_KILL_EVENTS) iv.setOnClickListener(this);
+        for (ImageView iv : IMAGE_VIEW_WITH_KILL_EVENTS)
+            iv.setOnClickListener(this);
 
         IMAGE_VIEW_WITH_KILL_EVENTS.clear();
     }
@@ -588,18 +525,15 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
     }
 
     public void resetBackground() {
+        View linearLayout;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                View linearLayout;
-                if ((x % 2 == 0 && y % 2 == 0) || (x % 2 != 0 && y % 2 != 0)) {
-                    linearLayout =
-                            findViewById(getResources().getIdentifier("box" + x + y, "id", getPackageName()));
+                linearLayout = getViewByName("box" + x + y);
+                if ((x % 2 == 0 && y % 2 == 0) || (x % 2 != 0 && y % 2 != 0))
                     linearLayout.setBackgroundResource(R.color.colorBoardLight);
-                } else {
-                    linearLayout =
-                            findViewById(getResources().getIdentifier("box" + x + y, "id", getPackageName()));
+                else
                     linearLayout.setBackgroundResource(R.color.colorBoardDark);
-                }
+
             }
         }
     }
@@ -655,8 +589,7 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         }
     }
 
-    public void enableEnPassantIfPawn2Steps(
-            String pawnChessPiece, String pawnPrevLocation, String pawnDestLocation) {
+    public void enableEnPassantIfPawn2Steps(String pawnPrevLocation, String pawnDestLocation) {
         if (Math.abs(
                 Integer.parseInt(pawnPrevLocation.substring(3, 4))
                         - Integer.parseInt(pawnDestLocation.substring(3, 4)))
@@ -665,19 +598,17 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         } else Game1.enPassant = "";
     }
 
-    public void checkIfEnPassantHappen(
-            String pawnChessPiece, String pawnPrevLocation, String pawnDestLocation) {
+    public void checkIfEnPassantHappen(String pawnPrevLocation, String pawnDestLocation) {
 
         int enPassant_x = Integer.parseInt(Game1.enPassant.substring(3, 4));
         int enPassant_y = Integer.parseInt(Game1.enPassant.substring(4));
         // if pawn goes diagonal to the enPassant value
         if (enPassant_x == Integer.parseInt(pawnPrevLocation.substring(3, 4))
                 && enPassant_y == Integer.parseInt(pawnDestLocation.substring(4))) {
-            int resID = getResources().getIdentifier(Game1.enPassant, "id", getPackageName());
-            LinearLayout l = findViewById(resID);
+            LinearLayout l = (LinearLayout) getViewByName(Game1.enPassant);
             ImageView iv = (ImageView) (l.getChildAt(0));
 
-            String pawnToRemove = getChessPieceName(iv);
+            String pawnToRemove = getNameOfView(iv);
             l.removeView(iv);
             addPieceToKillContainer(iv);
             Game1.movePieceFromSrcToDest(pawnToRemove, "", false);
@@ -692,74 +623,68 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         else KILLED_WHITE_PIECE_CONTAINER.addView(iv);
     }
 
-    View.OnClickListener pawnPromotionPiece = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if ((PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).equals(v))) {
-                PROMOTED_PIECE = "bishop";
-                ALERT.dismiss();
-            } else if (PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).equals(v)) {
-                PROMOTED_PIECE = "queen";
-                ALERT.dismiss();
-            } else if (PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).equals(v)) {
-                PROMOTED_PIECE = "rook";
-                ALERT.dismiss();
-            } else if (PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).equals(v)) {
-                PROMOTED_PIECE = "knight";
-                ALERT.dismiss();
-            }
-            if (!PROMOTED_PIECE.equals("") && PAWN_PROMOTION_PARENT_LAYOUT != null) {
+    View.OnClickListener pawnPromotionPiece =
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if ((PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).equals(v))) {
+                        PROMOTED_PIECE = "bishop";
+                        ALERT.dismiss();
+                    } else if (PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).equals(v)) {
+                        PROMOTED_PIECE = "queen";
+                        ALERT.dismiss();
+                    } else if (PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).equals(v)) {
+                        PROMOTED_PIECE = "rook";
+                        ALERT.dismiss();
+                    } else if (PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).equals(v)) {
+                        PROMOTED_PIECE = "knight";
+                        ALERT.dismiss();
+                    }
+                    if (!PROMOTED_PIECE.equals("") && PAWN_PROMOTION_PARENT_LAYOUT != null) {
 
-                promotePawn(PAWN_PROMOTION_PARENT_LAYOUT);
-                PAWN_PROMOTION_PARENT_LAYOUT = null;
-            }
-        }
-    };
+                        promotePawn(PAWN_PROMOTION_PARENT_LAYOUT);
+                        PAWN_PROMOTION_PARENT_LAYOUT = null;
+                    }
+                }
+            };
 
-    public void pawnPromotionCheck(ImageView imageView) {
+    public void pawnPromotionCheck(ImageView iv) {
+        String chessPieceName = getNameOfView(iv);
+        String location = getChessPieceLocation(chessPieceName);
+
+        if (!chessPieceName.contains("pawn") || !(location.contains("box0") || location.contains("box7")))
+            return;
+
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(Game.this);
         PAWN_PROMOTION_VIEW = getLayoutInflater().inflate(R.layout.pawn_promotion_dialog_box, null);
 
         mBuilder.setView(PAWN_PROMOTION_VIEW);
 
-
-        String chessPieceID = getResources().getResourceName(imageView.getId());
-        chessPieceID = chessPieceID.substring(chessPieceID.indexOf("/") + 1);
-        String location = getChessPieceLocation(chessPieceID);
-
-
-        if (chessPieceID.contains("pawn")) {
-            if (location.contains("box0") || location.contains("box7")) {
-                if (AGAINST_AI) {
-                    PROMOTED_PIECE = "QUEEN";
-                    PAWN_PROMOTION_PARENT_LAYOUT = (LinearLayout) imageView.getParent();
-                    PAWN_PROMOTION_PARENT_LAYOUT.removeView(imageView);
-                    promotePawn(PAWN_PROMOTION_PARENT_LAYOUT);
-                } else {
-                    PAWN_PROMOTION_PARENT_LAYOUT = (LinearLayout) imageView.getParent();
-                    PAWN_PROMOTION_PARENT_LAYOUT.removeView(imageView);
-
-                    if (location.contains("box0")) {
-                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setBackgroundResource(R.drawable.ic_action_white_knight);
-                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setBackgroundResource(R.drawable.ic_action_white_queen);
-                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setBackgroundResource(R.drawable.ic_action_white_rook);
-                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setBackgroundResource(R.drawable.ic_action_white_bishop);
-                    } else {
-                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setBackgroundResource(R.drawable.ic_action_black_knight);
-                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setBackgroundResource(R.drawable.ic_action_black_queen);
-                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setBackgroundResource(R.drawable.ic_action_black_rook);
-                        PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setBackgroundResource(R.drawable.ic_action_black_bishop);
-                    }
-
-                    ALERT = mBuilder.create();
-                    ALERT.show();
-
-                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setOnClickListener(pawnPromotionPiece);
-                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setOnClickListener(pawnPromotionPiece);
-                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setOnClickListener(pawnPromotionPiece);
-                    PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setOnClickListener(pawnPromotionPiece);
-                }
+        PAWN_PROMOTION_PARENT_LAYOUT = (LinearLayout) iv.getParent();
+        PAWN_PROMOTION_PARENT_LAYOUT.removeView(iv);
+        if (AGAINST_AI) {
+            PROMOTED_PIECE = "queen";
+            promotePawn(PAWN_PROMOTION_PARENT_LAYOUT);
+        } else {
+            if (location.contains("box0")) {
+                PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setBackgroundResource(R.drawable.ic_action_white_knight);
+                PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setBackgroundResource(R.drawable.ic_action_white_queen);
+                PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setBackgroundResource(R.drawable.ic_action_white_rook);
+                PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setBackgroundResource(R.drawable.ic_action_white_bishop);
+            } else {
+                PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setBackgroundResource(R.drawable.ic_action_black_knight);
+                PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setBackgroundResource(R.drawable.ic_action_black_queen);
+                PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setBackgroundResource(R.drawable.ic_action_black_rook);
+                PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setBackgroundResource(R.drawable.ic_action_black_bishop);
             }
+
+            ALERT = mBuilder.create();
+            ALERT.show();
+
+            PAWN_PROMOTION_VIEW.findViewById(R.id.button_knight).setOnClickListener(pawnPromotionPiece);
+            PAWN_PROMOTION_VIEW.findViewById(R.id.button_queen).setOnClickListener(pawnPromotionPiece);
+            PAWN_PROMOTION_VIEW.findViewById(R.id.button_rook).setOnClickListener(pawnPromotionPiece);
+            PAWN_PROMOTION_VIEW.findViewById(R.id.button_bishop).setOnClickListener(pawnPromotionPiece);
         }
     }
 
@@ -768,47 +693,41 @@ public class Game extends AppCompatActivity implements View.OnLongClickListener,
         ImageView iv = new ImageView(getApplicationContext());
 
         // Create layout parameters for ImageView
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams lp =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
         // Add layout parameters to ImageView
         iv.setLayoutParams(lp);
 
-        String piece_name = "", piece_image = "ic_action_", turn = "white";
+        String newChessPieceName, generic_piece_image_name, turn;
         int resId;
         if (WHITE_TURN) {
             turn = "black";
-            piece_name = turn + "_" + ADDED_BLACK_PIECE + "_" + PROMOTED_PIECE;
-
-            resId = getResources().getIdentifier(piece_name, "id", getPackageName());
-            iv.setId(resId);
-
-            piece_image = piece_image + turn + "_" + PROMOTED_PIECE;
-            resId = getResources().getIdentifier(piece_image, "drawable", getPackageName());
-            iv.setImageResource(resId);
-            linearLayout.addView(iv);
+            newChessPieceName = turn + "_" + ADDED_BLACK_PIECE + "_" + PROMOTED_PIECE;
             ADDED_BLACK_PIECE++;
         } else {
-            piece_name = turn + "_" + ADDED_WHITE_PIECE + "_" + PROMOTED_PIECE;
-
-            resId = getResources().getIdentifier(piece_name, "id", getPackageName());
-            iv.setId(resId);
-            piece_image = piece_image + turn + "_" + PROMOTED_PIECE;
-
-            resId = getResources().getIdentifier(piece_image, "drawable", getPackageName());
-            iv.setImageResource(resId);
-            linearLayout.addView(iv);
+            turn = "white";
+            newChessPieceName = turn + "_" + ADDED_WHITE_PIECE + "_" + PROMOTED_PIECE;
             ADDED_WHITE_PIECE++;
         }
 
+        resId = getResources().getIdentifier(newChessPieceName, "id", getPackageName());
+        iv.setId(resId);
+
+        generic_piece_image_name = "ic_action_" + turn + "_" + PROMOTED_PIECE;
+        resId = getResources().getIdentifier(generic_piece_image_name, "drawable", getPackageName());
+        iv.setImageResource(resId);
+        linearLayout.addView(iv);
 
         IMAGE_VIEW_LIST.add(iv);
         EXTRA_IMAGE_VIEW_LIST.add(iv);
 
         iv.setOnClickListener(this);
 
-        String chessPieceID = getResources().getResourceName(iv.getId());
-        chessPieceID = chessPieceID.substring(chessPieceID.indexOf("/") + 1);
-        String location = getChessPieceLocation(chessPieceID);
-        Game1.setPieceAtLocation(chessPieceID, location);
+        String location = getChessPieceLocation(newChessPieceName);
+
+        // setting new piece location in Game Logic
+        Game1.setPieceAtLocation(newChessPieceName, location);
     }
 }
