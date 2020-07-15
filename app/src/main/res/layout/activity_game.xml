@@ -12,7 +12,6 @@
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -20,7 +19,6 @@
             android:id="@+id/button_reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/reset" />
 
     </LinearLayout>
@@ -38,6 +36,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@drawable/customborder"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/killedBlackPiece"
         app:layout_constraintDimensionRatio="1:1"
@@ -68,9 +67,6 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_action_black_rook" />
             </LinearLayout>
-
-            />
-
             <LinearLayout
                 android:id="@+id/box01"
                 android:layout_width="match_parent"
