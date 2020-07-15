@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,912 +9,930 @@
 
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/button_reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/reset" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/killedWhitePiece"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/r0"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/killedBlackPiece"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/killedWhitePiece">
 
         <LinearLayout
-            android:id="@+id/box00"
-            android:layout_width="match_parent"
+            android:id="@+id/r0"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/black_0_rook"
+            <LinearLayout
+                android:id="@+id/box00"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_rook" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        />
+                <ImageView
+                    android:id="@+id/black_0_rook"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_rook" />
+            </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/box01"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
+            />
 
-            <ImageView
-                android:id="@+id/black_0_knight"
+            <LinearLayout
+                android:id="@+id/box01"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_knight" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box02"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/black_0_knight"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_knight" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/black_0_bishop"
+            <LinearLayout
+                android:id="@+id/box02"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_bishop" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box03"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/black_0_bishop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_bishop" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/black_0_queen"
+            <LinearLayout
+                android:id="@+id/box03"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_queen" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box04"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/black_0_queen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_queen" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/black_0_king"
+            <LinearLayout
+                android:id="@+id/box04"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_king" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box05"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/black_0_king"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_king" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/black_1_bishop"
+            <LinearLayout
+                android:id="@+id/box05"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_bishop" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box06"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/black_1_bishop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_bishop" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/black_1_knight"
+            <LinearLayout
+                android:id="@+id/box06"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_knight" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box07"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/black_1_knight"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_knight" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/black_1_rook"
+            <LinearLayout
+                android:id="@+id/box07"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_rook" />
-        </LinearLayout>
-    </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/r1"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/box10"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/black_0_pawn"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_pawn" />
+                <ImageView
+                    android:id="@+id/black_1_rook"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_rook" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/box11"
-            android:layout_width="match_parent"
+            android:id="@+id/r1"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/black_1_pawn"
+            <LinearLayout
+                android:id="@+id/box10"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_pawn" />
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/black_0_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box11"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/black_1_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box12"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/black_2_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box13"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/black_3_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box14"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/black_4_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box15"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/black_5_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box16"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/black_6_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box17"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/black_7_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_black_pawn" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/box12"
-            android:layout_width="match_parent"
+            android:id="@+id/r2"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/black_2_pawn"
+            <LinearLayout
+                android:id="@+id/box20"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_pawn" />
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box21"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box22"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box23"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box24"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box25"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box26"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box27"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/box13"
-            android:layout_width="match_parent"
+            android:id="@+id/r3"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/black_3_pawn"
+
+            <LinearLayout
+                android:id="@+id/box30"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_pawn" />
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box31"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box32"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box33"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box34"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box35"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box36"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box37"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/box14"
-            android:layout_width="match_parent"
+            android:id="@+id/r4"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/black_4_pawn"
+            <LinearLayout
+                android:id="@+id/box40"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_pawn" />
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box41"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box42"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box43"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box44"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box45"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box46"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box47"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/box15"
-            android:layout_width="match_parent"
+            android:id="@+id/r5"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/black_5_pawn"
+
+            <LinearLayout
+                android:id="@+id/box50"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_pawn" />
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box51"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box52"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box53"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box54"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box55"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box56"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <LinearLayout
+                android:id="@+id/box57"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/box16"
-            android:layout_width="match_parent"
+            android:id="@+id/r6"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorBoardDark"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/black_6_pawn"
+            <LinearLayout
+                android:id="@+id/box60"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_pawn" />
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/white_0_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box61"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/white_1_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box62"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/white_2_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box63"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/white_3_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box64"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/white_4_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box65"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/white_5_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box66"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/white_6_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_pawn" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/box67"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/white_7_pawn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_pawn" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/box17"
-            android:layout_width="match_parent"
+            android:id="@+id/r7"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorBoardLight"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/black_7_pawn"
+
+            <LinearLayout
+                android:id="@+id/box70"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_black_pawn" />
-        </LinearLayout>
-    </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/r2"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/white_0_rook"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_rook" />
+            </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/box20"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
+            />
 
-        <LinearLayout
-            android:id="@+id/box21"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box22"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box23"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box24"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box25"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box26"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box27"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/r3"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-
-        <LinearLayout
-            android:id="@+id/box30"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box31"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box32"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box33"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box34"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box35"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box36"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box37"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/r4"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/box40"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box41"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box42"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box43"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box44"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box45"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box46"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box47"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/r5"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-
-        <LinearLayout
-            android:id="@+id/box50"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box51"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box52"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box53"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box54"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box55"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box56"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/box57"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/r6"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/box60"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/white_0_pawn"
+            <LinearLayout
+                android:id="@+id/box71"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_pawn" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box61"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/white_0_knight"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_knight" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/white_1_pawn"
+            <LinearLayout
+                android:id="@+id/box72"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_pawn" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box62"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/white_0_bishop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_bishop" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/white_2_pawn"
+            <LinearLayout
+                android:id="@+id/box73"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_pawn" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box63"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/white_0_queen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_queen" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/white_3_pawn"
+            <LinearLayout
+                android:id="@+id/box74"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_pawn" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box64"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/white_0_king"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_king" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/white_4_pawn"
+            <LinearLayout
+                android:id="@+id/box75"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_pawn" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box65"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/white_1_bishop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_bishop" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/white_5_pawn"
+            <LinearLayout
+                android:id="@+id/box76"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_pawn" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardDark"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box66"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/white_1_knight"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_knight" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/white_6_pawn"
+            <LinearLayout
+                android:id="@+id/box77"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_pawn" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:background="@color/colorBoardLight"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/box67"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/white_7_pawn"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_pawn" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/r7"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-
-        <LinearLayout
-            android:id="@+id/box70"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/white_0_rook"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_rook" />
-        </LinearLayout>
-
-        />
-
-        <LinearLayout
-            android:id="@+id/box71"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/white_0_knight"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_knight" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/box72"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/white_0_bishop"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_bishop" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/box73"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/white_0_queen"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_queen" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/box74"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/white_0_king"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_king" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/box75"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/white_1_bishop"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_bishop" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/box76"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardDark"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/white_1_knight"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_knight" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/box77"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorBoardLight"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/white_1_rook"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_action_white_rook" />
+                <ImageView
+                    android:id="@+id/white_1_rook"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_white_rook" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/killedBlackPiece"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
