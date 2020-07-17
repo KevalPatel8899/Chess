@@ -4,15 +4,15 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 <item>
     <shape>
-        <corners android:radius="20dp"/>
-        <padding android:left="10dp" android:right="10dp" android:top="10dp" android:bottom="10dp"/>
-        <stroke android:width="10dp" android:color="#000000"/>    </shape>
+<!--        <corners android:radius="20dp"/>-->
+        <padding android:left="2.5dp" android:right="2.5dp" android:top="2.5dp" android:bottom="2.5dp"/>
+        <stroke android:width="2.5dp" android:color="#000000"/>    </shape>
 </item>
-<item android:top="0dp">
-    <shape>
-        <corners android:radius="10dp"/>
-        <padding android:left="10dp" android:right="10dp" android:top="10dp" android:bottom="10dp"/>
-        <stroke android:width="10dp" android:color="#991919"/>
-    </shape>
-</item>
+<!--<item>-->
+<!--    <shape>-->
+<!--        <corners android:radius="10dp"/>-->
+<!--        <padding android:left="10dp" android:right="10dp" android:top="10dp" android:bottom="10dp"/>-->
+<!--        <stroke android:width="10dp" android:color="#991919"/>-->
+<!--    </shape>-->
+<!--</item>-->
 </layer-list>

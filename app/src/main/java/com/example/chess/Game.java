@@ -1,5 +1,6 @@
 package com.example.chess;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -78,6 +79,14 @@ public class Game extends AppCompatActivity
         setContentView(R.layout.activity_game);
 
         Intent intent = getIntent();
+        Button button = (Button)findViewById(R.id.buttonHome);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeReturn();
+                finish();
+            }
+        });
         AGAINST_AI = intent.getBooleanExtra("AGAINST_AI", true);
         int index = 0;
         for (String chessPiece : CHESS_PIECE_LIST) {
@@ -730,4 +739,11 @@ public class Game extends AppCompatActivity
         // setting new piece location in Game Logic
         Game1.setPieceAtLocation(newChessPieceName, location);
     }
+
+
+    public void homeReturn(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+    
 }
